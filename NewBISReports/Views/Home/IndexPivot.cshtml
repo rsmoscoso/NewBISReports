@@ -1,0 +1,83 @@
+﻿@model NewBISReports.Models.HomeModel
+
+@{
+}
+
+@if (Model != null && Model.Meals != null)
+{
+    <div class="widget widget-table">
+        <div class="widget-header">
+            <h3 style="color: white"><i class="fa fa-table"></i>Relatório</h3>
+        </div>
+        <div class="widget-content">
+            <table id="tb" border="1" width="100%">
+                <tr>
+                    <td align="center"><b>Dia</b></td>
+                    <td colspan="6" align="center"><b>Desejum</b></td>
+                    <td colspan="6" align="center"><b>Almoço</b></td>
+                    <td colspan="6" align="center"><b>Jantar</b></td>
+                    <td colspan="6" align="center"><b>Ceia</b></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td align="center"><b>Empregado</b></td>
+                    <td align="center"><b>Master (Terceirizado)</b></td>
+                    <td align="center"><b>Master (Provisório)</b></td>
+                    <td align="center"><b>Visitante</b></td>
+                    <td align="center"><b>Coca</b></td>     
+                    <td align="center"><b>Total</b></td>
+
+                    <td align="center"><b>Empregado</b></td>
+                    <td align="center"><b>Master (Terceirizado)</b></td>
+                    <td align="center"><b>Master (Provisório)</b></td>
+                    <td align="center"><b>Visitante</b></td>
+                    <td align="center"><b>Coca</b></td>
+                    <td align="center"><b>Total</b></td>
+
+                    <td align="center"><b>Empregado</b></td>
+                    <td align="center"><b>Master (Terceirizado)</b></td>
+                    <td align="center"><b>Master (Provisório)</b></td>
+                    <td align="center"><b>Visitante</b></td>
+                    <td align="center"><b>Coca</b></td>
+                    <td align="center"><b>Total</b></td>
+
+                    <td align="center"><b>Empregado</b></td>
+                    <td align="center"><b>Master (Terceirizado)</b></td>
+                    <td align="center"><b>Master (Provisório)</b></td>
+                    <td align="center"><b>Visitante</b></td>
+                    <td align="center"><b>Coca</b></td>
+                    <td align="center"><b>Total</b></td>
+                </tr>
+                @{
+                    var total = 0;
+                }
+                @for (int i = 0; i < Model.Meals.Count; ++i)
+                {
+                    <tr>
+                        <td>@Model.Meals[i].Dia</td>
+                        @for (int j = 0; j < 4; ++j)
+                        {
+                            total = 0;
+                            @if (i < (Model.Meals.Count - 1))
+                            {
+                                total = total + (@Model.Meals[i].Empregado + @Model.Meals[i].MasterT + @Model.Meals[i].MasterP + @Model.Meals[i].Visitante + @Model.Meals[i].Coca);
+                                <td align="center">@Model.Meals[i].Empregado</td>
+                                <td align="center">@Model.Meals[i].MasterT</td>
+                                <td align="center">@Model.Meals[i].MasterP</td>
+                                <td align="center">@Model.Meals[i].Visitante</td>
+                                <td align="center">@Model.Meals[i].Coca</td>
+                                <td align="center"><b>@total</b></td>
+                            }
+                            @if (j < 3)
+                            {
+                                ++i;
+                            }
+                        }
+                    </tr>
+                }
+
+            </table>
+        </div>
+    </div>
+
+}

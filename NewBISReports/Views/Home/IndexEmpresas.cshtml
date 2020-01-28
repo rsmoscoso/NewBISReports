@@ -1,0 +1,26 @@
+﻿@model NewBISReports.Models.HomeModel
+
+<div class="col-sm-6">
+    <div class="widget widget-table">
+        <div class="widget-header">
+            <h3><i class="fa fa-home"></i>Pessoas</h3>
+            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Informações das pessoas"><i class="fa fa-question-circle"></i></button>
+        </div>
+        <div class="widget-content">
+            <div class="row">
+                <!-- INICIO EMPRESA -->
+                <fieldset>
+                    <div class="col-sm-12">
+                        <label>Empresas</label>
+                        @if (ViewBag.Company != null)
+                        {
+                            <select multiple="multiple" asp-for="CompanyNO" class="select2 select2-multiple" name="CompanyNO"
+                                    asp-items="@(new SelectList(ViewBag.Company, "CompanyNO", "Name"))"></select>
+                        }
+                    </div>
+                </fieldset>
+                <!-- FIM EMPRESA -->
+            </div>
+        </div>
+    </div>
+</div>

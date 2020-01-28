@@ -1,0 +1,147 @@
+﻿@using NewBISReports.Models.Classes;
+@model NewBISReports.Models.HomeModel
+
+@{
+    var buttonname = "Excel";
+    var startdate = Model != null && !String.IsNullOrEmpty(Model.StartDate) ? Model.StartDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
+    var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
+    REPORTTYPE type = REPORTTYPE.RPT_TOTALMEALGRAPH;
+    var title = NewBISReports.Models.HomeModel.GetTypeDescription(type);
+    var titlecomment = NewBISReports.Models.HomeModel.GetTypeComments(type);
+
+    if (ViewBag.Clients == null)
+    {
+        ViewBag.Clients = new List<Clients>();
+    }
+}
+
+<form method="post" asp-action="Index" data-parsley-validate novalidate>
+    <input type="hidden" value="@startdate" id="hidData_Start" name="hidData_Start" />
+    <input type="hidden" value="@enddate" id="hidData_End" name="hidData_End" />
+    <input type="hidden" value="@type" id="Type" name="Type" asp-for="Type" />
+
+    <div class="row">
+        <div class="col-md-4 ">
+            <ul class="breadcrumb">
+                <li><i class="fa fa-home"></i><a href="#">Home</a></li>
+                <li class="active">@title</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- QUADRO GERAL -->
+    <div class="widget">
+        <div class="widget-header">
+            <h3><i class="fa fa-book"></i>@title</h3> <em>- @titlecomment</em>
+            <div class="btn-group widget-header-toolbar">
+                <a href="#" id="tour-focus" title="Destaque" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a>
+                <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+                <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a>
+            </div>
+        </div>
+        <!-- PERÍODO -->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="widget">
+                    <div class="widget-content">
+                        <div class="form-inline">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
+                            </div>
+                            <button type="submit" name="exec" id="exec" asp-action="ExecPage" class="btn">Executar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FIM PERÍODO -->
+        <!-- INÍCIO DO CARD PESSOAS E UNIDADE -->
+        <div class="row">
+            <!-- INÍCIO DO CARD UNIDADES -->
+            <div class="col-sm-6">
+                <div class="widget widget-table">
+                    <div class="widget-header">
+                        <h3><i class="fa fa-home"></i>Unidades</h3>
+                        <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Informações das divisões e leitoras"><i class="fa fa-question-circle"></i></button>
+                    </div>
+                    <div class="widget-content">
+                        <div class="row">
+                            <!-- INICIO UNIDADE -->
+                            <fieldset>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <label>Unidade:</label>
+                                        </div>
+                                        <select asp-for="CLIENTID" class="select2" name="CLIENTID" asp-controller="Home" asp-action="Index" onclick="form.submit();"
+                                                asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID", "Description"))"></select>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <!-- FIM UNIDADE -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FIM DO CARD UNIDADES-->
+    </div>
+    <!-- FIM QUADRO GERAL -->
+
+    @if (@Model != null && @Model.Meals != null)
+    {
+        @Html.Partial("IndexTotalMeal");
+    }
+
+</form>
+
+<!-- Javascript Mínimo -->
+<script src="~/KingAdmin/assets/js/jquery/jquery-2.1.0.min.js"></script>
+<script src="~/KingAdmin/assets/js/bootstrap/bootstrap.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/modernizr/modernizr.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
+
+<!-- Javascript Datepicker -->
+<script src="~/KingAdmin/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="~/KingAdmin/assets/js/king-common.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
+
+<script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.resize.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.time.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.pie.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.orderBars.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.tooltip.min.js"></script>
+<script src="~/KingAdmin/assets/js/king-chart-stat.js"></script>
+<!-- JQUERY -->
+<script>
+    $(function () {
+        window.prettyPrint && prettyPrint();
+        $('#StartDate').datepicker({
+            format: 'dd/mm/yyyy'
+        }).datepicker("setDate", document.getElementById('hidData_Start').defaultValue);;
+        $('#StartDate').datepicker()
+            .on('changeDate', function (ev) {
+                $('#StartDate').datepicker('hide');
+            });
+    });
+
+    $(function () {
+        window.prettyPrint && prettyPrint();
+        $('#EndDate').datepicker({
+            format: 'dd/mm/yyyy'
+        }).datepicker("setDate", document.getElementById('hidData_End').defaultValue);;
+        $('#EndDate').datepicker()
+            .on('changeDate', function (ev) {
+                $('#EndDate').datepicker('hide');
+            });
+    });
+</script>
+

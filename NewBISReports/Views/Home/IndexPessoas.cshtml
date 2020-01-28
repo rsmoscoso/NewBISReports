@@ -1,0 +1,108 @@
+﻿@model NewBISReports.Models.HomeModel
+@{
+    REPORTTYPE type = REPORTTYPE.RPT_PERSONGENERAL;
+    if (ViewBag.Type != null)
+    {
+        type = (REPORTTYPE)ViewBag.Type;
+    }
+}
+
+<div class="col-sm-6">
+    <div class="widget widget-table">
+        <div class="widget-header">
+            <h3><i class="fa fa-home"></i>Pessoas/Visitantes</h3>
+            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Informações das pessoas e/ou visitantes"><i class="fa fa-question-circle"></i></button>
+        </div>
+        <div class="widget-content">
+            <div class="row">
+                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                {
+                    <!-- INICIO TIPO PESSOA -->
+                    <fieldset>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <label>Tipo de Pessoa</label>
+                                <select multiple="multiple" asp-for="PERSCLASSID" class="select2 select2-multiple" name="PERSCLASSID"
+                                        asp-items="@(new SelectList(ViewBag.Persclassid, "PERSCLASSID", "DisplayTextCustomer"))"></select>
+
+                            </div>
+                        </div>
+                    </fieldset>
+                    <!-- FIM TIPO PESSOA -->
+                    <!-- INICIO EMPRESA -->
+                    <fieldset>
+                        <div class="col-sm-12">
+                            <label>Empresas</label>
+                            @if (ViewBag.Company != null)
+                            {
+                                <select multiple="multiple" asp-for="CompanyNO" class="select2 select2-multiple" name="CompanyNO"
+                                        asp-items="@(new SelectList(ViewBag.Company, "CompanyNO", "Name"))"></select>
+                            }
+                        </div>
+                    </fieldset>
+                    <!-- FIM EMPRESA -->
+                }
+                <!-- INICIO PESSOA -->
+                <fieldset>
+                    <div class="col-sm-12">
+                        <div class="input-group">
+                            <label class="control-inline">
+                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                {
+                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
+                                    <span>Pessoa</span>
+                                }
+                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
+                                <span>Visitante</span>
+                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                {
+                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
+                                    <span>Matrícula/CPF</span>
+                                }
+                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
+                                <span>Documento</span>
+                            </label>
+                        </div>
+                        <div class="input-group input-group-sm">
+                            <input type="search" asp-for="NAMESEARCH" name="NAMESEARCH" placeholder="pessoas/visitantes" class="form-control">
+                            <span class="input-group-btn">
+                                <button class="btn" name="srcname" asp-action="searchPersons" type="submit"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                        <select asp-for="PERSNO" class="select2" name="PERSNO" asp-items="@(new SelectList(ViewBag.Persons, "Persid", "Nome", 0))"></select>
+                        <!-- FIM PESSOA -->
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>
+@if (type == REPORTTYPE.RPT_PERSONGENERAL)
+{
+    <div class="col-sm-6">
+        <div class="widget widget-table">
+            <div class="widget-header">
+                <h3><i class="fa fa-home"></i>Unidades</h3>
+                <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Informações das divisões e leitoras"><i class="fa fa-question-circle"></i></button>
+            </div>
+            <div class="widget-content">
+                <div class="row">
+                    <!-- INICIO UNIDADE -->
+                    <fieldset>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="input-group input-group-sm">
+                                    <label>Unidade:</label>
+                                </div>
+                                <select asp-for="CLIENTID" class="select2" name="CLIENTID" asp-controller="Home" asp-action="Index" onclick="form.submit();"
+                                        asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID", "Description"))"></select>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                    <!-- FIM UNIDADE -->
+                </div>
+            </div>
+        </div>
+    </div>
+}

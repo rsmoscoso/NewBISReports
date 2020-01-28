@@ -1,0 +1,29 @@
+﻿@model NewBISReports.Models.HomeModel
+
+@{
+}
+
+<div class="widget widget-table">
+    <div class="widget-header">
+        <h3 style="color: white"><i class="fa fa-table"></i>Relatório</h3>
+    </div>
+    <div class="widget-content">
+        <table id="tb" border="1" width="100%">
+            <tr>
+                <td align="center"><b>Dia</b></td>
+                <td align="center"><b>Total</b></td>
+            </tr>
+            @{
+                var total = 0;
+            }
+            @for (int i = 0; i < Model.Acessos.Count; ++i)
+            {
+                <tr>
+                    <td align="center">@Model.Acessos[i].Dia</td>
+                    <td align="center">@Model.Acessos[i].Total</td>
+                </tr>
+            }
+
+        </table>
+    </div>
+</div>

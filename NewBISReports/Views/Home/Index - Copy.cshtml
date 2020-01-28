@@ -1,0 +1,254 @@
+﻿@using NewBISReports.Models.Classes;
+@model NewBISReports.Models.HomeModel
+
+@{
+
+    var startdate = Model != null && !String.IsNullOrEmpty(Model.StartDate) ? Model.StartDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
+    var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
+}
+
+<form asp-action="Index" method="post" data-parsley-validate novalidate>
+    <input type="hidden" value="@startdate" id="hidData_Start" name="hidData_Start" />
+    <input type="hidden" value="@enddate" id="hidData_End" name="hidData_End" />
+
+    <!-- Begin row -->
+    <div class="row">
+        <!-- INÍCIO PERÍODO -->
+        <div class="col-xl-5">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Período</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <label>Data Inicial</label>
+                            <div class="input-group">
+                                <input type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="md md-event"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label>Data Final</label>
+                            <div class="input-group">
+                                <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="md md-event"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label>&nbsp;</label>
+                            <div class="input-group">
+                                <button type="submit" name="excel" class="btn" asp-action="ExcelPage" style="background-color: Green; color: white">Excel</button>&nbsp;
+                                <!--<button type="submit" name="newsearch" class="btn waves-effect waves-light">Nova Pesquisa</button>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- FINAL PERÍODO -->
+        <!-- INÍCIO DIVISÃO -->
+        <div class="col-xl-5">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Unidades</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label class="col-sm-3 control-label">Nome das Unidades</label>
+                            <div class="input-group">
+                                <select asp-for="CLIENTID" class="select2 form-control" name="CLIENTID" multiple="multiple" data-placeholder="selecione a unidade"
+                                        onclick="form.submit();"
+                                        asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID", "Description"))"></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- INÍCIO DEVICES -->
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label class="col-sm-3 control-label">Nome das Leitoras</label>
+
+                            <div class="input-group">
+                                <div class="input-group">
+                                    <input type="text" asp-for="DEVICESEARCH" name="DEVICESEARCH" placeholder="pesquise as leitoras" class="form-control">
+                                    <div class="input-group-append">
+                                        <button class="btn" name="srcdeviceid" asp-action="searchDevices" onclick="form.submit();" type="submit"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+
+                                @if (ViewBag.Devices != null)
+                                {
+
+                                    <select asp-for="DEVICEID" class="select2 form-control" name="DEVICEID" multiple="multiple" data-placeholder="selecione a(s) leitora(s)"
+                                            asp-items="@(new SelectList(ViewBag.Devices, "ID", "DESCRIPTION"))"></select>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FIM DEVICES -->
+                </div>
+            </div>
+        </div>
+        <!-- FINAL DIVISÃO -->
+    </div>
+    <!-- FIM 1. LINHA-->
+    <!-- INICIO 2. LINHA-->
+    <div class="row">
+        <!-- INÍCIO PESSOAS -->
+        <div class="col-xl-5">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Pessoas</h3>
+                </div>
+                <div class="card-body">
+                    <!-- INÍCIO TIPO DE PESSOA --
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label class="col-sm-3 control-label">Tipo de Pessoa</label>
+
+                            <div class="input-group">
+                                <select asp-for="PERSCLASSID" class="select2 form-control" name="PERSCLASSID" multiple="multiple" data-placeholder="selecione o(s) tipo(s) de pessoa"
+                                        asp-items="@(new SelectList(ViewBag.Persclassid, "PERSCLASSID", "DisplayTextCustomer"))"></select>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FIM TIPO DE PESSOA -->
+                    <!-- INÍCIO EMPRESA -->
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label class="col-sm-3 control-label">Nome da Empresa</label>
+
+                            <div class="input-group">
+                                <div class="input-group">
+                                    <input type="text" asp-for="COMPANYNOSEARCH" name="COMPANYNOSEARCH" placeholder="empresas" class="form-control">
+                                    <div class="input-group-append">
+                                        <button class="btn" name="srccompanyno" asp-action="searchCompanies" onclick="form.submit();" type="submit"><i class="fa fa-search"></i></button>
+                                    </div>
+                                </div>
+
+                                @if (ViewBag.Company != null)
+                                {
+
+                                    <select asp-for="CompanyNO" class="select2 form-control" name="CompanyNO" multiple="multiple" data-placeholder="selecione o(s) tipo(s) de pessoa"
+                                            asp-items="@(new SelectList(ViewBag.Company, "CompanyNO", "Name"))"></select>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <!-- FIM EMPRESA -->
+                    <!-- INÍCIO PESSOA -->
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <label class="col-sm-3 control-label">Pessoa</label>
+
+                            <div class="input-group">
+                                <label class="control-inline">
+                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
+                                    <span>Pessoa</span>
+                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
+                                    <span>Visitante</span>
+                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
+                                    <span>Matrícula/CPF</span>
+                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
+                                    <span>Documento</span>
+                                </label>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="text" asp-for="NAMESEARCH" name="NAMESEARCH" placeholder="pessoas/visitantes" class="form-control">
+                                <div class="input-group-append">
+                                    <button class="btn" name="srcname" asp-action="searchPersons" onclick="form.submit();" type="submit"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                            @if (ViewBag.Persons != null)
+                            {
+                                <select asp-for="PERSNO" class="select2 form-control" name="PERSNO" multiple="multiple" data-placeholder="selecione o(s) tipo(s) de pessoa"
+                                        asp-items="@(new SelectList(ViewBag.Persons, "Persid", "Nome", 0))"></select>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <!-- FIM EMPRESA -->
+
+            </div>
+        </div>
+    </div>
+    <!-- FINAL DIVISÃO -->
+    <!-- End row -->
+</form>
+
+<script src="~/KingAdmin/KingAdmin/assets/js/jquery/jquery-2.1.0.min.js"></script>
+<script src="~/KingAdmin/KingAdmin/assets/js/bootstrap/bootstrap.js"></script>
+<script src="~/KingAdmin/KingAdmin/assets/js/plugins/modernizr/modernizr.js"></script>
+<script src="~/KingAdmin/KingAdmin/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
+<script src="~/KingAdmin/KingAdmin/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="~/KingAdmin/KingAdmin/assets/js/plugins/jquery-maskedinput/jquery.masked-input.min.js"></script>
+<script src="~/KingAdmin/assets/js/king-common.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src=""~/KingAdmin/assets/js/plugins/bootstrap-progressbar/bootstrap-progressbar.js"></script>
+<script src="~/KingAdmin/assets/js/jquery-ui/jquery-ui-1.10.4.custom.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/jqallrangesliders/jQAllRangeSliders-min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-colorpicker/bootstrap-colorpicker.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/jquery-simplecolorpicker/jquery.simplecolorpicker.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/moment/moment.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-slider/bootstrap-slider.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+<script src="~/KingAdmin/assets/js/king-elements.js"></script>
+<script src="~/KingAdmin/assets/js/king-form-layouts.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/parsley-validation/parsley.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/datatable/jquery.dataTables.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/datatable/exts/dataTables.colVis.bootstrap.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/datatable/exts/dataTables.colReorder.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/datatable/exts/dataTables.tableTools.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/datatable/dataTables.bootstrap.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/jqgrid/jquery.jqGrid.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/jqgrid/i18n/grid.locale-en.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/jqgrid/jquery.jqGrid.fluid.js"></script>
+<script src="~/KingAdmin/assets/js/king-table.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
+
+<script>
+    $(function () {
+        window.prettyPrint && prettyPrint();
+        $('#StartDate').datepicker({
+            format: 'dd/mm/yyyy'
+        }).datepicker("setDate", document.getElementById('hidData_Start').defaultValue);;
+        $('#StartDate').datepicker()
+            .on('changeDate', function (ev) {
+                $('#StartDate').datepicker('hide');
+            });
+    });
+
+    $(function () {
+        window.prettyPrint && prettyPrint();
+        $('#EndDate').datepicker({
+            format: 'dd/mm/yyyy'
+        }).datepicker("setDate", document.getElementById('hidData_Start').defaultValue);;
+        $('#EndDate').datepicker()
+            .on('changeDate', function (ev) {
+                $('#EndDate').datepicker('hide');
+            });
+    });
+
+    $(function () {
+        // Select2
+        jQuery(".select2").select2({
+            width: '100%'
+        });
+    })
+</script>
+

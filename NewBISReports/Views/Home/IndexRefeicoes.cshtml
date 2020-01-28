@@ -1,0 +1,34 @@
+﻿@model NewBISReports.Models.HomeModel
+
+<div class="col-sm-6">
+    <div class="widget widget-table">
+        <div class="widget-header">
+            <h3><i class="fa fa-beer"></i>Horários das Refeições</h3>
+            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Informações dos horários das refeições servidas"><i class="fa fa-question-circle"></i></button>
+        </div>
+        <div class="widget-content">
+            <div class="row">
+                <!-- INICIO TIPO REFEICAO -->
+                <fieldset>
+                    <div class="col-sm-12">
+                        <div class="input-group">
+                            <label class="control-inline">
+                                <input type="radio" asp-for="MealType" name="MealType" checked value="@NewBISReports.Models.MEALTYPE.MEALTYPE_TODOS">
+                                <span>TODOS</span>
+                                <input type="radio" asp-for="MealType" name="MealType" value="@NewBISReports.Models.MEALTYPE.MEALTYPE_DESEJUM">
+                                <span>Desejum <!--(04:01 às 09:30)--></span>
+                                <input type="radio" asp-for="MealType" name="MealType" value="@NewBISReports.Models.MEALTYPE.MEALTYPE_ALMOCO">
+                                <span>Almoço <!--(09:31 às 15:00)--></span>
+                                <input type="radio" asp-for="MealType" name="MealType" value="@NewBISReports.Models.MEALTYPE.MEALTYPE_JANTAR">
+                                <span>Jantar <!--(15:01 às 21:30)--></span>
+                                <input type="radio" asp-for="MealType" name="MealType" value="@NewBISReports.Models.MEALTYPE.MEALTYPE_CEIA">
+                                <span>Ceia <!--(21:31 às 04:00)--></span>
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+                <!-- FIM TIPO PESSOA -->
+            </div>
+        </div>
+    </div>
+</div>
