@@ -34,7 +34,8 @@ namespace NewBISReports.Models
         RPT_PERSONGENERAL = 17, // Relatório específido do MJ para a pesquisa por edifício.
         RPT_LOGQRCODE = 18, // Relatório específico FORTKNOX
         RPT_READERAUTHORIZATION = 19,
-        RPT_COUNTBATH = 20
+        RPT_COUNTBATH = 20,
+        RPT_PERSONSPROFILES = 21,
     }
 
     /// <summary>
@@ -230,6 +231,9 @@ namespace NewBISReports.Models
                 case "20":
                     retval = REPORTTYPE.RPT_COUNTBATH;
                     break;
+                case "21":
+                    retval = REPORTTYPE.RPT_PERSONSPROFILES;
+                    break;
             }
 
             return retval;
@@ -309,6 +313,9 @@ namespace NewBISReports.Models
                 case REPORTTYPE.RPT_COUNTBATH:
                     retval = "Contagem de Pessoas";
                     break;
+                case REPORTTYPE.RPT_PERSONSPROFILES:
+                    retval = "Perfis de Pessoas";
+                    break;
             }
             return retval;
         }
@@ -386,6 +393,9 @@ namespace NewBISReports.Models
                     break;
                 case REPORTTYPE.RPT_COUNTBATH:
                     retval = "relatório da contagem das pessoas";
+                    break;
+                case REPORTTYPE.RPT_PERSONSPROFILES:
+                    retval = "relatório dos perfis das pessoas das pessoas";
                     break;
             }
             return retval;

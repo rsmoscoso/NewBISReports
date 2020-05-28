@@ -116,6 +116,35 @@ namespace NewBISReports.Models.Reports
         }
 
         /// <summary>
+        /// Retorna os perfis das pessoas.
+        /// </summary>
+        /// <param name="dbcontext">Conexão com o banco de dados.</param>
+        /// <param name="clientid">ID do cliente.</param>
+        /// <returns></returns>
+        public static DataTable LoadPersonProfiles(DatabaseContext dbcontext, string clientid, string[] authid)
+        {
+            try
+            {
+                string sql = "select Documento = persno, Nome = firstname + ' ' + lastname, Unidade = cli.Name, Perfil = shortname from bsuser.bsuser.authperprofile perpro " +
+                    "inner join bsuser.authprofiles pro on perpro.PROFILEID = pro.PROFILEID inner join bsuser.AUTHPERPERSON aper on aper.AUTHID = perpro.AUTHID " +
+                    "inner join bsuser.PERSONS per on aper.PERSID = per.persid inner join bsuser.clients cli on per.clientid = cli.clientid " +
+                    "inner join bsuser.authprofiles pro on perpro.PROFILEID = pro.PROFILEID " +
+                    "where persclass = 'E' and per.status = 1";
+
+                if (!String.IsNullOrEmpty(clientid))
+                    sql += String.Format(" and cli.clientid = '{0}'", clientid);
+
+                sql += " order by cli.Name, Nome";
+
+                return dbcontext.LoadDatatable(dbcontext, sql);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Retorna as autorizações das pessoas.
         /// </summary>
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
@@ -307,7 +336,7 @@ namespace NewBISReports.Models.Reports
             {
                 string sql = "select description, p.persid, persno, idnumber, Nome = ISNULL(firstname, '') + ' ' + ISNULL(lastname, '') from bsuser.cards c " +
                     "right outer join bsuser.persons p on c.persid = p.persid " +
-                    "inner join bsuser.clients cli on cli.clientid = p.clientid where persclass = 'E'";
+                    "inner join bsuser.clients cli on cli.clientid = p.clientid where persclass = 'E' and c.persid is null and p.status = 1";
                 if (!String.IsNullOrEmpty(clientid))
                     sql += " and p.clientid = '" + clientid + "'";
                 sql += " order by description";

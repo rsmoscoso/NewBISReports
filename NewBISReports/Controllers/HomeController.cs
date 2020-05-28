@@ -516,6 +516,14 @@ namespace NewBISReports.Controllers
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reportbadges.xlsx");
                     }
                 }
+                else if (reports.Type == REPORTTYPE.RPT_PERSONSPROFILES)
+                {
+                    using (System.Data.DataTable table = RPTBS_Acedb.LoadPersonProfiles(this.contextACE, reports.CLIENTID, reports.AUTHID))
+                    {
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\personprofile.xlsx", "Orion", "Profiles")) != null)
+                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\personprofile.xlsx");
+                    }
+                }
                 else if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                 {
                     using (System.Data.DataTable table = RPTBS_Acedb.LoadPersonAuths(this.contextACE, reports.CLIENTID, reports.AUTHID))
