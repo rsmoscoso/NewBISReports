@@ -2,6 +2,7 @@
 @model NewBISReports.Models.HomeModel
 
 @{
+    //comentário.
     var buttonname = "Excel";
     var startdate = Model != null && !String.IsNullOrEmpty(Model.StartDate) ? Model.StartDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
     var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
