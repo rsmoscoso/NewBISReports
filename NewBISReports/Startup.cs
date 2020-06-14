@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using NewBISReports.Data;
 
 
 namespace NewBISReports
@@ -39,11 +41,22 @@ namespace NewBISReports
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+            });            
+
+            //Adiciona as configurações de Login            
+            //Diogo - Adicionando Identity para uso com o banco hzLogin 
+            //TODO  -> adicionando Identity apontando para uma classe vazia de userStore, com policies inócuas,
+            // para ficar configurável se a pessoa quer ou não utilizar o login de forma compatível
+            string hzLoginConnectionString = Configuration.GetConnectionString("DbContextHzLogin");
+            services.AddDbContext<DbContexHzLogin>((optBuilder) =>
+            {
+                optBuilder.UseSqlServer(hzLoginConnectionString);
             });
 
-            //        services.AddIdentity<ApplicationUser, IdentityRole>()
-            //.AddEntityFrameworkStores<DbContextFinanceiro>()
-            //.AddDefaultTokenProviders();
+            services.AddIdentity<IdentityUser, IdentityRole>()
+            .AddEntityFrameworkStores<DbContexHzLogin>()
+            .AddDefaultTokenProviders();
+
             services.Configure<IdentityOptions>(options =>
             {
                 // Password settings.
@@ -65,23 +78,21 @@ namespace NewBISReports
                 options.User.RequireUniqueEmail = false;
             });
 
+            services.AddAuthentication(o =>
+            {
+                o.DefaultScheme = IdentityConstants.ApplicationScheme;
+                o.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                o.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+            })
+            .AddIdentityCookies();
+
+
             services.ConfigureApplicationCookie(options =>
             {
-                //// Cookie settings
-                //options.Cookie.Name = "auth_cookie";W
-                //options.Cookie.SameSite = SameSiteMode.None;
-                //options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-
-                options.LoginPath = new PathString("/Autenticacao/Login");
-                options.LogoutPath = new PathString("/Autenticacao/Login");
-                options.AccessDeniedPath = new PathString("/Autenticacao/AcessoNegado");
-
-                //options.SlidingExpiration = true;
+                options.LoginPath = $"/Account/LoginAsync";
+                options.LogoutPath = $"/Account/LogoutAsync";
+                options.AccessDeniedPath = $"/Account/AccessDenied";
             });
-
-
-
-
 
             services.AddMvc()
                 .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
