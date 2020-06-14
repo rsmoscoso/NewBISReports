@@ -14,7 +14,10 @@ namespace NewBISReports.Models
     /// </summary>
     public enum REPORTTYPE
     {
-        RPT_ANALYTICGRANTEDBIS = 0,
+        //Diogo - adicionando uma "landing page"
+        RPT_LANDINGPAGE = 0,
+        //Diogo - Precisei trocar o valor desta enum, pois a número "0" é exclusiva do Id default
+        RPT_ANALYTICGRANTEDBIS = 99,
         RPT_ANALYTICMEAL = 1,
         RPT_EXPORTMEAL = 2,
         RPT_PHOTOS = 3,
@@ -36,6 +39,7 @@ namespace NewBISReports.Models
         RPT_READERAUTHORIZATION = 19,
         RPT_COUNTBATH = 20,
         RPT_PERSONSPROFILES = 21,
+
     }
 
     /// <summary>
@@ -164,7 +168,11 @@ namespace NewBISReports.Models
         /// <returns></returns>
         public static REPORTTYPE GetReportType(string type)
         {
-            REPORTTYPE retval = REPORTTYPE.RPT_ANALYTICGRANTEDBIS;
+            //Diogo - aqui é setado o tipó default de relatório. O problema é que algusn clientes,
+            //como Libraport - fortKnox, não possuem acesso a este relatório, por isso criei um padrão
+            //numero 99 para simbolizar a "landing page", que apenas pede para clicar em um dos relatorios do menu lateral 
+            //REPORTTYPE retval = REPORTTYPE.RPT_ANALYTICGRANTEDBIS;
+            REPORTTYPE retval = REPORTTYPE.RPT_LANDINGPAGE;
 
             switch (type)
             {
@@ -233,6 +241,10 @@ namespace NewBISReports.Models
                     break;
                 case "21":
                     retval = REPORTTYPE.RPT_PERSONSPROFILES;
+                    break;
+                //Diogo - adicionando uma landing page
+                case "99":
+                    retval = REPORTTYPE.RPT_LANDINGPAGE;
                     break;
             }
 

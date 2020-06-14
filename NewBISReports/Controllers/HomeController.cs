@@ -621,35 +621,53 @@ namespace NewBISReports.Controllers
                 return View("Index", reports);
             }
         }
+//Diogo Adicionando Landing page
+        [HttpGet]
+        public IActionResult Landing(){
+            TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
+            TempData["Type"] = REPORTTYPE.RPT_LANDINGPAGE;
+            TempData.Keep();
+
+            this.persisTempData();
+            return View();
+        }
 
         [HttpGet]
         public IActionResult Index(REPORTTYPE type)
         {
+
             try
             {
-                this.clients = Clients.GetClients(this.contextACE);
-                this.clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
+                //Diogo - manipulando aqui para poder iniciar o aplicativo
+                // this.clients = Clients.GetClients(this.contextACE);
+                // this.clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
 
-                this.companies = Company.GetCompanies(this.contextACE);
+                // this.companies = Company.GetCompanies(this.contextACE);
 
-                this.persclassid = PersClasses.GetPersClasses(this.contextACE);
-                this.persons = new List<Persons>();
-                this.devices = new List<Devices>();
-                this.authorizations = new List<Authorizations>();
+                // this.persclassid = PersClasses.GetPersClasses(this.contextACE);
+                 this.persons = new List<Persons>();
+                 this.devices = new List<Devices>();
+                 this.authorizations = new List<Authorizations>();
 
-                TempData["Clients"] = JsonConvert.SerializeObject(this.clients);
-                TempData["Company"] = JsonConvert.SerializeObject(this.companies);
-                TempData["Persclassid"] = JsonConvert.SerializeObject(this.persclassid);
-                TempData["Persons"] = JsonConvert.SerializeObject(this.persons);
-                TempData["Devices"] = JsonConvert.SerializeObject(this.devices);
-                TempData["Authorizations"] = JsonConvert.SerializeObject(this.authorizations);
-                TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
-                TempData["Type"] = type;
-                TempData.Keep();
+                // TempData["Clients"] = JsonConvert.SerializeObject(this.clients);
+                // TempData["Company"] = JsonConvert.SerializeObject(this.companies);
+                // TempData["Persclassid"] = JsonConvert.SerializeObject(this.persclassid);
+                // TempData["Persons"] = JsonConvert.SerializeObject(this.persons);
+                // TempData["Devices"] = JsonConvert.SerializeObject(this.devices);
+                // TempData["Authorizations"] = JsonConvert.SerializeObject(this.authorizations);
+                 TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
+                 TempData["Type"] = type;
+                 TempData.Keep();
 
-                this.persisTempData();
+                 this.persisTempData();
 
-                return View();
+                //diogo - adicionando uma Landing Page
+                if (type == REPORTTYPE.RPT_LANDINGPAGE){
+                    return RedirectToAction(nameof(Landing));
+                }else{
+                    return View();
+                }
+                
             }
             catch (Exception ex)
             {

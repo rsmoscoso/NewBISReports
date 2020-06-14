@@ -25,6 +25,8 @@ namespace NewBISReports.Models
         /// <returns></returns>
         public DataTable LoadDatatable(DatabaseContext dbcontext, string sql)
         {
+            //Diogo - retornando uma datatable qualquer para poder testar a aplicação
+            return new DataTable();
             try
             {
                 var dt = new DataTable();

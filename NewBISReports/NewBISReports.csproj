@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <Reference Include="HzBISCommands">
-      <HintPath>..\..\..\VS 2017\Bosch Projects\Maior 4.6\HzBISCommands\HzBISCommands\bin\Debug\HzBISCommands.dll</HintPath>
+      <HintPath>..\HzBISCommands\HzBISCommands.dll</HintPath>
     </Reference>
   </ItemGroup>
 

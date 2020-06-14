@@ -31,7 +31,15 @@ namespace NewBISReports.Controllers.Data
     {
         private BSConfig Config { get; set; }
 
-        [HttpPost("UploadFiles")]
+        //[HttpGet("ImportVisitor/Index")]
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        //[HttpPost("ImportVisitor/UploadFiles")]
+        [HttpPost]
         public async Task<IActionResult> Index(List<IFormFile> files)
         {
             try
@@ -77,10 +85,6 @@ namespace NewBISReports.Controllers.Data
 
                 return View();
             }
-        }
-        public IActionResult Index()
-        {
-            return View();
         }
 
         public ImportVisitorController(IConfiguration configuration)
