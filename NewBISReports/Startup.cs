@@ -15,6 +15,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using NewBISReports.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using NewBISReports.Models.Autorizacao;
 
 
 namespace NewBISReports
@@ -43,19 +46,39 @@ namespace NewBISReports
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });            
 
-            //Adiciona as configurações de Login            
+            //Adiciona as configurações de Login
+            //verifica para qual cliente está sendo configurado
+            var nomeCliente = Configuration["Default:Name"];
+            //Verifica se o módulo de login estará habilitado
+            var isLogin = Configuration[nomeCliente+":useLogin"];            
             //Diogo - Adicionando Identity para uso com o banco hzLogin 
             //TODO  -> adicionando Identity apontando para uma classe vazia de userStore, com policies inócuas,
             // para ficar configurável se a pessoa quer ou não utilizar o login de forma compatível
-            string hzLoginConnectionString = Configuration.GetConnectionString("DbContextHzLogin");
-            services.AddDbContext<DbContexHzLogin>((optBuilder) =>
-            {
-                optBuilder.UseSqlServer(hzLoginConnectionString);
-            });
+            if(isLogin =="true"){
+                string hzLoginConnectionString = Configuration.GetConnectionString("DbContextHzLogin");
+                services.AddDbContext<DbContexHzLogin>((optBuilder) =>
+                {
+                    optBuilder.UseSqlServer(hzLoginConnectionString);
+                });
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-            .AddEntityFrameworkStores<DbContexHzLogin>()
-            .AddDefaultTokenProviders();
+                // services.AddIdentity<ApplicationUser, IdentityRole>()
+                // .AddEntityFrameworkStores<DbContexHzLogin>()
+                // .AddDefaultTokenProviders();
+                services.AddIdentityCore<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddSignInManager()
+                .AddEntityFrameworkStores<DbContexHzLogin>()
+                .AddDefaultTokenProviders();
+            }else{
+                //Adiciona um Identity "dummy" sem qualquer banco de dados atrelado
+                //Tantativa de Matar a DefaultUI
+                services.AddIdentityCore<ApplicationUser>()
+                .AddRoles<IdentityRole>()
+                .AddSignInManager();
+            }
+
+            services.AddHttpContextAccessor();
+
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -86,16 +109,35 @@ namespace NewBISReports
             })
             .AddIdentityCookies();
 
-
+            //TODO: construir as rotas de login/logout/accessdenied
             services.ConfigureApplicationCookie(options =>
             {
-                options.LoginPath = $"/Account/LoginAsync";
-                options.LogoutPath = $"/Account/LogoutAsync";
-                options.AccessDeniedPath = $"/Account/AccessDenied";
+                options.LoginPath = $"/Autorizacao/LoginAsync";
+                options.LogoutPath = $"/Autorizacao/LogoutAsync";
+                options.AccessDeniedPath = $"/Autorizacao/AccessDenied";
             });
 
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            //políticas de acesso: Apenas Admin, User e Anonymous
+
+            //Autorização global, 
+            services.AddAuthorization(options =>{
+                //Quando a política é apenas para admin acessar
+                options.AddPolicy("AcessoAdmin", pB => pB.RequireClaim(Claims.Admin));
+                //Partes acessíveis pelos usuários ou admins
+                options.AddPolicy("AcessoUsuario", pB => pB.RequireAssertion(c => c.User.HasClaim(x => x.Type == Claims.Admin) || c.User.HasClaim(x => x.Type == Claims.Usuario)));
+            });
+
+
+            //habilia o middleware mvc, com filtro de allowanony mous se o login estiver desabilitado
+            if(isLogin == "true"){
+                services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }else{
+                services.AddMvc(opts =>
+                {
+                    //filtro global de allowanonymous
+                    opts.Filters.Add(new AllowAnonymousFilter());
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }
             //encaminhamento de cabeçalho https para não perder o host de destino quando houver o 
             //desempacotamento SSL no proxy reverso
             services.Configure<ForwardedHeadersOptions>(options =>
@@ -128,7 +170,11 @@ namespace NewBISReports
             }
 
             app.UseSession();
+            app.UseHttpsRedirection();
+            app.UseDefaultFiles();
             app.UseStaticFiles();
+            app.UseCookiePolicy();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NewBISReports.Data;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using NewBISReports.Models.Autorizacao;
@@ -26,13 +25,14 @@ namespace NewBISReports
                 .AddJsonFile("appsettings.json", optional: false)
                 .Build();
             //verifica para qual cliente está sendo configurado
-            var nomeCliente = config["Default:Name"];
+            var nomeCliente  = config.GetSection("Default")["Name"];
+            
 
             //Verifica se o módulo de login estará habilitado
-            var isLogin = config[nomeCliente+":useLogin"];
+            var isLogin = config.GetSection(nomeCliente)["useLogin"]; 
             if(isLogin == "true"){
                 //recupera a senha inicial do usuario admin
-                var adminPassword = config[nomeCliente+":adminDefaultPassword"];
+                var adminPassword = config.GetSection(nomeCliente)["adminDefaultPassword"];
                 //cria o WebHost se assegurando de que o banco de login existe
                 var host = CreateWebHostBuilder(args).Build();
                 //cria o banco se ele não existir
@@ -67,12 +67,12 @@ namespace NewBISReports
 
                 try{
                     //se a criação/existencia do banco estiver assegurado, cehcar se o usuário admin já existe
-                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     //verifica se já existe
                     var adminUser = await userManager.FindByNameAsync( "admin");
                     if (adminUser == null){
                         //caso não exisata criar
-                        var newAdminUser = new IdentityUser { UserName = "admin", Email = "admin@admin" }; 
+                        var newAdminUser = new ApplicationUser { UserName = "admin", Email = "admin@admin" }; 
                         var result = await userManager.CreateAsync(newAdminUser,adminPassword);
                         if (result.Succeeded)
                         {

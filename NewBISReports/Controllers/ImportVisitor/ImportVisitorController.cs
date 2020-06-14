@@ -17,16 +17,13 @@ using Newtonsoft.Json;
 
 namespace NewBISReports.Controllers.Data
 {
-    public class ApplicationUser : IdentityUser
-    {
-        public byte[] AvatarImage { get; set; }
-    }
-    public class RegisterViewModel
-    {
-        // other properties omitted
 
-        public IFormFile AvatarImage { get; set; }
-    }
+    // public class RegisterViewModel
+    // {
+    //     // other properties omitted
+
+    //     public IFormFile AvatarImage { get; set; }
+    // }
     public class ImportVisitorController : Controller
     {
         private BSConfig Config { get; set; }

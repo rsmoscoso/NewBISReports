@@ -16,9 +16,11 @@ using Newtonsoft.Json;
 using static NewBISReports.Models.Classes.LogEvent;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NewBISReports.Controllers
 {
+    [Authorize("AcessoUsuario")]
     public class HomeController : Controller
     {
         #region Variables
