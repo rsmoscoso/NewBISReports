@@ -80,18 +80,17 @@ namespace NewBISReports.Controllers
                 var result = await _signInManager.PasswordSignInAsync(vm.EmailOrLogin, vm.Password, vm.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    return LocalRedirect(returnUrl);                   
+                    //Testar se a senha deve ser modificada MustChangePassword
+                    if (User.HasClaim(x => x.Type =="MustChangePassword")){
+                        
+                        var user = await _userManager.FindByNameAsync(vm.EmailOrLogin);
+                        return RedirectToAction("ChangePassword","Administracao", new {Id = user.Id});
+                    }else{
+                        //Operação normal
+                        return LocalRedirect(returnUrl); 
+                    }
+                  
                 }
-                //Não estamos utilizando estas funcionalidades
-                //if (result.RequiresTwoFactor)
-                //{
-                //    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = vm.RememberMe });
-                //}
-                //if (result.IsLockedOut)
-                //{
-                //    _logger.LogWarning("User account locked out.");
-                //    return RedirectToPage("./Lockout");
-                //}
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Usuário ou Senha Inválidos");
@@ -119,8 +118,14 @@ namespace NewBISReports.Controllers
 
         //Acesso Negado
         
-        public IActionResult AccessDenied()
+        public async Task<IActionResult> AccessDenied()
         {
+            //testa se o erro foi simplesmente porcausa de claim, e re-direciona para a troca de senha de forma apropriada
+            if (User.HasClaim(x => x.Type =="MustChangePassword")){
+                        
+                ApplicationUser user = await _userManager.GetUserAsync(User);
+                return RedirectToAction("ChangePassword","Administracao", new {Id = user.Id});
+            }
             return View();
         }
     }

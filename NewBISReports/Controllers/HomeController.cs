@@ -640,23 +640,22 @@ namespace NewBISReports.Controllers
 
             try
             {
-                //Diogo - manipulando aqui para poder iniciar o aplicativo
-                // this.clients = Clients.GetClients(this.contextACE);
-                // this.clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
+                this.clients = Clients.GetClients(this.contextACE);
+                this.clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
 
-                // this.companies = Company.GetCompanies(this.contextACE);
+                this.companies = Company.GetCompanies(this.contextACE);
 
-                // this.persclassid = PersClasses.GetPersClasses(this.contextACE);
+                this.persclassid = PersClasses.GetPersClasses(this.contextACE);
                  this.persons = new List<Persons>();
                  this.devices = new List<Devices>();
                  this.authorizations = new List<Authorizations>();
 
-                // TempData["Clients"] = JsonConvert.SerializeObject(this.clients);
-                // TempData["Company"] = JsonConvert.SerializeObject(this.companies);
-                // TempData["Persclassid"] = JsonConvert.SerializeObject(this.persclassid);
-                // TempData["Persons"] = JsonConvert.SerializeObject(this.persons);
-                // TempData["Devices"] = JsonConvert.SerializeObject(this.devices);
-                // TempData["Authorizations"] = JsonConvert.SerializeObject(this.authorizations);
+                TempData["Clients"] = JsonConvert.SerializeObject(this.clients);
+                TempData["Company"] = JsonConvert.SerializeObject(this.companies);
+                TempData["Persclassid"] = JsonConvert.SerializeObject(this.persclassid);
+                TempData["Persons"] = JsonConvert.SerializeObject(this.persons);
+                TempData["Devices"] = JsonConvert.SerializeObject(this.devices);
+                TempData["Authorizations"] = JsonConvert.SerializeObject(this.authorizations);
                  TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
                  TempData["Type"] = type;
                  TempData.Keep();

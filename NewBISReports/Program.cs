@@ -72,7 +72,7 @@ namespace NewBISReports
                     var adminUser = await userManager.FindByNameAsync( "admin");
                     if (adminUser == null){
                         //caso não exisata criar
-                        var newAdminUser = new ApplicationUser { UserName = "admin", Email = "admin@admin" }; 
+                        var newAdminUser = new ApplicationUser { UserName = "admin", Email = "admin@admin", FullName = "Administrador" }; 
                         var result = await userManager.CreateAsync(newAdminUser,adminPassword);
                         if (result.Succeeded)
                         {

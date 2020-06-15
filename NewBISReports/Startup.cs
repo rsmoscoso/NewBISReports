@@ -71,7 +71,6 @@ namespace NewBISReports
                 .AddDefaultTokenProviders();
             }else{
                 //Adiciona um Identity "dummy" sem qualquer banco de dados atrelado
-                //Tantativa de Matar a DefaultUI
                 services.AddIdentityCore<ApplicationUser>()
                 .AddRoles<IdentityRole>()
                 .AddSignInManager();
@@ -97,8 +96,15 @@ namespace NewBISReports
 
                 // User settings.
                 options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 ";
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.";
                 options.User.RequireUniqueEmail = false;
+            });
+
+            //Permite deslogar um usuario instantaneamente trocando a securitystamp dele
+            services.Configure<SecurityStampValidatorOptions>(options =>
+            {
+                // enables immediate logout, after updating the user's stat.
+                options.ValidationInterval = TimeSpan.Zero;   
             });
 
             services.AddAuthentication(o =>
@@ -114,18 +120,24 @@ namespace NewBISReports
             {
                 options.LoginPath = $"/Autorizacao/LoginAsync";
                 options.LogoutPath = $"/Autorizacao/LogoutAsync";
+                //no accessdenied, devemos testar se há a claim de troca de senha MustChangePassword, e redirecionar para a troca de senha
                 options.AccessDeniedPath = $"/Autorizacao/AccessDenied";
             });
 
             //políticas de acesso: Apenas Admin, User e Anonymous
 
-            //Autorização global, 
+            //Politicas básicas 
             services.AddAuthorization(options =>{
+                //As duas controlam se o usuario precisa trocar a senha
                 //Quando a política é apenas para admin acessar
-                options.AddPolicy("AcessoAdmin", pB => pB.RequireClaim(Claims.Admin));
+                options.AddPolicy("AcessoAdmin", pB => pB.RequireAssertion(c =>(c.User.HasClaim(x => x.Type == Claims.Admin) && !c.User.HasClaim(x => x.Type == "MustChangePassword"))));
                 //Partes acessíveis pelos usuários ou admins
-                options.AddPolicy("AcessoUsuario", pB => pB.RequireAssertion(c => c.User.HasClaim(x => x.Type == Claims.Admin) || c.User.HasClaim(x => x.Type == Claims.Usuario)));
+                options.AddPolicy("AcessoUsuario", pB => pB.RequireAssertion(c => (c.User.HasClaim(x => x.Type == Claims.Admin) || c.User.HasClaim(x => x.Type == Claims.Usuario)) && !c.User.HasClaim(x => x.Type == "MustChangePassword")));
+                //reset de senha
+                options.AddPolicy("CriarNovaSenha", pB => pB.RequireAssertion(c => (c.User.HasClaim(x => x.Type == Claims.Admin) || c.User.HasClaim(x => x.Type == Claims.Usuario)) && c.User.HasClaim(x => x.Type == "MustChangePassword")));
             });
+
+            //Politica de filtro global para usuários que necessitam trocar a senha
 
 
             //habilia o middleware mvc, com filtro de allowanony mous se o login estiver desabilitado

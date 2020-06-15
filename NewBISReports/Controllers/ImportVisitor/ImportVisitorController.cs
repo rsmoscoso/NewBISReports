@@ -18,12 +18,7 @@ using Newtonsoft.Json;
 namespace NewBISReports.Controllers.Data
 {
 
-    // public class RegisterViewModel
-    // {
-    //     // other properties omitted
-
-    //     public IFormFile AvatarImage { get; set; }
-    // }
+    [Authorize("AcessoUsuario")]
     public class ImportVisitorController : Controller
     {
         private BSConfig Config { get; set; }

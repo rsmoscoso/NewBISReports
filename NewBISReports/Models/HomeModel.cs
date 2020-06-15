@@ -168,11 +168,8 @@ namespace NewBISReports.Models
         /// <returns></returns>
         public static REPORTTYPE GetReportType(string type)
         {
-            //Diogo - aqui é setado o tipó default de relatório. O problema é que algusn clientes,
-            //como Libraport - fortKnox, não possuem acesso a este relatório, por isso criei um padrão
-            //numero 99 para simbolizar a "landing page", que apenas pede para clicar em um dos relatorios do menu lateral 
-            //REPORTTYPE retval = REPORTTYPE.RPT_ANALYTICGRANTEDBIS;
-            REPORTTYPE retval = REPORTTYPE.RPT_LANDINGPAGE;
+            
+            REPORTTYPE retval = REPORTTYPE.RPT_ANALYTICGRANTEDBIS;
 
             switch (type)
             {

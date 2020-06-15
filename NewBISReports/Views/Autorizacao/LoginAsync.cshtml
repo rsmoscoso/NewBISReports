@@ -68,7 +68,7 @@
             <a asp-area="Account" asp-controller="Account" asp-action="IndexresetSenha" class="text-danger" style="font-size:1.5em">Instruções: Clique Aqui</a>*@
             <div class="login-box center-block">
                 <img src="@Model.CaminhoIconeEmpresa" class="img-responsive">
-                <form asp-area="Account" asp-controller="Account" asp-action="LoginAsync" asp-route-returnUrl="@TempData["ReturnUrl"]" formmethod="post" class="form-horizontal" role="form">
+                <form asp-controller="Autorizacao" asp-action="LoginAsync" asp-route-returnUrl="@TempData["ReturnUrl"]" formmethod="post" class="form-horizontal" role="form">
                     <div asp-validation-summary="All" class="text-danger"></div>
                     <p class="title">Use seu login ou endereço de e-mail</p>
                     <div class="form-group">

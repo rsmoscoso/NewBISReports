@@ -10,9 +10,11 @@ using NewBISReports.Models;
 using NewBISReports.Models.Classes;
 using NewBISReports.Models.Excecao;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NewBISReports.Controllers.Excecao
 {
+    [Authorize("AcessoUsuario")]
     public class ExcecaoController : Controller
     {
         #region Variables

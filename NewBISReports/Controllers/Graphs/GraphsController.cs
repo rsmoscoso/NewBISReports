@@ -11,9 +11,12 @@ using NewBISReports.Models;
 using NewBISReports.Models.Classes;
 using NewBISReports.Models.Reports;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace NewBISReports.Controllers.Graphs
 {
+    [Authorize("AcessoUsuario")]
     public class GraphsController : Controller
     {
         #region Variables
