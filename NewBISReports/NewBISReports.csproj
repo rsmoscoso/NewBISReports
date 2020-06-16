@@ -3,6 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+     <Version>2.0.0</Version>
+    <Company>Grupo Orion</Company>
+    <Product>Femsa Financeiro</Product>
+    <Authors>Ronaldo Moscoso, Diogo Andrade</Authors>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
