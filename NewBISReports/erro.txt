@@ -441,3 +441,6 @@ Object reference not set to an instance of an object. --> Persist
 Login failed for user 'solarsql'. --> ExcelPage
 Object reference not set to an instance of an object. --> Persist
 Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
