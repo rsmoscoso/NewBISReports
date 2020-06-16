@@ -570,10 +570,11 @@ namespace NewBISReports.Controllers
                 }
 
                 reports.Acessos = acessos;
+                //Diogo - Adicionando mensagem de alerta, caso nenhum arquivo seja retornado
+                this.persisTempData(); 
 
-                this.persisTempData();
-
-                return View("Index", reports);
+                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro ="Nenhum registro encontrado"});
+                //return View("Index", reports);
             }
             catch (Exception ex)
             {
@@ -635,7 +636,7 @@ namespace NewBISReports.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(REPORTTYPE type)
+        public IActionResult Index(REPORTTYPE type, string mensagemErro)
         {
 
             try
@@ -666,7 +667,12 @@ namespace NewBISReports.Controllers
                 if (type == REPORTTYPE.RPT_LANDINGPAGE){
                     return RedirectToAction(nameof(Landing));
                 }else{
-                    return View();
+                    //adicionando a mensagem de erro propagada
+                    if(mensagemErro != null){
+                        ViewBag.MensagemErro = mensagemErro;
+                     }
+                        ViewBag.Type = type;
+                    return View();  
                 }
                 
             }

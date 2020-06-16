@@ -202,7 +202,8 @@
 
 <!-- JQUERY -->
 <script>
-    $(function () {
+    $(document).ready(function() {
+            $(function () {
         window.prettyPrint && prettyPrint();
         $('#StartDate').datepicker({
             format: 'dd/mm/yyyy'
@@ -223,5 +224,12 @@
                 $('#EndDate').datepicker('hide');
             });
     });
+});
+
+
+    var msgErro = '@ViewBag.MensagemErro';
+    if(msgErro !== "")
+        alert('@ViewBag.MensagemErro');
+    
 </script>
 
