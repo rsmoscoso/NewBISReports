@@ -340,4 +340,4 @@ ASALocalRun/
 healthchecksdb
 
 #arquivo de erro gerado pela palicação
-erro.txt
+*erro.txt

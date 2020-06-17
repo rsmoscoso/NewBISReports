@@ -125,6 +125,7 @@ namespace NewBISReports
                 options.LogoutPath = $"/Autorizacao/LogoutAsync";
                 //no accessdenied, devemos testar se há a claim de troca de senha MustChangePassword, e redirecionar para a troca de senha
                 options.AccessDeniedPath = $"/Autorizacao/AccessDenied";
+                options.ExpireTimeSpan = TimeSpan.FromDays(30);
             });
 
             //políticas de acesso: Apenas Admin, User e Anonymous
@@ -184,11 +185,11 @@ namespace NewBISReports
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            app.UseSession();
             //app.UseHttpsRedirection();
             app.UseDefaultFiles();
             app.UseStaticFiles();
             app.UseCookiePolicy();
+            app.UseSession();
             app.UseAuthentication();
 
             app.UseMvc(routes =>
