@@ -16,9 +16,11 @@ using Newtonsoft.Json;
 using static NewBISReports.Models.Classes.LogEvent;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NewBISReports.Controllers
 {
+    [Authorize("AcessoUsuario")]
     public class HomeController : Controller
     {
         #region Variables
@@ -373,7 +375,7 @@ namespace NewBISReports.Controllers
                         if (table != null)
                             meals = GlobalFunctions.ConvertDataTable<TotalMeal>(table);
                         reports.Meals = meals;
-                        return View("Index", reports);
+                        //return View("Index", reports);
                     }
                 }
                 else if (reports.Type == REPORTTYPE.RPT_ANALYTICSGENERAL)
@@ -384,7 +386,7 @@ namespace NewBISReports.Controllers
                             acessos = GlobalFunctions.ConvertDataTable<LogEvent>(table);
                     }
                     reports.Acessos = acessos;
-                    return View("Index", reports);
+                    //return View("Index", reports);
 
                 }
                 else if (reports.Type == REPORTTYPE.RPT_COUNTBATH)
@@ -395,7 +397,7 @@ namespace NewBISReports.Controllers
                             acessos = GlobalFunctions.ConvertDataTable<LogEvent>(table);
                     }
                     reports.Acessos = acessos;
-                    return View("Index", reports);
+                    //return View("Index", reports);
 
                 }
                 else if (reports.Type == REPORTTYPE.RPT_EXPORTMEAL)
@@ -409,10 +411,11 @@ namespace NewBISReports.Controllers
                             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
                         }
                     }
-                    return View("Index", reports);
+                    //return View("Index", reports);
                 }
 
-                return View("Index", reports);
+               // return View("Index", reports);
+               return RedirectToAction(nameof(Index), new{type=reports.Type});
 
             }
             catch (Exception ex)
@@ -421,7 +424,8 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> ExecPage");
                 w.Close();
                 w = null;
-                return View("Index", reports);
+                //return View("Index", reports);
+                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -568,10 +572,11 @@ namespace NewBISReports.Controllers
                 }
 
                 reports.Acessos = acessos;
+                this.persisTempData(); 
 
-                this.persisTempData();
-
-                return View("Index", reports);
+                //Diogo - Adicionando mensagem de alerta, caso nenhum arquivo seja retornado, se chegar aqui sem erros
+                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro ="Nenhum registro encontrado"});
+                //return View("Index", reports);
             }
             catch (Exception ex)
             {
@@ -579,7 +584,9 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> ExcelPage");
                 w.Close();
                 w = null;
-                return View("Index", reports);
+                //adicionando verbosidade de erros e recarregando o formulário corretamente
+                //return View("Index", reports);
+                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -608,8 +615,9 @@ namespace NewBISReports.Controllers
                     if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                         this.searchAuthorizations(reports);
                 }
-
-                return View("Index", reports);
+                //Diogo - REdirecionamento correto
+                //return View("Index", reports.Type);
+                return RedirectToAction(nameof(Index), new{type=reports.Type});
             }
             catch (Exception ex)
             {
@@ -618,13 +626,25 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
 
-                return View("Index", reports);
+               // return View("Index", reports);
+               return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
             }
+        }
+//Diogo Adicionando Landing page
+        [HttpGet]
+        public IActionResult Landing(){
+            TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
+            TempData["Type"] = REPORTTYPE.RPT_LANDINGPAGE;
+            TempData.Keep();
+
+            this.persisTempData();
+            return View();
         }
 
         [HttpGet]
-        public IActionResult Index(REPORTTYPE type)
+        public IActionResult Index(REPORTTYPE type, string mensagemErro)
         {
+
             try
             {
                 this.clients = Clients.GetClients(this.contextACE);
@@ -633,9 +653,9 @@ namespace NewBISReports.Controllers
                 this.companies = Company.GetCompanies(this.contextACE);
 
                 this.persclassid = PersClasses.GetPersClasses(this.contextACE);
-                this.persons = new List<Persons>();
-                this.devices = new List<Devices>();
-                this.authorizations = new List<Authorizations>();
+                 this.persons = new List<Persons>();
+                 this.devices = new List<Devices>();
+                 this.authorizations = new List<Authorizations>();
 
                 TempData["Clients"] = JsonConvert.SerializeObject(this.clients);
                 TempData["Company"] = JsonConvert.SerializeObject(this.companies);
@@ -643,13 +663,24 @@ namespace NewBISReports.Controllers
                 TempData["Persons"] = JsonConvert.SerializeObject(this.persons);
                 TempData["Devices"] = JsonConvert.SerializeObject(this.devices);
                 TempData["Authorizations"] = JsonConvert.SerializeObject(this.authorizations);
-                TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
-                TempData["Type"] = type;
-                TempData.Keep();
+                 TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
+                 TempData["Type"] = type;
+                 TempData.Keep();
 
-                this.persisTempData();
+                 this.persisTempData();
 
-                return View();
+                //diogo - adicionando uma Landing Page
+                if (type == REPORTTYPE.RPT_LANDINGPAGE){
+                    return RedirectToAction(nameof(Landing));
+                }else{
+                    //adicionando a mensagem de erro propagada
+                    if(mensagemErro != null){
+                        ViewBag.MensagemErro = mensagemErro;
+                     }
+                        ViewBag.Type = type;
+                    return View();  
+                }
+                
             }
             catch (Exception ex)
             {

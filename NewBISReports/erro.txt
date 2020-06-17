@@ -292,3 +292,169 @@ Index...
 set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '24/01/2020 00:00:00', '24/01/2020 23:59:59', 'VAG', null, null
 Index...
 set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '24/01/2020 00:00:00', '24/01/2020 23:59:59', 'VAG', '''ControleAcesso.Devices.VAG-LE-REF-CAT1.Evento''', null
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '02/02/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, ' 00:00:00', ' 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, ' 00:00:00', ' 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '16/06/2020 00:00:00', '16/06/2020 23:59:59', null, null, null
+Login failed for user 'solarsql'. --> GetEventsBosch
+Login failed for user 'solarsql'. --> getBiSEVents
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Persist
+Login failed for user 'solarsql'. --> ExcelPage
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+Index...
+Object reference not set to an instance of an object. --> Persist
+Index...
+Object reference not set to an instance of an object. --> Persist
+Index...
+Object reference not set to an instance of an object. --> Persist
+Index...
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+The multi-part identifier "cli.Name" could not be bound. --> ExcelPage
