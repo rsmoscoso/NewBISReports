@@ -114,8 +114,8 @@ namespace NewBISReports.Controllers
 
                 if (TempData["Type"] != null)
                     ViewBag.Type = TempData["Type"];
-
-                ViewBag.ConfigSection = JsonConvert.DeserializeObject(TempData["ConfigSection"].ToString());
+                if (TempData["ConfigSection"] != null)
+                    ViewBag.ConfigSection = JsonConvert.DeserializeObject(TempData["ConfigSection"].ToString());
                 TempData.Keep();
 
                 return true;
