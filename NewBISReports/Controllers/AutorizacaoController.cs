@@ -75,9 +75,12 @@ namespace NewBISReports.Controllers
                 //redirecionamento local
                 returnUrl = returnUrl ?? Url.Content("~/");
 
+                //Para realizar login com email ou username, basta dividir a string
+                //Confiamos que o formulário só deixou criar usuarios com email bem formado, então basta fazer um split na @
+                var userName = vm.EmailOrLogin.Split('@',StringSplitOptions.None)[0];
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(vm.EmailOrLogin, vm.Password, vm.RememberMe, lockoutOnFailure: false);
+                var result = await _signInManager.PasswordSignInAsync(userName, vm.Password, vm.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     //Testar se a senha deve ser modificada MustChangePassword

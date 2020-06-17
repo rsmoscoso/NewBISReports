@@ -70,6 +70,9 @@ namespace NewBISReports
                 .AddEntityFrameworkStores<DbContexHzLogin>()
                 .AddDefaultTokenProviders();
             }else{
+                //Faz um override na classe UserStore
+                services.AddScoped<IUserStore<ApplicationUser>, EmptyUserStore>();
+                services.AddScoped<IRoleStore<IdentityRole>, EmptyRoleStore>();
                 //Adiciona um Identity "dummy" sem qualquer banco de dados atrelado
                 services.AddIdentityCore<ApplicationUser>()
                 .AddRoles<IdentityRole>()

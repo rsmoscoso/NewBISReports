@@ -375,7 +375,7 @@ namespace NewBISReports.Controllers
                         if (table != null)
                             meals = GlobalFunctions.ConvertDataTable<TotalMeal>(table);
                         reports.Meals = meals;
-                        return View("Index", reports);
+                        //return View("Index", reports);
                     }
                 }
                 else if (reports.Type == REPORTTYPE.RPT_ANALYTICSGENERAL)
@@ -386,7 +386,7 @@ namespace NewBISReports.Controllers
                             acessos = GlobalFunctions.ConvertDataTable<LogEvent>(table);
                     }
                     reports.Acessos = acessos;
-                    return View("Index", reports);
+                    //return View("Index", reports);
 
                 }
                 else if (reports.Type == REPORTTYPE.RPT_COUNTBATH)
@@ -397,7 +397,7 @@ namespace NewBISReports.Controllers
                             acessos = GlobalFunctions.ConvertDataTable<LogEvent>(table);
                     }
                     reports.Acessos = acessos;
-                    return View("Index", reports);
+                    //return View("Index", reports);
 
                 }
                 else if (reports.Type == REPORTTYPE.RPT_EXPORTMEAL)
@@ -411,10 +411,11 @@ namespace NewBISReports.Controllers
                             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
                         }
                     }
-                    return View("Index", reports);
+                    //return View("Index", reports);
                 }
 
-                return View("Index", reports);
+               // return View("Index", reports);
+               return RedirectToAction(nameof(Index), new{type=reports.Type});
 
             }
             catch (Exception ex)
@@ -423,7 +424,8 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> ExecPage");
                 w.Close();
                 w = null;
-                return View("Index", reports);
+                //return View("Index", reports);
+                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -570,9 +572,9 @@ namespace NewBISReports.Controllers
                 }
 
                 reports.Acessos = acessos;
-                //Diogo - Adicionando mensagem de alerta, caso nenhum arquivo seja retornado
                 this.persisTempData(); 
 
+                //Diogo - Adicionando mensagem de alerta, caso nenhum arquivo seja retornado, se chegar aqui sem erros
                 return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro ="Nenhum registro encontrado"});
                 //return View("Index", reports);
             }
@@ -582,7 +584,9 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> ExcelPage");
                 w.Close();
                 w = null;
-                return View("Index", reports);
+                //adicionando verbosidade de erros e recarregando o formulário corretamente
+                //return View("Index", reports);
+                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -611,8 +615,9 @@ namespace NewBISReports.Controllers
                     if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                         this.searchAuthorizations(reports);
                 }
-
-                return View("Index", reports);
+                //Diogo - REdirecionamento correto
+                //return View("Index", reports.Type);
+                return RedirectToAction(nameof(Index), new{type=reports.Type});
             }
             catch (Exception ex)
             {
@@ -621,7 +626,8 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
 
-                return View("Index", reports);
+               // return View("Index", reports);
+               return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
             }
         }
 //Diogo Adicionando Landing page

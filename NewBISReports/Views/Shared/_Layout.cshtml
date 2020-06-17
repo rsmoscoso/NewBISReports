@@ -38,6 +38,15 @@
 @{
     bool meal = true;
     string defaultname = "Orion";
+    bool isLogin = false;
+    //determianndo se tem login
+    var config_alt = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", optional: false)
+        .Build();
+    //verifica para qual cliente está sendo configurado
+    defaultname  = config_alt.GetSection("Default")["Name"];
+    isLogin = bool.Parse(config_alt.GetSection(defaultname)["useLogin"]);
+    defaultname = defaultname.ToLower();
     //Essa parte faz mais sentido para o HomeController
     if (TempData["ConfigSection"] != null)
     {
@@ -46,15 +55,7 @@
         defaultname = config.DefaultName.ToLower();
        
     }
-    //Em qualquer outro controller, deve-se estar avaliando a construção do Menu
-    else
-    {
-         var config_alt = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false)
-                .Build();
-            //verifica para qual cliente está sendo configurado
-            defaultname  = config_alt.GetSection("Default")["Name"].ToLower();
-    }
+
     //var url = "/HzBISReport";
 }
 <body class="sidebar-fixed topnav-fixed dashboard">
@@ -76,7 +77,10 @@
                                     <span class="name">AppUser</span> <span class="caret"></span>
                                 </a>
                             </div> *@
-                            <partial name="_LoginPartial" />
+                            @if(isLogin){
+                                <partial name="_LoginPartial" />
+                            }
+                            
                             <!-- end logged user and the menu -->
                         </div>
                         <!-- end top-bar-right -->
@@ -93,7 +97,7 @@
                 <nav class="main-nav">
                     <ul class="main-menu">
                         <!-- Condicional para mostrar eventos de acesso -->
-                        @if ((await AuthorizationService.AuthorizeAsync(User, "AcessoAdmin")).Succeeded)
+                        @if (isLogin && (await AuthorizationService.AuthorizeAsync(User, "AcessoAdmin")).Succeeded)
                         {
                             <li>
                                 <a href="#" class="js-sub-menu-toggle">
@@ -116,7 +120,7 @@
                                 </ul>
                             </li>
                         }
-                        @if ((await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)
+                        @if (!isLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)
                         {
                             @if( defaultname != "libraport"){
                             <li class="active">

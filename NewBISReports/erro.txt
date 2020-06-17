@@ -444,3 +444,17 @@ Login failed for user 'solarsql'. --> ExcelPage
 Object reference not set to an instance of an object. --> Index GET
 Object reference not set to an instance of an object. --> Index GET
 Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Index GET
+Object reference not set to an instance of an object. --> Persist
+Index...
+Object reference not set to an instance of an object. --> Persist
+Index...
+Object reference not set to an instance of an object. --> Persist
+Index...
+Object reference not set to an instance of an object. --> Persist
+Index...
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+Object reference not set to an instance of an object. --> Persist
+The multi-part identifier "cli.Name" could not be bound. --> ExcelPage
