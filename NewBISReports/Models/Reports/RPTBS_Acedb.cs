@@ -125,15 +125,10 @@ namespace NewBISReports.Models.Reports
         {
             try
             {
-                // string sql = "select Documento = persno, Nome = firstname + ' ' + lastname, Unidade = cli.Name, Perfil = shortname from bsuser.bsuser.authperprofile perpro " +
-                //     "inner join bsuser.authprofiles pro on perpro.PROFILEID = pro.PROFILEID inner join bsuser.AUTHPERPERSON aper on aper.AUTHID = perpro.AUTHID " +
-                //     "inner join bsuser.PERSONS per on aper.PERSID = per.persid inner join bsuser.clients cli on per.clientid = cli.clientid " +
-                //     "inner join bsuser.authprofiles pro on perpro.PROFILEID = pro.PROFILEID " +
-                //     "where persclass = 'E' and per.status = 1";
-                //Diogo - Alteramos a consulta comentada acima para esta aqui, conferir se está adequada.
-                string sql = "select Documento = persno, Nome = firstname + ' ' + lastname, Unidade = cli.Name, Perfil = shortname from bsuser.authperprofile perpro " +
+                string sql = "select Documento = persno, Nome = firstname + ' ' + lastname, Unidade = cli.Name, Perfil = authpro.shortname from bsuser.authperprofile perpro " +
                     "inner join bsuser.authprofiles pro on perpro.PROFILEID = pro.PROFILEID inner join bsuser.AUTHPERPERSON aper on aper.AUTHID = perpro.AUTHID " +
                     "inner join bsuser.PERSONS per on aper.PERSID = per.persid inner join bsuser.clients cli on per.clientid = cli.clientid " +
+                    "inner join bsuser.authprofiles authpro on perpro.PROFILEID = authpro.PROFILEID " +
                     "where persclass = 'E' and per.status = 1";
 
                 if (!String.IsNullOrEmpty(clientid))

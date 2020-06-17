@@ -201,7 +201,7 @@
 <script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
 
 <!-- JQUERY -->
-<script>
+<script type="text/javascript"></script>>
     $(document).ready(function() {
             $(function () {
         window.prettyPrint && prettyPrint();
@@ -226,7 +226,7 @@
     });
 });
 
-
+    //se houver mensagem de erro na viewBAg, mostrar.
     var msgErro = '@ViewBag.MensagemErro';
     if(msgErro !== "")
         alert('@ViewBag.MensagemErro');
