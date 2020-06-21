@@ -9,6 +9,7 @@
     <Authors>Ronaldo Moscoso, Diogo Andrade</Authors>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
+    <LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

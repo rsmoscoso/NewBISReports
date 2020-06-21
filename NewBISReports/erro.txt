@@ -458,3 +458,5 @@ Object reference not set to an instance of an object. --> Persist
 Object reference not set to an instance of an object. --> Persist
 Object reference not set to an instance of an object. --> Persist
 The multi-part identifier "cli.Name" could not be bound. --> ExcelPage
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '01/06/2020 00:00:00', '21/06/2020 23:59:59', null, null, null
+set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  null, '01/06/2020 00:00:00', '21/06/2020 23:59:59', null, null, null

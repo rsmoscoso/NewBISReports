@@ -16,6 +16,7 @@ using Microsoft.Extensions.Options;
 using System.Threading;
 using NewBISReports.Models.Autorizacao;
 using Microsoft.Extensions.Configuration;
+using NewBISReports.Models;
 
 namespace NewBISReports.Controllers
 {
@@ -35,6 +36,7 @@ namespace NewBISReports.Controllers
                                  IdentityErrorDescriber describer,
                                  UserManager<ApplicationUser> userManager,
                                  IConfiguration configuration
+                               
         )
         {
             _userManager = userManager;

@@ -18,7 +18,7 @@ using NewBISReports.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using NewBISReports.Models.Autorizacao;
-
+using NewBISReports.Models;
 
 namespace NewBISReports
 {
@@ -164,6 +164,9 @@ namespace NewBISReports
                 options.KnownProxies.Clear();
                 //options.KnownProxies.Add(IPAddress.Parse("10.20.30.115"));
             });
+
+            //ria o Singleton de criação de menu lateral do site
+            services.AddSingleton<ArvoreOpcoes>();
 
             services.AddLogging();
             services.AddCors();

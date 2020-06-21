@@ -269,9 +269,12 @@ namespace NewBISReports.Models
                     DataView view = table.DefaultView;
                     view.RowFilter = "Persid <> ''" + (String.IsNullOrEmpty(filter) ? "" : " and " + filter);
                     table = view.ToTable();
-                    table.Columns.Remove("Persid");
-                    table.Columns.Remove("ID");
-                    table.Columns.Remove("ClientID");
+                    if (table.Columns.Contains("Persid"))
+                        table.Columns.Remove("Persid");
+                    if (table.Columns.Contains("ID"))
+                        table.Columns.Remove("ID");
+                    if (table.Columns.Contains("ClientID"))
+                        table.Columns.Remove("ClientID");
                 }
                 return table;
             }
