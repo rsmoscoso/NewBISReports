@@ -133,6 +133,61 @@ namespace NewBISReports.Controllers
 
         }
 
+         [HttpGet,Authorize("AcessoAdmin")]
+        public async Task<IActionResult> Deleteuser()
+        {
+            //preenche a viewmodel com o Nome do usuário, e seu Id no banco, para voltar pelo post
+            var vm = new ResetPasswordViewModel(); 
+            //recupera todos os usuarios
+            vm.Users = await _userManager.Users.Select(x => new SelectListItem{
+                Text = x.FullName,
+                Value = x.Id
+            }).ToListAsync();
+
+            //verifica se só sobrou um usuário
+            if (vm.Users.Count == 1){
+                return RedirectToAction(nameof(Resultado), new{ Message = "Erro: O Usuário \""+ vm.Users.FirstOrDefault().Text+"\" não pode ser removido. Há apenas um usuário cadastrado no sistema." }); 
+            }
+            //else implicito
+            return View(vm);
+        }
+
+        [HttpPost,Authorize("AcessoAdmin")]
+        public async Task<IActionResult> DeleteUser(ResetPasswordViewModel vm)
+        {
+            if(ModelState.IsValid && vm.Id != "0")
+            {            
+                //recupera o usuario do banco
+                var user = await _userManager.FindByIdAsync(vm.Id);
+
+                //grava o nome do usuário
+                var deletedUserName = user.FullName;
+                
+                //Deleta o Usuário
+                var Result= await _userManager.DeleteAsync(user);
+                if(Result.Succeeded)
+                {
+                    //testar ainda se as claims somem junto
+                    return RedirectToAction(nameof(Resultado), new{ Message = "Usuário \""+deletedUserName+
+                        "\" removido com sucesso."}); //Redireciona para rota padrão (Home/Index)
+                }else{
+                    return RedirectToAction(nameof(Resultado), new{ Message = "Erro: \""+Result.Errors.ToString()+"\" Entre em contato com o Administrador e relate esta mensagem." }); 
+                }
+            }else{
+                //preenche a viewmodel com o Nome do usuário, e seu Id no banco, para voltar pelo post
+                //recupera todos os usuarios
+                vm.Users = await _userManager.Users.Select(x => new SelectListItem{
+                    Text = x.FullName,
+                    Value = x.Id
+                }).ToListAsync();
+
+                ModelState.AddModelError(string.Empty,"Por favor, selecione um Usuário");
+                return View(vm);
+            }
+
+        }
+
+
         [HttpPost,Authorize("CriarNovaSenha")]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel vm)
         {

@@ -1,0 +1,46 @@
+@{
+    ViewData["Title"] = "Senhas";
+}
+@model NewBISReports.Models.Administracao.ResetPasswordViewModel
+
+<!--div class="wrapper full-page-wrapper page-auth page-login text-center"-->
+    <div class="wrapper full-page-wrapper page-auth page-login text-center">
+        <!--div class="inner-page"-->
+            <!--div class="login-box center-block"-->
+        <div class="inner-page">
+            <div class="login-box center-block" style="width:50%">
+                <section>                    
+                    <form asp-controller="Administracao" asp-action="DeleteUser" method="post">
+                        
+                        <h4>Selecione um usuário a ser removido, e clique "OK". Esta operação não pode ser desfeita.</43>
+                        <hr />    
+                        <div asp-validation-summary="All" class="text-danger"></div>                   
+                        <div class="form-group">
+                            <label >Usuários</label>
+                                <select class="select2" data-minimum-results-for-search="Infinity" 
+                                    asp-for="Id" 
+                                    asp-items="@Model.Users" style="width:100%">
+                                    <option value="0">-- Selecione um usuario --</option>
+                                </select>
+                        </div>
+                         <div class="form-group">
+                            <button type="submit" class="btn btn-large btn-default" style="width:100%">OK</button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </div>
+
+     <!-- Javascript Mínimo -->
+<script src="~/KingAdmin/assets/js/jquery/jquery-2.1.0.min.js"></script>
+<script src="~/KingAdmin/assets/js/bootstrap/bootstrap.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/modernizr/modernizr.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
+
+<!-- Javascript Datepicker -->
+<script src="~/KingAdmin/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="~/KingAdmin/assets/js/king-common.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
