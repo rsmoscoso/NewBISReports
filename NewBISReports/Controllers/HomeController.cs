@@ -85,8 +85,13 @@ namespace NewBISReports.Controllers
             {
                 if (TempData["Clients"] != null)
                     ViewBag.Clients = JsonConvert.DeserializeObject(TempData["Clients"].ToString());
-                else
-                    ViewBag.Clients = Clients.GetClients(this.contextACE);
+                else{
+                    //deve-se montar a opção todos toda vez
+                    var _clients = Clients.GetClients(this.contextACE);
+                    _clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
+                    ViewBag.Clients = _clients;                    
+                }
+                    
 
                 if (TempData["Authorizations"] != null)
                     ViewBag.Authorizations = JsonConvert.DeserializeObject(TempData["Authorizations"].ToString());
@@ -155,6 +160,7 @@ namespace NewBISReports.Controllers
                 this.persisTempData();
 
                 return View("Index", model);
+                 //return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
             }
             catch (Exception ex)
             {
@@ -162,9 +168,8 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> searchpersons");
                 w.Close();
                 w = null;
-
-
-                return View("Index", model);
+                //return View("Index", model);
+                 return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -172,7 +177,7 @@ namespace NewBISReports.Controllers
         /// Pesquisa as empresas.
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
-        [HttpPost]
+        [HttpPost,ValidateAntiForgeryToken]
         public IActionResult searchCompanies(HomeModel model)
         {
             try
@@ -189,8 +194,9 @@ namespace NewBISReports.Controllers
                 TempData.Keep();
 
                 this.persisTempData();
-
-                return View("Index");
+                //diogo se não colocar o type, ele sempre vai pular para o relatorio padrão
+                //return View("Index", model.Type);
+                 return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
             }
             catch (Exception ex)
             {
@@ -199,7 +205,8 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
 
-                return View("Index");
+               // return View("Index");
+               return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -223,7 +230,7 @@ namespace NewBISReports.Controllers
             catch (Exception ex)
             {
                 StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(ex.Message + " --> searchclients");
+                w.WriteLine(ex.Message + " --> searchDevices");
                 w.Close();
                 w = null;
             }
@@ -249,7 +256,7 @@ namespace NewBISReports.Controllers
             catch (Exception ex)
             {
                 StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(ex.Message + " --> searchclients");
+                w.WriteLine(ex.Message + " --> searchAuthorizations");
                 w.Close();
                 w = null;
             }
@@ -355,7 +362,7 @@ namespace NewBISReports.Controllers
             }
         }
         #endregion
-
+        [HttpPost,ValidateAntiForgeryToken]
         public IActionResult ExecPage(HomeModel reports)
         {
             try
@@ -433,7 +440,7 @@ namespace NewBISReports.Controllers
         /// Executa a pesquisa dos eventos para uma planilha Excel.
         /// </summary>
         /// <param name="reports">Parâmetros da pesquisa.</param>
-        [HttpPost]
+        [HttpPost,ValidateAntiForgeryToken]
         public IActionResult ExcelPage(HomeModel reports)
         {
             try
@@ -597,7 +604,7 @@ namespace NewBISReports.Controllers
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost,ValidateAntiForgeryToken]
         public IActionResult Index(HomeModel reports)
         {
             try
@@ -615,9 +622,8 @@ namespace NewBISReports.Controllers
                     if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                         this.searchAuthorizations(reports);
                 }
-                //Diogo - REdirecionamento correto
-                //return View("Index", reports.Type);
-                return RedirectToAction(nameof(Index), new{type=reports.Type});
+                return View("Index", reports);
+                //return RedirectToAction(nameof(Index), new{type=reports.Type});
             }
             catch (Exception ex)
             {
@@ -647,26 +653,7 @@ namespace NewBISReports.Controllers
 
             try
             {
-                this.clients = Clients.GetClients(this.contextACE);
-                this.clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
-
-                this.companies = Company.GetCompanies(this.contextACE);
-
-                this.persclassid = PersClasses.GetPersClasses(this.contextACE);
-                 this.persons = new List<Persons>();
-                 this.devices = new List<Devices>();
-                 this.authorizations = new List<Authorizations>();
-
-                TempData["Clients"] = JsonConvert.SerializeObject(this.clients);
-                TempData["Company"] = JsonConvert.SerializeObject(this.companies);
-                TempData["Persclassid"] = JsonConvert.SerializeObject(this.persclassid);
-                TempData["Persons"] = JsonConvert.SerializeObject(this.persons);
-                TempData["Devices"] = JsonConvert.SerializeObject(this.devices);
-                TempData["Authorizations"] = JsonConvert.SerializeObject(this.authorizations);
-                 TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
-                 TempData["Type"] = type;
-                 TempData.Keep();
-
+                //Diogo - Removi as inicializações, pois o persistTempData já controla a integridade das inicializações
                  this.persisTempData();
 
                 //diogo - adicionando uma Landing Page

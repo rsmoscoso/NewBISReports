@@ -43,37 +43,45 @@
                     <!-- FIM EMPRESA -->
                 }
                 <!-- INICIO PESSOA -->
-                <fieldset>
-                    <div class="col-sm-12">
-                        <div class="input-group">
-                            <label class="control-inline">
-                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
-                                {
-                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
-                                    <span>Pessoa</span>
-                                }
-                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
-                                <span>Visitante</span>
-                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
-                                {
-                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
-                                    <span>Matrícula/CPF</span>
-                                }
-                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
-                                <span>Documento</span>
-                            </label>
-                        </div>
-                        <div class="input-group input-group-sm">
-                            <input type="search" asp-for="NAMESEARCH" name="NAMESEARCH" placeholder="pessoas/visitantes" class="form-control">
-                            <span class="input-group-btn">
-                                <button class="btn" name="srcname" asp-action="searchPersons" type="submit"><i class="fa fa-search"></i></button>
-                            </span>
-                        </div>
-                        <select asp-for="PERSNO" class="select2" name="PERSNO" asp-items="@(new SelectList(ViewBag.Persons, "Persid", "Nome", 0))"></select>
-                        <!-- FIM PESSOA -->
-                    </div>
-                </fieldset>
             </div>
+            <div class="row">
+            <fieldset>
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <label class="control-inline">
+                            @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                            {
+                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
+                                <span>Pessoa</span>
+                            }
+                            <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
+                            <span>Visitante</span>
+                            @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                            {
+                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
+                                <span>Matrícula/CPF</span>
+                            }
+                            <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
+                            <span>Documento</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="col-sm-12">
+                    <div class="input-group input-group-sm">
+                        <input type="search" asp-for="NAMESEARCH" name="NAMESEARCH" placeholder="pessoas/visitantes" class="form-control">
+                        <span class="input-group-btn">
+                            <button class="btn" name="srcname" asp-action="searchPersons" type="submit"><i class="fa fa-search"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <select asp-for="PERSNO" class="select2" name="PERSNO" asp-items="@(new SelectList(ViewBag.Persons, "Persid", "Nome", 0))"></select>
+                </div>
+                    <!-- FIM PESSOA -->
+            </div>
+            </fieldset>
         </div>
     </div>
 </div>
