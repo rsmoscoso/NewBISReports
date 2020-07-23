@@ -1,10 +1,12 @@
-﻿@model NewBISReports.Models.HomeModel
+﻿@inject NewBISReports.Models.ArvoreOpcoes _arvoreOpcoes
+@model NewBISReports.Models.HomeModel
 @{
     REPORTTYPE type = REPORTTYPE.RPT_PERSONGENERAL;
     if (ViewBag.Type != null)
     {
         type = (REPORTTYPE)ViewBag.Type;
     }
+    string labelPessoas = _arvoreOpcoes.PersonsLabel;
 }
 
 <div class="col-sm-6">
@@ -52,7 +54,8 @@
                             @if (type != REPORTTYPE.RPT_LOGQRCODE)
                             {
                                 <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
-                                <span>Pessoa</span>
+                                <!-- customização - nomenclatura para pessoa-->
+                                <span>@labelPessoas</span>
                             }
                             <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
                             <span>Visitante</span>
@@ -61,8 +64,10 @@
                                 <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
                                 <span>Matrícula/CPF</span>
                             }
-                            <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
-                            <span>Documento</span>
+                            @if(_arvoreOpcoes.ShowDocumentSearch){
+                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType" value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
+                                <span>Documento</span>
+                            }
                         </label>
                     </div>
                 </div>
