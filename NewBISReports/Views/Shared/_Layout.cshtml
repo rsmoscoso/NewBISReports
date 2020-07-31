@@ -1,5 +1,10 @@
 ﻿@using Newtonsoft.Json;
 @using NewBISReports.Controllers.Config;
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Configuration;
+@inject IAuthorizationService AuthorizationService
+@inject NewBISReports.Models.ArvoreOpcoes _arvoreOpcoes
+
 
 <!DOCTYPE html>
 <html>
@@ -26,22 +31,36 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="~/assets/ico/kingadmin-favicon114x114.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="~/assets/ico/kingadmin-favicon72x72.png">
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="~/assets/ico/kingadmin-favicon57x57.png">
-    <link rel="shortcut icon" href="~/images/orionlogo.ico">
+    <link rel="shortcut icon" href="~/images/ico/orion_vetor_preto.png">
 
     <meta charset="utf-8" />
 </head>
 
+@* Codigo substituido pelo singleton de _arvoreOpcoes
 @{
     bool meal = true;
     string defaultname = "Orion";
+    bool isLogin = false;
+    //determianndo se tem login
+    var config_alt = new ConfigurationBuilder()
+        .AddJsonFile("appsettings.json", optional: false)
+        .Build();
+    //verifica para qual cliente está sendo configurado
+    defaultname  = config_alt.GetSection("Default")["Name"];
+    isLogin = bool.Parse(config_alt.GetSection(defaultname)["useLogin"]);
+    defaultname = defaultname.ToLower();
+    //Essa parte faz mais sentido para o HomeController
     if (TempData["ConfigSection"] != null)
     {
         var config = JsonConvert.DeserializeObject<BSConfig>(TempData["ConfigSection"].ToString());
-        meal = config.Meal;
+        meal = config.Meal; 
         defaultname = config.DefaultName.ToLower();
+       
     }
-    var url = "/HzBISReport";
+
+    //var url = "/HzBISReport";
 }
+*@
 <body class="sidebar-fixed topnav-fixed dashboard">
     <!-- WRAPPER -->
     <div id="wrapper" class="wrapper">
@@ -56,11 +75,15 @@
                         <!-- top-bar-right -->
                         <div class="top-bar-right">
                             <!-- logged user and the menu -->
-                            <div class="logged-user">
+                            @* <div class="logged-user">
                                 <a href="#" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
                                     <span class="name">AppUser</span> <span class="caret"></span>
                                 </a>
-                            </div>
+                            </div> *@
+                            @if(_arvoreOpcoes.UseLogin){
+                                <partial name="_LoginPartial" />
+                            }
+                            
                             <!-- end logged user and the menu -->
                         </div>
                         <!-- end top-bar-right -->
@@ -76,71 +99,140 @@
             <div class="sidebar-scroll">
                 <nav class="main-nav">
                     <ul class="main-menu">
-                        <li class="active">
-                            <a href="#" class="js-sub-menu-toggle">
-                                <i class="fa fa-dashboard fa-fw"></i><span class="text">Eventos de Acesso</span>
-                                <i class="toggle-icon fa fa-angle-down"></i>
-                            </a>
-                            <ul class="sub-menu open">
-                                <li class="active"><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICGRANTEDBIS"><span class="text">Eventos de Acesso</span></a></li>
-                                @if (meal)
-                                {
-                                    <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICSGENERAL"><span class="text">Acessos Analíticos - Geral</span></a></li>
-                                    <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICSMEALBIS"><span class="text">Tabela Refeições</span></a></li>
-                                    <li><a href="@url/Graphs/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_TOTALMEALGRAPH"><span class="text">Dashboard Total Refeições</span></a></li>
-                                    @if (defaultname == "solar")
-                                    {
-                                        <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_TOTALMEAL"><span class="text">Total de Refeições</span></a></li>
-                                        <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_EXPORTMEAL"><span class="text">Exportar Refeições</span></a></li>
+                        <!-- Condicional para mostrar eventos de acesso -->
+                        @if (_arvoreOpcoes.UseLogin && _arvoreOpcoes.AdministracaoRaiz &&(await AuthorizationService.AuthorizeAsync(User, "AcessoAdmin")).Succeeded){
+                            <li>
+                                <a href="#" class="js-sub-menu-toggle">
+                                    <i class="fa fa-cog fa-fw"></i><span class="text" style="opacity: 1;">Administração</span>
+                                    <i class="toggle-icon fa fa-angle-left"></i>
+                                </a>
+                                <ul class="sub-menu ">
+                                    @if(_arvoreOpcoes.AdicionarUsuarios){
+                                        <li>
+                                            <a asp-controller="Administracao" asp-action="CreateUser">
+                                                <i class="fa fa-user-plus fa-fw"></i>
+                                                <span class="text" style="opacity: 1;">Adicionar Usuários</span>
+                                            </a>
+                                        </li>
                                     }
-                                }
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#" class="js-sub-menu-toggle">
-                                <i class="fa fa-navicon"></i><span class="text">Operacionais</span>
-                                <i class="toggle-icon fa fa-angle-left"></i>
-                            </a>
-                            <ul class="sub-menu ">
-                                @if (defaultname == "solar")
-                                {
-                                    <li><a href="@url/Excecao/Index"><span class="text">Exceção</span></a></li>
-                                }
+                                     @if(_arvoreOpcoes.AlterarSenhas){  
+                                        <li>
+                                            <a asp-controller="Administracao" asp-action="ResetUserPassword">
+                                                <i class="fa fa-user fa-fw"></i>
+                                                <span class="text" style="opacity: 1;">Alterar Senhas</span>
+                                            </a>
+                                        </li>
+                                     }
+                                      @if(_arvoreOpcoes.RemoverUsurios){
+                                        <li>
+                                            <a asp-controller="Administracao" asp-action="DeleteUser">
+                                                <i class="fa fa-trash fa-fw"></i>
+                                                <span class="text" style="opacity: 1;">Remover Usuários</span>
+                                            </a>
+                                        </li>
+                                      }
+                                </ul>
+                            </li>
+                        }
+                        @if (_arvoreOpcoes.EventosDeAcessoRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)){
+                            <li>
+                                <a href="#" class="js-sub-menu-toggle">
+                                    <i class="fa fa-dashboard fa-fw"></i><span class="text">Eventos de Acesso</span>
+                                    <i class="toggle-icon fa fa-angle-down"></i>
+                                </a>
+                                <ul class="sub-menu open">
+                                     @if(_arvoreOpcoes.EventosDeAcesso){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICGRANTEDBIS"><span class="text">Eventos de Acesso</span></a></li>
+                                     }
+                                    @if (_arvoreOpcoes.AcessosAnaliticosGeral){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICSGENERAL"><span class="text">Acessos Analíticos - Geral</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.TabelaRefeicoes){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICSMEALBIS"><span class="text">Tabela Refeições</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.DashboardTotalRefeicoes){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_TOTALMEALGRAPH"><span class="text">Dashboard Total Refeições</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.TotalDeRefeicoes){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_TOTALMEAL"><span class="text">Total de Refeições</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.ExportarRefeicoes){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_EXPORTMEAL"><span class="text">Exportar Refeições</span></a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        @if (_arvoreOpcoes.OperacionaisRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)){
+                             <li>
+                                <a href="#" class="js-sub-menu-toggle">
+                                    <i class="fa fa-navicon"></i><span class="text">Operacionais</span>
+                                    <i class="toggle-icon fa fa-angle-left"></i>
+                                </a>
+                                <ul class="sub-menu ">
+                                    @if (_arvoreOpcoes.Excessao){
+                                        <li><a asp-controller="Excecao" asp-action="Index"><span class="text">Exceção</span></a></li>                                    
+                                    }
+                                    @if (_arvoreOpcoes.Banheiro){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_COUNTBATH"><span class="text">Banheiro</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.PessoasSemFotografia){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PHOTOS"><span class="text">Pessoas sem Fotografia</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.PessoasSemCracha){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_BADGES"><span class="text">Pessoas sem Crachá</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.TempoSemUsoDoCracha){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_BADGENOUSE"><span class="text">Tempo Sem Uso do Crachá</span></a></li>
+                                    }
+                                </ul>
+                            </li>     
+                        }
+                        @if (_arvoreOpcoes.AdministrativosRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)){                                              
+                            <li>
+                                <a href="#" class="js-sub-menu-toggle">
+                                    <i class="fa fa-columns"></i><span class="text">Administrativos</span>
+                                    <i class="toggle-icon fa fa-angle-left"></i>
+                                </a>
+                                <ul class="sub-menu ">
+                                    @if (_arvoreOpcoes.Pessoas){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PERSONGENERAL"><span class="text">Pessoas</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.PerfilDasPessoas){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PERSONSPROFILES"><span class="text">Perfil das Pessoas</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.AutorizacoesDasPessoas){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PERSONSAUTHORIZATIONS"><span class="text">Autorizações das Pessoas</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.LeitoresPorAutorizacoes){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_READERAUTHORIZATION"><span class="text">Leitores por Autorizações</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.PessoasBloqueadas){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ALLLOCKOUT"><span class="text">Pessoas Bloqueadas</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.TodosOsVisitantes){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ALLVISITORS"><span class="text">Todos os Visitantes</span></a></li>                                                                
+                                    }
+                                </ul>
+                            </li>
+                            <!-- Condicional para mostrar eventos de Visitantes -->
+                        }
+                        @if (_arvoreOpcoes.VisitantesRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)){    
+                            <li>
+                                <a href="#" class="js-sub-menu-toggle">
+                                    <i class="fa fa-camera"></i><span class="text">Visitantes</span>
+                                    <i class="toggle-icon fa fa-angle-left"></i>
+                                </a>
+                                <ul class="sub-menu">
+                                     @if (_arvoreOpcoes.QrCodeDosVisitantes){
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_LOGQRCODE"><span class="text">QR Code dos Visitantes</span></a></li>
+                                     }
+                                      @if (_arvoreOpcoes.ImportarVisitantes){
+                                        <li><a asp-controller="ImportVisitor" asp-action="Index"  ><span class="text">Importar Visitantes</span></a></li>
+                                      }
+                                </ul>
+                            </li>
 
-                                @if (defaultname == "orion")
-                                {
-                                    <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_COUNTBATH"><span class="text">Banheiro</span></a></li>
-                                }
-
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_PHOTOS"><span class="text">Pessoas sem Fotografia</span></a></li>
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_BADGES"><span class="text">Pessoas sem Crachá</span></a></li>
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_BADGENOUSE"><span class="text">Tempo Sem Uso do Crachá</span></a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#" class="js-sub-menu-toggle">
-                                <i class="fa fa-columns"></i><span class="text">Administrativos</span>
-                                <i class="toggle-icon fa fa-angle-left"></i>
-                            </a>
-                            <ul class="sub-menu ">
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_PERSONGENERAL"><span class="text">Pessoas</span></a></li>
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_PERSONSPROFILES"><span class="text">Perfil das Pessoas</span></a></li>
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_PERSONSAUTHORIZATIONS"><span class="text">Autorizações das Pessoas</span></a></li>
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_READERAUTHORIZATION"><span class="text">Leitores por Autorizações</span></a></li>
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_ALLLOCKOUT"><span class="text">Pessoas Bloqueadas</span></a></li>
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_ALLVISITORS"><span class="text">Todos os Visitantes</span></a></li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#" class="js-sub-menu-toggle">
-                                <i class="fa fa-camera"></i><span class="text">Visitantes</span>
-                                <i class="toggle-icon fa fa-angle-left"></i>
-                            </a>
-                            <ul class="sub-menu">
-                                <li><a href="@url/Home/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_LOGQRCODE"><span class="text">QR Code dos Visitantes</span></a></li>
-                                <li><a href="@url/ImportVisitor/Index?type=@NewBISReports.Models.REPORTTYPE.RPT_PERSONSAUTHORIZATIONS"><span class="text">Importar Visitantes</span></a></li>
-                            </ul>
-                        </li>
+                        }                        
                     </ul>
                 </nav>
                 <!-- /main-nav -->
@@ -165,6 +257,7 @@
         <!-- END CONTENT WRAPPER -->
     </div>
     <!-- END WRAPPER -->
+   
 
 </body>
 

@@ -1,0 +1,60 @@
+@using Microsoft.AspNetCore.Identity
+@using NewBISReports.Models.Autorizacao
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    var FullName = (await UserManager.GetUserAsync(User)).FullName;
+    @*<form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Claims.FirstOrDefault(x => x.Type == "FullName").Value!</a>
+            </li>
+            <li>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">Logout</button>
+            </li>
+        </ul>
+    </form>*@
+
+    <div class="logged-user navbar-right" style="margin-top:10px;margin-right:15px">
+        <div class="btn-group">
+            <a href="#" class="btn btn-link dropdown-toggle" data-toggle="dropdown">
+                @* <img src="~/theme/assets/ico/orion_vetor.png" style="width:26px;height:26px" /> *@
+                <span class="name" style="font-size:1.2em"><strong>@FullName</strong></span> <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+                @*<li>
+                    <a href="#">
+                        <i class="fa fa-user"></i>
+                        <span class="text">Profile</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-cog"></i>
+                        <span class="text">Settings</span>
+                    </a>
+                </li>*@
+                <li>
+                    <a  asp-controller="Autorizacao" asp-action="LogoutAsync" method="post">
+                        <i class="fa fa-power-off"></i>
+                        <span class="text">Logout</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+     </div>
+}
+else
+{
+    <div class="nav navbar-nav navbar-right">
+        <a asp-area="Account" asp-controller="Account" asp-action="LoginAsync" class="btn btn-default" style="background-color:#555">
+            <i class="fa fa-key"></i>
+            <span><strong>Entrar</strong></span>
+        </a>
+    </div>
+
+}

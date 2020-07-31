@@ -16,9 +16,11 @@ using Newtonsoft.Json;
 using static NewBISReports.Models.Classes.LogEvent;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NewBISReports.Controllers
 {
+    [Authorize("AcessoUsuario")]
     public class HomeController : Controller
     {
         #region Variables
@@ -83,8 +85,13 @@ namespace NewBISReports.Controllers
             {
                 if (TempData["Clients"] != null)
                     ViewBag.Clients = JsonConvert.DeserializeObject(TempData["Clients"].ToString());
-                else
-                    ViewBag.Clients = Clients.GetClients(this.contextACE);
+                else{
+                    //deve-se montar a opção todos toda vez
+                    var _clients = Clients.GetClients(this.contextACE);
+                    _clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
+                    ViewBag.Clients = _clients;                    
+                }
+                    
 
                 if (TempData["Authorizations"] != null)
                     ViewBag.Authorizations = JsonConvert.DeserializeObject(TempData["Authorizations"].ToString());
@@ -112,8 +119,8 @@ namespace NewBISReports.Controllers
 
                 if (TempData["Type"] != null)
                     ViewBag.Type = TempData["Type"];
-
-                ViewBag.ConfigSection = JsonConvert.DeserializeObject(TempData["ConfigSection"].ToString());
+                if (TempData["ConfigSection"] != null)
+                    ViewBag.ConfigSection = JsonConvert.DeserializeObject(TempData["ConfigSection"].ToString());
                 TempData.Keep();
 
                 return true;
@@ -153,6 +160,7 @@ namespace NewBISReports.Controllers
                 this.persisTempData();
 
                 return View("Index", model);
+                 //return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
             }
             catch (Exception ex)
             {
@@ -160,9 +168,8 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> searchpersons");
                 w.Close();
                 w = null;
-
-
-                return View("Index", model);
+                //return View("Index", model);
+                 return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -170,7 +177,7 @@ namespace NewBISReports.Controllers
         /// Pesquisa as empresas.
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
-        [HttpPost]
+        [HttpPost,ValidateAntiForgeryToken]
         public IActionResult searchCompanies(HomeModel model)
         {
             try
@@ -187,8 +194,9 @@ namespace NewBISReports.Controllers
                 TempData.Keep();
 
                 this.persisTempData();
-
-                return View("Index");
+                //diogo se não colocar o type, ele sempre vai pular para o relatorio padrão
+                //return View("Index", model.Type);
+                 return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
             }
             catch (Exception ex)
             {
@@ -197,7 +205,8 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
 
-                return View("Index");
+               // return View("Index");
+               return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -221,7 +230,7 @@ namespace NewBISReports.Controllers
             catch (Exception ex)
             {
                 StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(ex.Message + " --> searchclients");
+                w.WriteLine(ex.Message + " --> searchDevices");
                 w.Close();
                 w = null;
             }
@@ -247,7 +256,7 @@ namespace NewBISReports.Controllers
             catch (Exception ex)
             {
                 StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(ex.Message + " --> searchclients");
+                w.WriteLine(ex.Message + " --> searchAuthorizations");
                 w.Close();
                 w = null;
             }
@@ -353,7 +362,7 @@ namespace NewBISReports.Controllers
             }
         }
         #endregion
-
+        [HttpPost,ValidateAntiForgeryToken]
         public IActionResult ExecPage(HomeModel reports)
         {
             try
@@ -373,7 +382,7 @@ namespace NewBISReports.Controllers
                         if (table != null)
                             meals = GlobalFunctions.ConvertDataTable<TotalMeal>(table);
                         reports.Meals = meals;
-                        return View("Index", reports);
+                        //return View("Index", reports);
                     }
                 }
                 else if (reports.Type == REPORTTYPE.RPT_ANALYTICSGENERAL)
@@ -384,7 +393,7 @@ namespace NewBISReports.Controllers
                             acessos = GlobalFunctions.ConvertDataTable<LogEvent>(table);
                     }
                     reports.Acessos = acessos;
-                    return View("Index", reports);
+                    //return View("Index", reports);
 
                 }
                 else if (reports.Type == REPORTTYPE.RPT_COUNTBATH)
@@ -395,7 +404,7 @@ namespace NewBISReports.Controllers
                             acessos = GlobalFunctions.ConvertDataTable<LogEvent>(table);
                     }
                     reports.Acessos = acessos;
-                    return View("Index", reports);
+                    //return View("Index", reports);
 
                 }
                 else if (reports.Type == REPORTTYPE.RPT_EXPORTMEAL)
@@ -409,10 +418,11 @@ namespace NewBISReports.Controllers
                             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, filename);
                         }
                     }
-                    return View("Index", reports);
+                    //return View("Index", reports);
                 }
 
-                return View("Index", reports);
+               // return View("Index", reports);
+               return RedirectToAction(nameof(Index), new{type=reports.Type});
 
             }
             catch (Exception ex)
@@ -421,7 +431,8 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> ExecPage");
                 w.Close();
                 w = null;
-                return View("Index", reports);
+                //return View("Index", reports);
+                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -429,7 +440,7 @@ namespace NewBISReports.Controllers
         /// Executa a pesquisa dos eventos para uma planilha Excel.
         /// </summary>
         /// <param name="reports">Parâmetros da pesquisa.</param>
-        [HttpPost]
+        [HttpPost,ValidateAntiForgeryToken]
         public IActionResult ExcelPage(HomeModel reports)
         {
             try
@@ -568,10 +579,11 @@ namespace NewBISReports.Controllers
                 }
 
                 reports.Acessos = acessos;
+                this.persisTempData(); 
 
-                this.persisTempData();
-
-                return View("Index", reports);
+                //Diogo - Adicionando mensagem de alerta, caso nenhum arquivo seja retornado, se chegar aqui sem erros
+                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro ="Nenhum registro encontrado"});
+                //return View("Index", reports);
             }
             catch (Exception ex)
             {
@@ -579,7 +591,9 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> ExcelPage");
                 w.Close();
                 w = null;
-                return View("Index", reports);
+                //adicionando verbosidade de erros e recarregando o formulário corretamente
+                //return View("Index", reports);
+                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
             }
         }
 
@@ -590,7 +604,7 @@ namespace NewBISReports.Controllers
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
         /// <returns></returns>
-        [HttpPost]
+        [HttpPost,ValidateAntiForgeryToken]
         public IActionResult Index(HomeModel reports)
         {
             try
@@ -608,8 +622,8 @@ namespace NewBISReports.Controllers
                     if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                         this.searchAuthorizations(reports);
                 }
-
                 return View("Index", reports);
+                //return RedirectToAction(nameof(Index), new{type=reports.Type});
             }
             catch (Exception ex)
             {
@@ -618,38 +632,42 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
 
-                return View("Index", reports);
+               // return View("Index", reports);
+               return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
             }
+        }
+//Diogo Adicionando Landing page
+        [HttpGet]
+        public IActionResult Landing(){
+            TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
+            TempData["Type"] = REPORTTYPE.RPT_LANDINGPAGE;
+            TempData.Keep();
+
+            this.persisTempData();
+            return View();
         }
 
         [HttpGet]
-        public IActionResult Index(REPORTTYPE type)
+        public IActionResult Index(REPORTTYPE type, string mensagemErro)
         {
+
             try
             {
-                this.clients = Clients.GetClients(this.contextACE);
-                this.clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
+                //Diogo - Removi as inicializações, pois o persistTempData já controla a integridade das inicializações
+                 this.persisTempData();
 
-                this.companies = Company.GetCompanies(this.contextACE);
-
-                this.persclassid = PersClasses.GetPersClasses(this.contextACE);
-                this.persons = new List<Persons>();
-                this.devices = new List<Devices>();
-                this.authorizations = new List<Authorizations>();
-
-                TempData["Clients"] = JsonConvert.SerializeObject(this.clients);
-                TempData["Company"] = JsonConvert.SerializeObject(this.companies);
-                TempData["Persclassid"] = JsonConvert.SerializeObject(this.persclassid);
-                TempData["Persons"] = JsonConvert.SerializeObject(this.persons);
-                TempData["Devices"] = JsonConvert.SerializeObject(this.devices);
-                TempData["Authorizations"] = JsonConvert.SerializeObject(this.authorizations);
-                TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
-                TempData["Type"] = type;
-                TempData.Keep();
-
-                this.persisTempData();
-
-                return View();
+                //diogo - adicionando uma Landing Page
+                if (type == REPORTTYPE.RPT_LANDINGPAGE){
+                    return RedirectToAction(nameof(Landing));
+                }else{
+                    //adicionando a mensagem de erro propagada
+                    if(mensagemErro != null){
+                        ViewBag.MensagemErro = mensagemErro;
+                     }
+                        ViewBag.Type = type;
+                    return View();  
+                }
+                
             }
             catch (Exception ex)
             {

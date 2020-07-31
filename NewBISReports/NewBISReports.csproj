@@ -3,6 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+     <Version>2.1.0</Version>
+    <Company>Grupo Orion</Company>
+    <Product>BisReports</Product>
+    <Authors>Ronaldo Moscoso, Diogo Andrade</Authors>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
+    <LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,13 +29,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2"  />
   </ItemGroup>
 
 
   <ItemGroup>
     <Reference Include="HzBISCommands">
-      <HintPath>..\..\..\VS 2017\Bosch Projects\Maior 4.6\HzBISCommands\HzBISCommands\bin\Debug\HzBISCommands.dll</HintPath>
+      <HintPath>..\HzBISCommands\HzBISCommands.dll</HintPath>
     </Reference>
   </ItemGroup>
 

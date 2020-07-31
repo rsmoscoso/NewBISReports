@@ -187,7 +187,7 @@
     }
 </form>
 
-<!-- Javascript Mínimo -->
+ <!-- Javascript Mínimo -->
 <script src="~/KingAdmin/assets/js/jquery/jquery-2.1.0.min.js"></script>
 <script src="~/KingAdmin/assets/js/bootstrap/bootstrap.js"></script>
 <script src="~/KingAdmin/assets/js/plugins/modernizr/modernizr.js"></script>
@@ -201,8 +201,10 @@
 <script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
 
 <!-- JQUERY -->
-<script>
-    $(function () {
+
+<script type="text/javascript">
+    $(document).ready(function() {
+            $(function () {
         window.prettyPrint && prettyPrint();
         $('#StartDate').datepicker({
             format: 'dd/mm/yyyy'
@@ -223,5 +225,12 @@
                 $('#EndDate').datepicker('hide');
             });
     });
+});
+
+    //se houver mensagem de erro na viewBAg, mostrar.
+    var msgErro = '@ViewBag.MensagemErro';
+    if(msgErro !== "")
+        alert('@ViewBag.MensagemErro');
+    
 </script>
 
