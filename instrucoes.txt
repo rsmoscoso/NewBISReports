@@ -1,0 +1,50 @@
+Instruções de Instalação
+
+- o aplicativo foi atualizado para o asp.net core 2.2. 
+Por este motivo, devem ser instalados os executáveis: dotnet-hosting-2.2.5-win.exe e dotnet-runtime-2.2.5-win-x64.exe.
+Estes arquivos se encontram na pasta AspNet Core Installatio
+
+- instalar o aplicativo na pasta c:\inetpub\wwwroot\HzBISReport
+
+- Verificações no arquivo appsettings.json:
+
+a) AddressTagPrefix - deve ser verificado, na base de dados do cliente, como o campo addresstag é preenchido.
+Alterar o prefixo de acordo com essa informação; 
+b) AddressTagSufix - deve ser verificado, na base de dados do cliente, como o campo addresstag é preenchido.
+Alterar o sufixo de acordo com essa informação;
+
+Para se descobrir o Sufixo e o Prefixo, executar o select abaixo na instância BIS:
+select * from BISEventLog..LogAddress where (AddressTag like 'ControleAcesso%' or AddressTag like 'Access Engine%')
+and AddressTag like '%Event%'
+
+Esse select retornará o campo AddressTag num desses formatos, igual para todas as leitoras: 
+ControleAcesso.Devices.[NOME DA LEITORA].Event, 
+ControleAcesso.Devices.[NOME DA LEITORA].Evento,
+Access Engine.Devices.[NOME DA LEITORA].Event, 
+Access Engine.Devices.[NOME DA LEITORA].Evento
+
+Exemplo: se o resultado da primeira linha do Select  do tipo "Access Engine.Devices.foo.Evento", a seção do appsettings.json fica: 
+
+  "NomeDoCliente": {
+    ...
+    "AddressTagPrefix": "Access Engine.Devices.",
+    "AddressTagSufix": ".Evento",
+    ...
+  },
+
+c) Meal - deve ser false para todas as instalações, exceto as que controlam refeitório.
+
+- atualizar as procedures de acordo com os arquivos na pasta procedures
+
+[Adicionado por Diogo 16/07/2019]
+
+-Deve-se dar permissões do AppPool correspondente na pasta de instalação. Por exemplo, se o Application Pool escolhido para rodar o aplicativo é o "Relatorios", deve-se dar permissões para o usuário "IIS AppPool\Relatorios" (sem aspas) na pasta "c:\inetpub\wwwroot\HzBISReport". A base de busca deste usuário é sempre o próprio servidor, e não um domínio. 
+Cada AppPool criado no IIS recebe um "usuário virtual" que só pode ser encontrado desta maneira.
+Explicação: https://stackoverflow.com/questions/25192050/iis-8-5-virtual-account-for-app-pool-iis-apppool-application-pool-name-is-no
+
+[Adicionado por Diogo 10/10/2109 ]
+-Ao publicar a aplicação no IIS, mudar a variável de configuração "requestTimeout" de 2 min para 59 min.
+Clicar no site -> Configuration Editor -> section: system.webServer/aspNetCore.
+
+[Adicionado por Diogo 20/08/2020 ]
+As stored procedures devem se adicionadas à instancia "BIS", no banco "BISEventLog"

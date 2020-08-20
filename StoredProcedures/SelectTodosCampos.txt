@@ -1,0 +1,8 @@
+select RE = persno, Nome = firstname + ' ' + lastname, TipoFuncionario = DisplayTextCustomer, Empresa = companyno, Unidade = cli.name, Cargo = job, CentroDeCusto = costcentre, Local = Departmattend,
+Telefone = phoneoffice, per.Email, Aniversario = convert(varchar, dateofbirth, 103), Endereco = per.streethouseno, cep = per.zipcode,
+Cidade = per.city, TipoDocumento = idtype, NumeroDocumento = idnumber, Departamento = Department, Escritorio = centraloffice  from bsuser.persons per
+inner join bsuser.clients cli on per.clientid = cli.clientid
+inner join bsuser.persclasses pers on pers.persclassid = per.persclassid
+left outer join bsuser.companies cmp on cmp.companyid = per.companyid
+where per.status = 1 and persclass = 'E'
+order by Nome
