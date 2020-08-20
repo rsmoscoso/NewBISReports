@@ -35,7 +35,7 @@ namespace NewBISReports.Models.Reports
         /// <returns></returns>
         public static DataTable GetEventsBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, string start, string end, LOGEVENT_STATE state, LOGEVENT_VALUETYPE type, string clientexternalid,
             string description, string[] company, string[] deviceid, string[] addresstag, string[] persclassid, string stringvalue, bool meal, HomeModel reports, string tagbisserver,
-            string addresstagprefix, string addresstagsufix)
+            string addresstagprefix, string addresstagsufix, ACCESSTYPE accesstype)
         {
             try
             {
@@ -102,11 +102,12 @@ namespace NewBISReports.Models.Reports
 
                 if (String.IsNullOrEmpty(persclass))
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}",
+                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_AccessGrantedWithCode  {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
                         String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", start, end,
                         String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
                         String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
-                        String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'");
+                        String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'",
+                        ((int)accesstype).ToString());
                 }
                 else
                 {

@@ -347,7 +347,7 @@ namespace NewBISReports.Controllers
                 return RPTBS_Analytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
                     evtType, "", cli.Name, reports.CompanyNO, reports.DEVICEID, devices, reports.PERSCLASSID,
                     String.IsNullOrEmpty(reports.LISTPERSONS) ? (reports.SearchPersonsType == SEARCHPERSONS.SEARCHPERSONS_CARD ? reports.NAMESEARCH : reports.PERSNO) : reports.LISTPERSONS, meal, reports,
-                    this.config.TagBISServer, addresstagprefix, addresstagsufix);
+                    this.config.TagBISServer, addresstagprefix, addresstagsufix, reports.AccessType);
 
             }
             catch (Exception ex)

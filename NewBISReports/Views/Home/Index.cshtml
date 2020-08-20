@@ -66,7 +66,7 @@
                     <div class="widget-content">
                         <div class="form-inline">
                             @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
-                               type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type != REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH)
+                          type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type != REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH)
                             {
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -75,6 +75,18 @@
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                     <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
+                                </div>
+                                <div class="input-group">
+                                    <div class="custom-control custom-checkbox mb-3">
+                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType" value="4101">
+                                        <label class="custom-control-label" for="grant">Acesso Permitido</label>
+                                    </div>
+                                </div>
+                                <div class="input-group">
+                                    <div class="custom-control custom-checkbox mb-3">
+                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType" value="4112">
+                                        <label class="custom-control-label" for="grant">Não Permitido</label>
+                                    </div>
                                 </div>
                             }
                             @if (type == REPORTTYPE.RPT_BADGENOUSE)

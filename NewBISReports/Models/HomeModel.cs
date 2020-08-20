@@ -9,6 +9,12 @@ using System.Threading.Tasks;
 namespace NewBISReports.Models
 {
     #region Enumeration
+    public enum ACCESSTYPE
+    {
+        GRANTED = 4101,
+        NOTGRANTED = 4112
+    }
+
     /// <summary>
     /// Enumeração com os tipos de relatórios.
     /// </summary>
@@ -159,7 +165,10 @@ namespace NewBISReports.Models
         /// N. de dias para o relatório de tempo de uso do crachá.
         /// </summary>
         public string NDays { get; set; }
-
+        /// <summary>
+        /// Tipo do relatório de acesso.
+        /// </summary>
+        public ACCESSTYPE AccessType { get; set; }
         #region Functions
         /// <summary>
         /// Retorna o tipo do relatório.
