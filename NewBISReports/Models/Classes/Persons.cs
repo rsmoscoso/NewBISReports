@@ -89,7 +89,9 @@ namespace NewBISReports.Models.Classes
 
                 // apenas pesquisa pessoas com cartões cadastrados.
                 if (searchtype == SEARCHPERSONS.SEARCHPERSONS_PERSNO || searchtype == SEARCHPERSONS.SEARCHPERSONS_NAME)
-                    sql = "select distinct Persid = per.persid, Documento = persno, Nome = firstname + ' ' + lastname from bsuser.persons per left outer join bsuser.cards cd on cd.persid = per.persid where per.status = 1 and persclass = 'E' and cd.datedeleted is null ";
+                //fix de bug de filtro de funcionarios externos e vigilantes                
+                    //sql = "select distinct Persid = per.persid, Documento = persno, Nome = firstname + ' ' + lastname from bsuser.persons per left outer join bsuser.cards cd on cd.persid = per.persid where per.status = 1 and persclass = 'E' and cd.datedeleted is null ";
+                    sql = "select distinct Persid = per.persid, Documento = persno, Nome = firstname + ' ' + lastname from bsuser.persons per left outer join bsuser.cards cd on cd.persid = per.persid where per.status = 1 "+ (persclassid == null?"and persclass = 'E' ":null)+"and cd.datedeleted is null ";
                 else if (searchtype == SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO || searchtype == SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR)
                     sql = "select Persid = per.persid, Documento = passportno, Nome = firstname + ' ' + lastname from bsuser.persons per" +
                         " inner join bsuser.visitors vis on vis.persid = per.persid where per.status = 1 and persclass = 'V'";
@@ -111,8 +113,10 @@ namespace NewBISReports.Models.Classes
                             sql += " and (firstname like '%" + fn + "%' or (lastname like '%" + fn + "%'))";
                     }
                 }
-
-                if (persclassid != null && persclassid.Length > 0)
+                //fix de bug de filtro de funcionarios externos e vigilantes 
+                //if (persclassid != null && persclassid.Length > 0)
+                if (persclassid != null && persclassid.Length > 0 &&
+                    (searchtype == SEARCHPERSONS.SEARCHPERSONS_PERSNO || searchtype == SEARCHPERSONS.SEARCHPERSONS_NAME))
                 {
                     if (persclassid != null && persclassid.Length > 0)
                     {

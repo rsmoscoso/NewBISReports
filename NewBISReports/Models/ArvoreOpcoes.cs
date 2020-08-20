@@ -55,6 +55,11 @@ namespace NewBISReports.Models
         #region outras propriedades de configuração
         public bool UseLogin { get; set; }
         public bool Meal { get; set; }
+
+        //Customização de nome de "pessoas", solicitado pela FortKnox
+        public string PersonsLabel { get; set; }
+        //mostrar ou não cmapo de documento, solicitado pela FortKnox
+        public bool ShowDocumentSearch { get; set; }
         #endregion
 
 
@@ -77,6 +82,16 @@ namespace NewBISReports.Models
 
             //retorna se o sistema de controle de refeições deve ser utilziado ou não
             Meal = bool.Parse(_configuration.GetSection(nomeCliente)["Meal"]);
+
+            //Retorna o "label" de pessoas no filtro 
+            PersonsLabel = _configuration.GetSection(nomeCliente)["PersonsLabel"];
+
+            //Mostra ou não a busca por documento
+            //retorna se o sistema de controle de refeições deve ser utilziado ou não
+            ShowDocumentSearch = bool.Parse(_configuration.GetSection(nomeCliente)["ShowDocumentSearch"]);
+            
+
+
 
             //começa pelo Login - avalia apenas se useLogin for verdadeiro
             if (UseLogin){
