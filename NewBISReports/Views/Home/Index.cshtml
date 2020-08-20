@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="input-group">
                                     <div class="custom-control custom-checkbox mb-3">
-                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType" value="4101">
+                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType" value="4101" checked = "checked">
                                         <label class="custom-control-label" for="grant">Acesso Permitido</label>
                                     </div>
                                 </div>
@@ -199,6 +199,26 @@
     }
 </form>
 
+<div class="modal fade" id="mdAlertas" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">,
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Mensagem:</h4>
+            </div>
+            <div class="modal-body">
+                <h3 >@ViewBag.MensagemErro </h3>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
  <!-- Javascript Mínimo -->
 <script src="~/KingAdmin/assets/js/jquery/jquery-2.1.0.min.js"></script>
 <script src="~/KingAdmin/assets/js/bootstrap/bootstrap.js"></script>
@@ -213,6 +233,16 @@
 <script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
 
 <!-- JQUERY -->
+
+@if (@ViewBag.MensagemErro != null)
+{
+
+    <script type="text/javascript">
+        window.onload = function () {
+            $('#mdAlertas').modal('show');
+        };
+    </script>
+}
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -240,9 +270,9 @@
 });
 
     //se houver mensagem de erro na viewBAg, mostrar.
-    var msgErro = '@ViewBag.MensagemErro';
-    if(msgErro !== "")
-        alert('@ViewBag.MensagemErro');
+    // var msgErro = '@ViewBag.MensagemErro';
+    //if(msgErro !== "")
+    //    alert('@ViewBag.MensagemErro'); 
     
 </script>
 
