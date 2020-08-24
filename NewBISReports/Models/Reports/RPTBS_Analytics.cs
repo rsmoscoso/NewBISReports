@@ -111,12 +111,15 @@ namespace NewBISReports.Models.Reports
                 }
                 else
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_PersClassAccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}'",
-                    String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", start, end,
+                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_PersClassAccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
+                    String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", 
+                    start,
+                    end,
                     String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
                     String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
                     String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'",
-                    String.IsNullOrEmpty(persclass) ? "null" : persclass);
+                    String.IsNullOrEmpty(persclass) ? "null" : persclass,
+                   ((int)accesstype).ToString());                 
                 }
 
                 StreamWriter w = new StreamWriter("erro.txt", true);

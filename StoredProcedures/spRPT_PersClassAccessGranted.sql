@@ -1,11 +1,12 @@
-create procedure [dbo].[spRPT_PersClassAccessGranted]
+alter procedure [dbo].[spRPT_PersClassAccessGranted]
 @persid varchar(50) = null,
 @startdate datetime,  
 @enddate datetime,
 @clientid varchar(50) = null,  
 @devices varchar(1000) = null,
 @company varchar(1000) = null,
-@persclassid varchar(1000) = null
+@persclassid varchar(1000) = null,
+@accesstype varchar(50)
 with encryption as
 
 declare @sql varchar(5000)  
@@ -31,7 +32,7 @@ left outer join [' + @server + '].acedb.bsuser.companies cmp on cmp.companyid = 
 left outer join [' + @server + '].acedb.bsuser.visitors vis on vis.persid = per.persid 
 inner join [' + @server + '].acedb.bsuser.clients cli on cli.clientid = per.clientid '
 
-set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (4101) and eventValueName = ''PERSID'''
+set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (' + @accesstype + ') and eventValueName = ''PERSID'''
 
 if (not @devices is null)
 	set @where = @where + ' and AddressTag in (' + @devices + ')'
@@ -46,7 +47,7 @@ set @where = @where + ' and LogEvent.ID in (select LogEvent.Id from LogEventValu
  
  set @where = @where + ' where eventCreationTime >= ''' + convert(varchar, @startdate) + ''' and eventCreationTime <= ''' + convert(varchar, @enddate) + ''''
  
-/* se há pessoas selecionadas, prioridade na pesquisa */
+/* se hÃ¡ pessoas selecionadas, prioridade na pesquisa */
 if (not @persid is null)
 	set @where = @where + ' and eventValueName = ''PERSID'' and stringValue = ''' + @persid + ''''
 
@@ -55,7 +56,7 @@ else if (not @clientid is null and @devices is null)
  
 
 /*
- * Se empresa for preenchida e os devices + unidades não,
+ * Se empresa for preenchida e os devices + unidades nÃ£o,
  * pesquisa apenas pela empresa ou
  * se empresa e unidades forem preenchidos, pesquisa pelos empresa pois
  * o primeiro select pesquisa a unidade */

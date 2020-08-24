@@ -12,7 +12,10 @@ namespace NewBISReports.Models
     public enum ACCESSTYPE
     {
         GRANTED = 4101,
-        NOTGRANTED = 4112
+        NOTGRANTED = 4112,
+        CARDBLOCKED = 4111,
+        CARDEXPIRED = 4120
+
     }
 
     /// <summary>
