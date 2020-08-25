@@ -48,6 +48,7 @@ namespace NewBISReports.Models
         RPT_READERAUTHORIZATION = 19,
         RPT_COUNTBATH = 20,
         RPT_PERSONSPROFILES = 21,
+        RPT_PERSONSAREA = 22
 
     }
 
@@ -337,6 +338,9 @@ namespace NewBISReports.Models
                 case REPORTTYPE.RPT_PERSONSPROFILES:
                     retval = "Perfis de Pessoas";
                     break;
+                case REPORTTYPE.RPT_PERSONSAREA:
+                    retval = "Pessoas por Área";
+                    break;
             }
             return retval;
         }
@@ -417,6 +421,9 @@ namespace NewBISReports.Models
                     break;
                 case REPORTTYPE.RPT_PERSONSPROFILES:
                     retval = "relatório dos perfis das pessoas das pessoas";
+                    break;
+                case REPORTTYPE.RPT_PERSONSAREA:
+                    retval = "relatório das pessoas por área";
                     break;
             }
             return retval;

@@ -72,6 +72,10 @@ namespace NewBISReports.Controllers
         /// Lista das colunas customizáveis para o relatório de pessoas.
         /// </summary>
         private List<BSRPTCustomFields> CustomFields { get; set; }
+        /// <summary>
+        /// Nome da área externa.
+        /// </summary>
+        private string AreaExterna { get; set; }
         #endregion
 
         #region Functions
@@ -559,6 +563,14 @@ namespace NewBISReports.Controllers
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\visitors.xlsx");
                     }
                 }
+                else if (reports.Type == REPORTTYPE.RPT_PERSONSAREA)
+                {
+                    using (System.Data.DataTable table = RPTBS_Acedb.LoadPersonsArea(this.contextACE, this.AreaExterna))
+                    {
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\area.xlsx", "Orion", "Area")) != null)
+                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\area.xlsx");
+                    }
+                }
                 else if (reports.Type == REPORTTYPE.RPT_PERSONGENERAL)
                 {
                     using (System.Data.DataTable table = RPTBS_Acedb.LoadAllPerson(this.contextACE, this.ReportFields, this.CustomFields, reports.PERSNO, reports.PERSCLASSID, reports.CLIENTID, reports.CompanyNO))
@@ -723,7 +735,8 @@ namespace NewBISReports.Controllers
                     configuration.GetSection(defaultsettings)["FontWeight"], configuration.GetSection(defaultsettings)["ImagePath"],
                     configuration.GetSection(defaultsettings)["Meal"], configuration.GetSection(defaultsettings)["BisPath"], configuration.GetSection(defaultsettings)["SystemType"],
                     configuration.GetSection(defaultsettings)["AddressTagPrefix"], configuration.GetSection(defaultsettings)["AddressTagSufix"], configuration.GetSection(defaultsettings)["TagBISServer"],
-                    configuration.GetSection(defaultsettings)["RestServer"], configuration.GetSection(defaultsettings)["RestPort"]);
+                    configuration.GetSection(defaultsettings)["RestServer"], configuration.GetSection(defaultsettings)["RestPort"], configuration.GetSection(defaultsettings)["OutSideArea"]);
+                this.AreaExterna = configuration.GetSection("Report")["AREA"];
             }
             catch (Exception ex)
             {

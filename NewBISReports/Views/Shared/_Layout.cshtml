@@ -194,23 +194,35 @@
                                     <i class="toggle-icon fa fa-angle-left"></i>
                                 </a>
                                 <ul class="sub-menu ">
-                                    @if (_arvoreOpcoes.Pessoas){
+                                    @if (_arvoreOpcoes.Pessoas)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PERSONGENERAL"><span class="text">Pessoas</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.PerfilDasPessoas){
+                                    @if (_arvoreOpcoes.PerfilDasPessoas)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PERSONSPROFILES"><span class="text">Perfil das Pessoas</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.AutorizacoesDasPessoas){
+                                    @if (_arvoreOpcoes.AutorizacoesDasPessoas)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PERSONSAUTHORIZATIONS"><span class="text">Autorizações das Pessoas</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.LeitoresPorAutorizacoes){
+                                    @if (_arvoreOpcoes.LeitoresPorAutorizacoes)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_READERAUTHORIZATION"><span class="text">Leitores por Autorizações</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.PessoasBloqueadas){
+                                    @if (_arvoreOpcoes.PessoasBloqueadas)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ALLLOCKOUT"><span class="text">Pessoas Bloqueadas</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.TodosOsVisitantes){
-                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ALLVISITORS"><span class="text">Todos os Visitantes</span></a></li>                                                                
+                                    @if (_arvoreOpcoes.TodosOsVisitantes)
+                                    {
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ALLVISITORS"><span class="text">Todos os Visitantes</span></a></li>
+
+                                    }
+                                    @if (_arvoreOpcoes.PessoasPorArea)
+                                    {
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PERSONSAREA"><span class="text">Pessoas por Área</span></a></li>
+
                                     }
                                 </ul>
                             </li>
