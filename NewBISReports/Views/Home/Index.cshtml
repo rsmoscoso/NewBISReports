@@ -66,7 +66,7 @@
                     <div class="widget-content">
                         <div class="form-inline">
                             @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
-                          type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type != REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
+                         type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type != REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
                             {
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -78,7 +78,7 @@
                                 </div>
                                 <div class="input-group">
                                     <div class="custom-control custom-checkbox mb-3">
-                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType" value="4101" checked = "checked">
+                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType" value="4101" checked="checked">
                                         <label class="custom-control-label" for="grant">Acesso Permitido</label>
                                     </div>
                                 </div>
@@ -89,6 +89,24 @@
                                     </div>
                                 </div>
                             }
+                            @if (type == REPORTTYPE.RPT_PERSONSAREA)
+                            {
+                                <!-- INICIO AREAS-->
+                                <fieldset>
+                                    <div class="col-sm-12">
+
+                                        <label>Áreas</label>
+                                        <select multiple="multiple" asp-for="AREAID" class="select2 select2-multiple" name="AREAID"
+                                                asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))"></select>
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="checkbox" asp-for="ALLINSIDE" value="true">
+                                            <label class="custom-control-label" for="grant">Todos dentro da unidade</label>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <!-- FIM AREAS-->
+                            }
+
                             @if (type == REPORTTYPE.RPT_BADGENOUSE)
                             {
                                 <input type="text" id="NDays" name="NDays" asp-for="NDays" class="form-control" placeholder="N. de Dias sem Uso do Crachá" value="30" required>
@@ -126,7 +144,7 @@
             <!-- INÍCIO DO CARD UNIDADES -->
 
             @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONGENERAL &&
-               type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
+              type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
             {
                 <div class="col-sm-6">
                     <div class="widget widget-table">

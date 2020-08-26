@@ -202,17 +202,24 @@ namespace NewBISReports.Models.Reports
 
         /// <summary>
         /// Retorna as autorizações das pessoas.
+        /// Se areaid = 0, o relatório buscará todos dentro da unidade através
+        /// da variável areaexterna.
         /// </summary>
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
+        /// <param name="areaid">ID da área.</param>
         /// <param name="areaexterna">Nome referente à área externa.</param>
         /// <returns></returns>
-        public static DataTable LoadPersonsArea(DatabaseContext dbcontext, string areaexterna)
+        public static DataTable LoadPersonsArea(DatabaseContext dbcontext, string areaid, string areaexterna)
         {
             try
             {
-                string sql = String.Format("select Matricula = persno, nome = isnull(firstname, '') + ' ' + isnull(lastname, ''), Local = are.Name from bsuser.persons per " +
-                    "inner join bsuser.CURRENTACCESSSTATE cur on cur.PERSID = per.PERSID inner join bsuser.AREAS are on are.AREAID = cur.AREAID " +
-                    "where are.name != '{0}'", areaexterna);
+                string sql = "select Matricula = persno, nome = isnull(firstname, '') + ' ' + isnull(lastname, ''), Local = are.Name from bsuser.persons per " +
+                    "inner join bsuser.CURRENTACCESSSTATE cur on cur.PERSID = per.PERSID inner join bsuser.AREAS are on are.AREAID = cur.AREAID ";
+
+                if (String.IsNullOrEmpty(areaid) && !String.IsNullOrEmpty(areaexterna))
+                    sql += String.Format(" where are.name != '{0}'", areaexterna);
+                else
+                    sql += String.Format(" where are.areaid = '{0}'", areaid);
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
