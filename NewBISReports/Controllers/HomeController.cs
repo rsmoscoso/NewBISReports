@@ -67,7 +67,7 @@ namespace NewBISReports.Controllers
         /// <summary>
         /// Lista das colunas para o relatório de pessoas.
         /// </summary>
-        private BSRPTFields ReportFields { get;set; }
+        private BSRPTFields ReportFields { get; set; }
         /// <summary>
         /// Lista das colunas customizáveis para o relatório de pessoas.
         /// </summary>
@@ -89,11 +89,12 @@ namespace NewBISReports.Controllers
             {
                 if (TempData["Clients"] != null)
                     ViewBag.Clients = JsonConvert.DeserializeObject(TempData["Clients"].ToString());
-                else{
+                else
+                {
                     //deve-se montar a opção todos toda vez
                     var _clients = Clients.GetClients(this.contextACE);
                     _clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
-                    ViewBag.Clients = _clients;                    
+                    ViewBag.Clients = _clients;
                 }
 
                 if (TempData["Areas"] != null)
@@ -173,7 +174,7 @@ namespace NewBISReports.Controllers
                 this.persisTempData();
 
                 return View("Index", model);
-                 //return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
+                //return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
             }
             catch (Exception ex)
             {
@@ -182,7 +183,7 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
                 //return View("Index", model);
-                 return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ex.Message});
+                return RedirectToAction(nameof(Index), new { type = model.Type, mensagemErro = ex.Message });
             }
         }
 
@@ -190,7 +191,7 @@ namespace NewBISReports.Controllers
         /// Pesquisa as empresas.
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
-        [HttpPost,ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult searchCompanies(HomeModel model)
         {
             try
@@ -209,7 +210,7 @@ namespace NewBISReports.Controllers
                 this.persisTempData();
                 //diogo se não colocar o type, ele sempre vai pular para o relatorio padrão
                 //return View("Index", model.Type);
-                 return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
+                return RedirectToAction(nameof(Index), new { type = model.Type, mensagemErro = "" });
             }
             catch (Exception ex)
             {
@@ -218,8 +219,8 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
 
-               // return View("Index");
-               return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ex.Message});
+                // return View("Index");
+                return RedirectToAction(nameof(Index), new { type = model.Type, mensagemErro = ex.Message });
             }
         }
 
@@ -356,8 +357,9 @@ namespace NewBISReports.Controllers
                     addresstagprefix = "ControleAcesso.Devices.";
                 if (String.IsNullOrEmpty(addresstagsufix))
                     addresstagprefix = ".Evento";
-
-                return RPTBS_Analytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
+                //Diogo - A data agora já vem formatada do frontend com hora minuto
+                //return RPTBS_Analytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
+                return RPTBS_Analytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + ":00", reports.EndDate + ":59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
                     evtType, "", cli.Name, reports.CompanyNO, reports.DEVICEID, devices, reports.PERSCLASSID,
                     String.IsNullOrEmpty(reports.LISTPERSONS) ? (reports.SearchPersonsType == SEARCHPERSONS.SEARCHPERSONS_CARD ? reports.NAMESEARCH : reports.PERSNO) : reports.LISTPERSONS, meal, reports,
                     this.config.TagBISServer, addresstagprefix, addresstagsufix, reports.AccessType);
@@ -375,7 +377,7 @@ namespace NewBISReports.Controllers
             }
         }
         #endregion
-        [HttpPost,ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult ExecPage(HomeModel reports)
         {
             try
@@ -434,8 +436,8 @@ namespace NewBISReports.Controllers
                     //return View("Index", reports);
                 }
 
-               // return View("Index", reports);
-               return RedirectToAction(nameof(Index), new{type=reports.Type});
+                // return View("Index", reports);
+                return RedirectToAction(nameof(Index), new { type = reports.Type });
 
             }
             catch (Exception ex)
@@ -445,7 +447,7 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
                 //return View("Index", reports);
-                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
+                return RedirectToAction(nameof(Index), new { type = reports.Type, mensagemErro = ex.Message });
             }
         }
 
@@ -453,7 +455,7 @@ namespace NewBISReports.Controllers
         /// Executa a pesquisa dos eventos para uma planilha Excel.
         /// </summary>
         /// <param name="reports">Parâmetros da pesquisa.</param>
-        [HttpPost,ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult ExcelPage(HomeModel reports)
         {
             try
@@ -484,10 +486,12 @@ namespace NewBISReports.Controllers
                     }
 
                 }
-                else if(reports.Type == REPORTTYPE.RPT_ANALYTICSMEALBIS)
+                else if (reports.Type == REPORTTYPE.RPT_ANALYTICSMEALBIS)
                 {
                     string divisao = Clients.GetClientDescription(this.contextACE, reports.CLIENTID);
-                    using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, divisao))
+                    //Diogo - O front end já passa hora e minuto
+                    // using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, divisao))
+                    using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + ":00", reports.EndDate + ":59", config.TagBISServer, divisao))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal")) != null)
                         {
@@ -516,7 +520,7 @@ namespace NewBISReports.Controllers
                 {
                     string visitorname = Visitors.GetVisitorName(this.contextACE, reports.PERSNO);
 
-                   //DatabaseContext ctext = new DatabaseContext("Data Source=(local); UID=sa; Password=S$iG3L9a@n; Database=hzFortknox;Connection Timeout=300; MultipleActiveResultSets='true'");
+                    //DatabaseContext ctext = new DatabaseContext("Data Source=(local); UID=sa; Password=S$iG3L9a@n; Database=hzFortknox;Connection Timeout=300; MultipleActiveResultSets='true'");
 
                     using (DataTable table = RPTBS_Acedb.LoadVisitorQRCode(this.contextACE, visitorname))
                     {
@@ -600,10 +604,10 @@ namespace NewBISReports.Controllers
                 }
 
                 reports.Acessos = acessos;
-                this.persisTempData(); 
+                this.persisTempData();
 
                 //Diogo - Adicionando mensagem de alerta, caso nenhum arquivo seja retornado, se chegar aqui sem erros
-                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro ="Nenhum registro encontrado"});
+                return RedirectToAction(nameof(Index), new { type = reports.Type, mensagemErro = "Nenhum registro encontrado" });
                 //return View("Index", reports);
             }
             catch (Exception ex)
@@ -614,7 +618,7 @@ namespace NewBISReports.Controllers
                 w = null;
                 //adicionando verbosidade de erros e recarregando o formulário corretamente
                 //return View("Index", reports);
-                return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
+                return RedirectToAction(nameof(Index), new { type = reports.Type, mensagemErro = ex.Message });
             }
         }
 
@@ -625,7 +629,7 @@ namespace NewBISReports.Controllers
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
         /// <returns></returns>
-        [HttpPost,ValidateAntiForgeryToken]
+        [HttpPost, ValidateAntiForgeryToken]
         public IActionResult Index(HomeModel reports)
         {
             try
@@ -653,13 +657,14 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
 
-               // return View("Index", reports);
-               return RedirectToAction(nameof(Index), new{type=reports.Type, mensagemErro = ex.Message});
+                // return View("Index", reports);
+                return RedirectToAction(nameof(Index), new { type = reports.Type, mensagemErro = ex.Message });
             }
         }
-//Diogo Adicionando Landing page
+        //Diogo Adicionando Landing page
         [HttpGet]
-        public IActionResult Landing(){
+        public IActionResult Landing()
+        {
             TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
             TempData["Type"] = REPORTTYPE.RPT_LANDINGPAGE;
             TempData.Keep();
@@ -675,20 +680,24 @@ namespace NewBISReports.Controllers
             try
             {
                 //Diogo - Removi as inicializações, pois o persistTempData já controla a integridade das inicializações
-                 this.persisTempData();
+                this.persisTempData();
 
                 //diogo - adicionando uma Landing Page
-                if (type == REPORTTYPE.RPT_LANDINGPAGE){
+                if (type == REPORTTYPE.RPT_LANDINGPAGE)
+                {
                     return RedirectToAction(nameof(Landing));
-                }else{
-                    //adicionando a mensagem de erro propagada
-                    if(mensagemErro != null){
-                        ViewBag.MensagemErro = mensagemErro;
-                     }
-                        ViewBag.Type = type;
-                    return View();  
                 }
-                
+                else
+                {
+                    //adicionando a mensagem de erro propagada
+                    if (mensagemErro != null)
+                    {
+                        ViewBag.MensagemErro = mensagemErro;
+                    }
+                    ViewBag.Type = type;
+                    return View();
+                }
+
             }
             catch (Exception ex)
             {
@@ -727,10 +736,10 @@ namespace NewBISReports.Controllers
             {
                 this.contextBIS = new DatabaseContext(configuration.GetConnectionString("BIS"));
                 this.contextACE = new DatabaseContext(configuration.GetConnectionString("BIS_ACE"));
-                
+
                 if (configuration.GetSection("Report").GetChildren() != null)
                 {
-                    foreach(ConfigurationSection config in configuration.GetSection("Report").GetChildren())
+                    foreach (ConfigurationSection config in configuration.GetSection("Report").GetChildren())
                     {
                         if (config.Key.Equals("ALLRECORDS"))
                             this.ReportFields = (BSRPTFields)JsonConvert.DeserializeObject<BSRPTFields>(configuration.GetSection("Report")["ALLRECORDS"].ToString());

@@ -4,8 +4,8 @@
 @{
     //comentário.
     var buttonname = "Excel";
-    var startdate = Model != null && !String.IsNullOrEmpty(Model.StartDate) ? Model.StartDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
-    var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
+    var startdate = Model != null && !String.IsNullOrEmpty(Model.StartDate) ? Model.StartDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+    var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy HH:mm");
     REPORTTYPE type = REPORTTYPE.RPT_ANALYTICGRANTEDBIS;
     if (ViewBag.Type != null)
     {
@@ -67,15 +67,27 @@
                         <div class="form-inline">
                             @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
                          type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type != REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
-                            {
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
-                                </div>
+                            {      
+                                <div class="form-group">
+                                    <div class="input-group date form_datetime">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input class="form-control" size="16" type="text" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                    </div>
+                                </div>   
+                                <div class="form-group">
+                                    <div class="input-group date form_datetime">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
+                                    </div>
+                                </div>                       
+                                @* <div class="input-group">
+                                    <span class="input-group-addon  date form_datetime" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p"><i class="fa fa-calendar"></i></span>
+                                    <input  type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                </div> 
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                     <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
-                                </div>
+                                </div> *@
                                 <div class="input-group">
                                     <div class="custom-control custom-checkbox mb-3">
                                         <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType" value="4101" checked="checked">
@@ -247,7 +259,8 @@
 <script src="~/KingAdmin/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
 <script src="~/KingAdmin/assets/js/king-common.js"></script>
 <script src="~/KingAdmin/assets/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
-<script src="~/KingAdmin/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.pt-BR.js"></script>
 <script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
 
 <!-- JQUERY -->
@@ -264,27 +277,19 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-            $(function () {
-        window.prettyPrint && prettyPrint();
-        $('#StartDate').datepicker({
-            format: 'dd/mm/yyyy'
-        }).datepicker("setDate", document.getElementById('hidData_Start').defaultValue);;
-        $('#StartDate').datepicker()
-            .on('changeDate', function (ev) {
-                $('#StartDate').datepicker('hide');
-            });
-    });
 
-    $(function () {
-        window.prettyPrint && prettyPrint();
-        $('#EndDate').datepicker({
-            format: 'dd/mm/yyyy'
-        }).datepicker("setDate", document.getElementById('hidData_End').defaultValue);;
-        $('#EndDate').datepicker()
-            .on('changeDate', function (ev) {
-                $('#EndDate').datepicker('hide');
-            });
+        $('.form_datetime').datetimepicker({
+        language:  'pt-BR',
+        format: 'dd/mm/yyyy HH:ii',
+        weekStart: 1,
+        todayBtn:  1,
+		autoclose: 1,
+		todayHighlight: 1,
+		startView: 2,
+		forceParse: 0,
+        showMeridian: 1
     });
+            
 });
 
     //se houver mensagem de erro na viewBAg, mostrar.

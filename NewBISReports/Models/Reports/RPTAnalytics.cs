@@ -158,7 +158,9 @@ namespace NewBISReports.Models.Reports
                 string sql = String.Format("set dateformat 'dmy' select Divisao, TipoEmpregado, Contato, Matricula, Nome, CPF, Funcao, CentroCusto " +
                     "Departamento, Autorizador, AutorizadorCC, DataAcesso = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108),  " +
                     "TipoAcesso, LocalAcesso, EnderecoAcesso, TipoRefeicao, ENTSAI, AutorizadorDiretoria, AutorizadorDepartamento, Empresa from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'",
-                    start + " 00:00:00", end + " 23:59:59");
+                    //Diogo - alteração no formato da data, já vem com hora e minuto do frontend
+                    //start + " 00:00:00", end + " 23:59:59");
+                    start + ":00", end + ":59");
 
                 if (!String.IsNullOrEmpty(clientid) && clientid != "0")
                     sql += " and clientid = '" + clientid + "'";
