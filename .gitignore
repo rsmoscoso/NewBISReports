@@ -339,5 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 
-#arquivo de erro gerado pela palicação
-*erro.txt
+#arquivo de erro gerado pela aplicação
+NewBISReports/erro.txt

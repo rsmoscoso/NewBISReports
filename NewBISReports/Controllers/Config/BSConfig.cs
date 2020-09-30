@@ -79,6 +79,10 @@ namespace NewBISReports.Controllers.Config
         /// Porta de comunição do servidor RESTApi.
         /// </summary>
         public string RestPort { get; set; }
+        /// <summary>
+        /// Nome da área externa para o relatório de pessoas por área.
+        /// </summary>
+        public string OutSideArea { get; set; }
         #endregion
 
         #region Events
@@ -100,8 +104,9 @@ namespace NewBISReports.Controllers.Config
         /// padrão é: TagBISServer + '.' + descrição da unidade.</param>
         /// <param name="restserver">IP do servidor RESTApi.</param>
         /// <param name="restport">Porta do servidor RESTApi.</param>
+        /// <param name="outsidearea">Nome da área externa para o relatório das pessoas por área.</param>
         public BSConfig(string defaultname, string backcolor, string forecolor, string fontweight, string imagepath, string meal, string bispath, string systemtype, string addresstagprefix,
-            string addresstagsufix, string tagbisserver, string restserver, string restport)
+            string addresstagsufix, string tagbisserver, string restserver, string restport, string outsidearea)
         {
             this.DefaultName = defaultname;
             this.BackColor = !String.IsNullOrEmpty(backcolor) ? backcolor : "black";
@@ -116,6 +121,7 @@ namespace NewBISReports.Controllers.Config
             this.TagBISServer = !String.IsNullOrEmpty(tagbisserver) ? tagbisserver : "BIS";
             this.RestServer = !String.IsNullOrEmpty(restserver) ? restserver : "localhost";
             this.RestPort = !String.IsNullOrEmpty(restport) ? restport : "9090";
+            this.OutSideArea = !String.IsNullOrEmpty(outsidearea) ? outsidearea : "outside";
         }
         #endregion
     }

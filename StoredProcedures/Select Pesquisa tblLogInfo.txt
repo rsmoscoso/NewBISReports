@@ -1,0 +1,7 @@
+set dateformat 'dmy' select RE = persno, Nome = firstname + ' ' + lastname, companyno, displaytext, convert(varchar, date, 103) + ' ' + convert(varchar, date, 108) from tblInfoLog info
+inner join [10.122.122.181\BIS_ACE].acedb.bsuser.cards cd on info.cardid collate SQL_Latin1_General_CP1_CI_AS = cd.cardid
+inner join [10.122.122.181\BIS_ACE].acedb.bsuser.persons per on per.persid = cd.persid
+inner join [10.122.122.181\BIS_ACE].acedb.bsuser.devices dev on dev.id collate SQL_Latin1_General_CP1_CI_AS = info.deviceid
+inner join [10.122.122.181\BIS_ACE].acedb.bsuser.companies cmp on cmp.companyid = per.companyid
+where date >= '17/03/2019' and deviceid = '00132B90CD3E1901'
+order by date

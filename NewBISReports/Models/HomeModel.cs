@@ -9,6 +9,15 @@ using System.Threading.Tasks;
 namespace NewBISReports.Models
 {
     #region Enumeration
+    public enum ACCESSTYPE
+    {
+        GRANTED = 4101,
+        NOTGRANTED = 4112,
+        CARDBLOCKED = 4111,
+        CARDEXPIRED = 4120
+
+    }
+
     /// <summary>
     /// Enumeração com os tipos de relatórios.
     /// </summary>
@@ -39,6 +48,8 @@ namespace NewBISReports.Models
         RPT_READERAUTHORIZATION = 19,
         RPT_COUNTBATH = 20,
         RPT_PERSONSPROFILES = 21,
+        RPT_PERSONSAREA = 22,
+        RPT_PERSONSINSIDEAREA = 23
 
     }
 
@@ -159,7 +170,18 @@ namespace NewBISReports.Models
         /// N. de dias para o relatório de tempo de uso do crachá.
         /// </summary>
         public string NDays { get; set; }
-
+        /// <summary>
+        /// Tipo do relatório de acesso.
+        /// </summary>
+        public ACCESSTYPE AccessType { get; set; }
+        /// <summary>
+        /// ID da área.
+        /// </summary>
+        public string AREAID { get; set; }
+        /// <summary>
+        /// Flag para o relatórios de todos dentro da área.
+        /// </summary>
+        public bool ALLINSIDE { get; set; }
         #region Functions
         /// <summary>
         /// Retorna o tipo do relatório.
@@ -238,6 +260,12 @@ namespace NewBISReports.Models
                     break;
                 case "21":
                     retval = REPORTTYPE.RPT_PERSONSPROFILES;
+                    break;
+                case "22":
+                    retval = REPORTTYPE.RPT_PERSONSAREA;
+                    break;
+                case "23":
+                    retval = REPORTTYPE.RPT_PERSONSINSIDEAREA;
                     break;
                 //Diogo - adicionando uma landing page
                 case "99":
@@ -325,6 +353,12 @@ namespace NewBISReports.Models
                 case REPORTTYPE.RPT_PERSONSPROFILES:
                     retval = "Perfis de Pessoas";
                     break;
+                case REPORTTYPE.RPT_PERSONSAREA:
+                    retval = "Pessoas por Área";
+                    break;
+                case REPORTTYPE.RPT_PERSONSINSIDEAREA:
+                    retval = "Pessoas dentro da Unidade";
+                    break;
             }
             return retval;
         }
@@ -405,6 +439,12 @@ namespace NewBISReports.Models
                     break;
                 case REPORTTYPE.RPT_PERSONSPROFILES:
                     retval = "relatório dos perfis das pessoas das pessoas";
+                    break;
+                case REPORTTYPE.RPT_PERSONSAREA:
+                    retval = "relatório das pessoas por área";
+                    break;
+                case REPORTTYPE.RPT_PERSONSINSIDEAREA:
+                    retval = "relatório das pessoas dentro da unidade";
                     break;
             }
             return retval;
