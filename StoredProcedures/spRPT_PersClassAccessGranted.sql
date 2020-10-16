@@ -1,13 +1,15 @@
 alter procedure [dbo].[spRPT_PersClassAccessGranted]
-@persid varchar(50) = null,
-@startdate datetime,  
-@enddate datetime,
-@clientid varchar(50) = null,  
-@devices varchar(1000) = null,
-@company varchar(1000) = null,
-@persclassid varchar(1000) = null,
-@accesstype varchar(50)
-with encryption as
+	@persid varchar(50) = null,
+	@startdate datetime,
+	@enddate datetime,
+	@clientid varchar(50) = null,
+	@devices varchar(1000) = null,
+	@company varchar(1000) = null,
+	@persclassid varchar(1000) = null,
+	@accesstype varchar(50)
+with
+	encryption
+as
 
 declare @sql varchar(5000)  
 declare @where varchar(5000)  
@@ -18,7 +20,7 @@ set @where = ' where '
 
 set @sql = 'SELECT LogEvent.ID, DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   
 convert(varchar, eventCreationtime, 108), Nome = firstname + '' '' + isnull(lastname, ''''), 
-Empresa = CompanyNO, CPF = case when persclass = ''E'' then persno else passportno end,
+Empresa = CompanyNO, CPF = case when persclass <> ''V'' then persno else passportno end,
 Unidade = cli.Name, TipoAcesso = AddressTag from LogEventValue
 inner join LogEvent2Value on LogEvent2Value.valueId = LogEventValue.Id
 inner join LogEvent on LogEvent.Id = LogEvent2Value.eventId
@@ -32,7 +34,8 @@ left outer join [' + @server + '].acedb.bsuser.companies cmp on cmp.companyid = 
 left outer join [' + @server + '].acedb.bsuser.visitors vis on vis.persid = per.persid 
 inner join [' + @server + '].acedb.bsuser.clients cli on cli.clientid = per.clientid '
 
-set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (' + @accesstype + ') and eventValueName = ''PERSID'''
+--set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (' + @accesstype + ') and eventValueName = ''PERSID'''
+set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (' + @accesstype + ')'
 
 if (not @devices is null)
 	set @where = @where + ' and AddressTag in (' + @devices + ')'
