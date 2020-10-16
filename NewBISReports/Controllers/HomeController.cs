@@ -78,6 +78,11 @@ namespace NewBISReports.Controllers
         private string AreaExterna { get; set; }
         #endregion
 
+        #region Injecao de dependencia
+        private readonly ArvoreOpcoes _arvoreopcoes;
+
+        #endregion
+
         #region Functions
         /// <summary>
         /// Mantem a conexão com o banco de dados.
@@ -469,6 +474,18 @@ namespace NewBISReports.Controllers
                 {
                     using (DataTable table = this.getBISEvents(reports, config.AddressTagPrefix, config.AddressTagSufix, false))
                     {
+
+                        //Remover colunas não desejadas
+                        //basta configurar na propriedade "RemoverColunasAlanyticsGranted" do appssettings.json
+                        if (_arvoreopcoes.RemoverColunasAlanyticsGranted.Count > 0)
+                        {
+                            //
+                            foreach (string ColName in _arvoreopcoes.RemoverColunasAlanyticsGranted)
+                            {
+                                if (table.Columns.Contains(ColName))
+                                    table.Columns.Remove(ColName);
+                            }
+                        }
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bisevents.xlsx", "Orion", "Analytics")) != null)
                         {
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\bisevents.xlsx");
@@ -730,8 +747,12 @@ namespace NewBISReports.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public HomeController(IConfiguration configuration)
+        public HomeController(IConfiguration configuration,
+                                ArvoreOpcoes arvoreOpcoes)
         {
+            //Classe que contempla opções do appssetings
+            //TODO: mover as configurações dentro do Try abaixo para dentro del
+            _arvoreopcoes = arvoreOpcoes;
             try
             {
                 this.contextBIS = new DatabaseContext(configuration.GetConnectionString("BIS"));

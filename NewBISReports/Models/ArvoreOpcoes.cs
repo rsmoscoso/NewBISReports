@@ -1,5 +1,6 @@
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Binder;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace NewBISReports.Models
     ///Utilizada para construir o menu de relatórios na barra lateral esquerda do site
     ///via appsettings.json, evitando assim, condicionais por cliente direto no código do _layout.cshtml
     ///</summary>
-    public class ArvoreOpcoes{
+    public class ArvoreOpcoes
+    {
 
         #region propriedades para construção de menu
         //menu raiz
@@ -27,12 +29,12 @@ namespace NewBISReports.Models
         public bool EventosDeAcesso { get; set; }
         public bool AcessosAnaliticosGeral { get; set; }
         public bool TabelaRefeicoes { get; set; }
-        public bool  DashboardTotalRefeicoes { get; set; }
+        public bool DashboardTotalRefeicoes { get; set; }
         public bool TotalDeRefeicoes { get; set; }
         public bool ExportarRefeicoes { get; set; }
         //Menu Raiz
         public bool OperacionaisRaiz { get; set; }
-        public bool  Excessao { get; set; }
+        public bool Excessao { get; set; }
         public bool Banheiro { get; set; }
         public bool PessoasSemFotografia { get; set; }
         public bool PessoasSemCracha { get; set; }
@@ -61,6 +63,8 @@ namespace NewBISReports.Models
         public string PersonsLabel { get; set; }
         //mostrar ou não cmapo de documento, solicitado pela FortKnox
         public bool ShowDocumentSearch { get; set; }
+        //colunas não desejadas no relatório analytics_granted_BIS
+        public List<string> RemoverColunasAlanyticsGranted { get; set; }
         #endregion
 
 
@@ -70,7 +74,8 @@ namespace NewBISReports.Models
 
 
         //construtor lê do appsettings.json e popula as propriedades.
-        public ArvoreOpcoes(IConfiguration configuration){
+        public ArvoreOpcoes(IConfiguration configuration)
+        {
             _configuration = configuration;
 
             //Populando os itens um a um
@@ -90,18 +95,23 @@ namespace NewBISReports.Models
             //Mostra ou não a busca por documento
             //retorna se o sistema de controle de refeições deve ser utilziado ou não
             ShowDocumentSearch = bool.Parse(_configuration.GetSection(nomeCliente)["ShowDocumentSearch"]);
-            
 
+            //omitir colunas do relatório Access Granted
+            var remArray = _configuration.GetSection(nomeCliente + ":RemoverColunasAccessGranted").Get<string[]>();
+            RemoverColunasAlanyticsGranted = remArray == null ? new List<string>() : remArray.ToList();
 
 
             //começa pelo Login - avalia apenas se useLogin for verdadeiro
-            if (UseLogin){
+            if (UseLogin)
+            {
                 //avaliar quais itens do menu de login estarão disponíveis
                 AdicionarUsuarios = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administracaoRaiz:adicionarUsuarios"]);
                 AlterarSenhas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administracaoRaiz:alterarSenhas"]);
                 RemoverUsurios = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administracaoRaiz:removerUsurios"]);
-                
-            } else{
+
+            }
+            else
+            {
                 AdicionarUsuarios = false;
                 AlterarSenhas = false;
                 RemoverUsurios = false;
@@ -113,13 +123,16 @@ namespace NewBISReports.Models
             EventosDeAcesso = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:eventosDeAcesso"]);
 
             //o restante só é levado em consideração se a oopção "Meal" for true
-            if (Meal){
+            if (Meal)
+            {
                 AcessosAnaliticosGeral = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:acessosAnaliticosGeral"]);
                 TabelaRefeicoes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:tabelaRefeicoes"]);
                 DashboardTotalRefeicoes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:dashboardTotalRefeicoes"]);
                 TotalDeRefeicoes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:totalDeRefeicoes"]);
                 ExportarRefeicoes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:exportarRefeicoes"]);
-            }else{
+            }
+            else
+            {
                 AcessosAnaliticosGeral = false;
                 TabelaRefeicoes = false;
                 DashboardTotalRefeicoes = false;
@@ -128,7 +141,7 @@ namespace NewBISReports.Models
             }
             //avalia se adiciona a raiz
             EventosDeAcessoRaiz = (EventosDeAcesso || AcessosAnaliticosGeral || TabelaRefeicoes || DashboardTotalRefeicoes || TotalDeRefeicoes || ExportarRefeicoes);
-            
+
             //menu Operacionais
             Excessao = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:excessao"]);
             Banheiro = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:banheiro"]);
@@ -153,7 +166,8 @@ namespace NewBISReports.Models
             ImportarVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:visitantesRaiz:importarVisitantes"]);
             VisitantesRaiz = (QrCodeDosVisitantes || ImportarVisitantes);
 
+
         }
-        
+
     }
 }
