@@ -26,7 +26,7 @@ namespace NewBISReports
     {
         public Startup(IConfiguration configuration)
         {
-           Configuration = configuration;
+            Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
@@ -44,17 +44,18 @@ namespace NewBISReports
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
-            });            
+            });
 
             //Adiciona as configurações de Login
             //verifica para qual cliente está sendo configurado
             var nomeCliente = Configuration["Default:Name"];
             //Verifica se o módulo de login estará habilitado
-            var isLogin = Configuration[nomeCliente+":useLogin"];            
+            var isLogin = Configuration[nomeCliente + ":useLogin"];
             //Diogo - Adicionando Identity para uso com o banco hzLogin 
             //TODO  -> adicionando Identity apontando para uma classe vazia de userStore, com policies inócuas,
             // para ficar configurável se a pessoa quer ou não utilizar o login de forma compatível
-            if(isLogin =="true"){
+            if (isLogin == "true")
+            {
                 string hzLoginConnectionString = Configuration.GetConnectionString("DbContextHzLogin");
                 services.AddDbContext<DbContexHzLogin>((optBuilder) =>
                 {
@@ -69,7 +70,9 @@ namespace NewBISReports
                 .AddSignInManager()
                 .AddEntityFrameworkStores<DbContexHzLogin>()
                 .AddDefaultTokenProviders();
-            }else{
+            }
+            else
+            {
                 //Faz um override na classe UserStore
                 services.AddScoped<IUserStore<ApplicationUser>, EmptyUserStore>();
                 services.AddScoped<IRoleStore<IdentityRole>, EmptyRoleStore>();
@@ -107,7 +110,7 @@ namespace NewBISReports
             services.Configure<SecurityStampValidatorOptions>(options =>
             {
                 // enables immediate logout, after updating the user's stat.
-                options.ValidationInterval = TimeSpan.Zero;   
+                options.ValidationInterval = TimeSpan.Zero;
             });
 
             services.AddAuthentication(o =>
@@ -131,10 +134,11 @@ namespace NewBISReports
             //políticas de acesso: Apenas Admin, User e Anonymous
 
             //Politicas básicas 
-            services.AddAuthorization(options =>{
+            services.AddAuthorization(options =>
+            {
                 //As duas controlam se o usuario precisa trocar a senha
                 //Quando a política é apenas para admin acessar
-                options.AddPolicy("AcessoAdmin", pB => pB.RequireAssertion(c =>(c.User.HasClaim(x => x.Type == Claims.Admin) && !c.User.HasClaim(x => x.Type == "MustChangePassword"))));
+                options.AddPolicy("AcessoAdmin", pB => pB.RequireAssertion(c => (c.User.HasClaim(x => x.Type == Claims.Admin) && !c.User.HasClaim(x => x.Type == "MustChangePassword"))));
                 //Partes acessíveis pelos usuários ou admins
                 options.AddPolicy("AcessoUsuario", pB => pB.RequireAssertion(c => (c.User.HasClaim(x => x.Type == Claims.Admin) || c.User.HasClaim(x => x.Type == Claims.Usuario)) && !c.User.HasClaim(x => x.Type == "MustChangePassword")));
                 //reset de senha
@@ -145,9 +149,12 @@ namespace NewBISReports
 
 
             //habilia o middleware mvc, com filtro de allowanony mous se o login estiver desabilitado
-            if(isLogin == "true"){
+            if (isLogin == "true")
+            {
                 services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            }else{
+            }
+            else
+            {
                 services.AddMvc(opts =>
                 {
                     //filtro global de allowanonymous
@@ -165,12 +172,12 @@ namespace NewBISReports
                 //options.KnownProxies.Add(IPAddress.Parse("10.20.30.115"));
             });
 
-            //ria o Singleton de criação de menu lateral do site
+            //cria o Singleton de criação de menu lateral do site, e outras opções
             services.AddSingleton<ArvoreOpcoes>();
 
             services.AddLogging();
             services.AddCors();
-//            services.AddMvc().AddSessionStateTempDataProvider();
+            //            services.AddMvc().AddSessionStateTempDataProvider();
             services.AddSession();
             services.AddMemoryCache();
         }
