@@ -1,12 +1,14 @@
 alter procedure [dbo].[spRPT_AccessGranted]
-@persid varchar(50) = null,
-@startdate datetime,  
-@enddate datetime,
-@clientid varchar(50) = null,  
-@devices varchar(1000) = null,
-@company varchar(1000) = null,
-@accesstype varchar(50)
-with encryption as
+	@persid varchar(50) = null,
+	@startdate datetime,
+	@enddate datetime,
+	@clientid varchar(50) = null,
+	@devices varchar(1000) = null,
+	@company varchar(1000) = null,
+	@accesstype varchar(50)
+with
+	encryption
+as
 
 declare @sql varchar(5000)  
 declare @where varchar(5000)  
@@ -15,10 +17,12 @@ declare @server varchar(100)
 set @server = convert(varchar, SERVERPROPERTY('MachineName')) + '\BIS_ACE'
 set @where = ' where '
 
-set @sql = 'SELECT LogEvent.ID, DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   
-convert(varchar, eventCreationtime, 108), Leitor = AddressTag,
-CONCAT(MAX(CASE WHEN LogEventValueType.eventValueName = ''FIRSTNAME'' THEN stringValue + '' '' ELSE NULL END),   
-MAX(CASE WHEN LogEventValueType.eventValueName = ''NAME'' THEN stringValue ELSE NULL END)) AS Nome,  
+--Diogo melhorando a legibilidade
+set @sql = 'SELECT 
+LogEvent.ID,
+DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   convert(varchar, eventCreationtime, 108), 
+Leitor = AddressTag,
+CONCAT(MAX(CASE WHEN LogEventValueType.eventValueName = ''FIRSTNAME'' THEN stringValue + '' '' ELSE NULL END), MAX(CASE WHEN LogEventValueType.eventValueName = ''NAME'' THEN stringValue ELSE NULL END)) AS Nome,  
 MAX(CASE WHEN LogEventValueType.eventValueName = ''PERSID'' THEN stringValue ELSE NULL END) AS Persid,    
 MAX(CASE WHEN LogEventValueType.eventValueName = ''CARDNO'' THEN stringValue ELSE NULL END) AS Cardno,   
 MAX(CASE WHEN LogEventValueType.eventValueName = ''COMPANY'' THEN stringValue ELSE NULL END) AS Empresa,   

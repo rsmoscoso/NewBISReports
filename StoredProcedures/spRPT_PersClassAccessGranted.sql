@@ -18,10 +18,32 @@ declare @server varchar(100)
 set @server = convert(varchar, SERVERPROPERTY('MachineName')) + '\BIS_ACE'
 set @where = ' where '
 
-set @sql = 'SELECT LogEvent.ID, DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   
-convert(varchar, eventCreationtime, 108), Nome = firstname + '' '' + isnull(lastname, ''''), 
-Empresa = CompanyNO, CPF = case when persclass <> ''V'' then persno else passportno end,
-Unidade = cli.Name, TipoAcesso = AddressTag from LogEventValue
+-- consulta como estava
+-- set @sql = 'SELECT LogEvent.ID, DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   
+-- convert(varchar, eventCreationtime, 108), Nome = firstname + '' '' + isnull(lastname, ''''), 
+-- Empresa = CompanyNO, CPF = case when persclass <> ''V'' then persno else passportno end,
+-- Unidade = cli.Name, TipoAcesso = AddressTag from LogEventValue
+-- inner join LogEvent2Value on LogEvent2Value.valueId = LogEventValue.Id
+-- inner join LogEvent on LogEvent.Id = LogEvent2Value.eventId
+-- inner join LogState on BISEventLog..LogState.Id = LogEvent.stateId 
+-- inner join LogEventValueType on LogEventValueType.Id = LogEventValue.eventTypeId 
+-- inner join LogEventType on LogEventType.ID = LogEvent.eventTypeId 
+-- inner join LogAddress on LogAddress.ID = LogEvent.AddressID 
+-- inner join [' + @server + '].acedb.bsuser.persons per on per.persid collate SQL_Latin1_General_CP1_CI_AS = stringValue 
+-- inner join [' + @server + '].acedb.bsuser.persclasses perclass on perclass.persclassid = per.persclassid 
+-- left outer join [' + @server + '].acedb.bsuser.companies cmp on cmp.companyid = per.companyid 
+-- left outer join [' + @server + '].acedb.bsuser.visitors vis on vis.persid = per.persid 
+-- inner join [' + @server + '].acedb.bsuser.clients cli on cli.clientid = per.clientid '
+
+--Diogo : colocando as colunas iguais ao AccessGranted, com o cardNO ficou extremamente lento
+set @sql = 'SELECT 
+DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   convert(varchar, eventCreationtime, 108), 
+Nome = firstname + '' '' + isnull(lastname, ''''), 
+Empresa = CompanyNO, 
+TipoAcesso = AddressTag,
+CPF = case when persclass <> ''V'' then persno else passportno end,
+Unidade = cli.Name 
+from LogEventValue
 inner join LogEvent2Value on LogEvent2Value.valueId = LogEventValue.Id
 inner join LogEvent on LogEvent.Id = LogEvent2Value.eventId
 inner join LogState on BISEventLog..LogState.Id = LogEvent.stateId 
