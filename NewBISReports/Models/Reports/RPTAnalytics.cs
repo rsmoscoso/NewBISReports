@@ -122,12 +122,17 @@ namespace NewBISReports.Models.Reports
         /// <param name="filename">Nome do arquivo.</param>
         /// <param name="startdate">Data inicial da pesquisa.</param>
         /// <param name="enddate">Data Final da pesquisa.</param>
+        /// <param name="dateFormat">String de Formato de Data</param>
         /// <returns>Retorna a Datatable com os dados.</returns>
-        public static DataTable LoadMeals(DatabaseContext dbcontext, string filename, string startdate, string enddate)
+        public static DataTable LoadMeals(DatabaseContext dbcontext, string filename, string startdate, string enddate, string dateFormat)
         {
             try
             {
-                string sql = "set dateformat 'dmy' select Matricula, data from HzBIS..tblAcessos " +
+                //constrói o formato da coluna "data" baseado no formato de Data recebido
+                string dateConvertString = dateFormat == "dmy" ? "103" : "101";
+                string timeConvertString = dateFormat == "dmy" ? "convert(varchar, data, 108)" : "RIGHT(convert(varchar, eventCreationtime, 22), 11)";
+                var selectDataString = "Data = convert(varchar, data, " + dateConvertString + ") + ' ' + " + timeConvertString;
+                string sql = "set dateformat '" + dateFormat + "' select Matricula, " + selectDataString + " from HzBIS..tblAcessos " +
                     "where data >= '" + startdate + "' and data <= '" + enddate + "'  and TipoRefeicao <> 'Acesso Regular'";
 
                 return dbcontext.LoadDatatable(dbcontext, sql);

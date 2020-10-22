@@ -1,4 +1,4 @@
-alter procedure [dbo].[spRPT_PersClassAccessGranted]
+alter procedure [dbo].[spRPT_PersClassAccessGranted_testeLibra]
 	@persid varchar(50) = null,
 	@startdate datetime,
 	@enddate datetime,
@@ -6,7 +6,8 @@ alter procedure [dbo].[spRPT_PersClassAccessGranted]
 	@devices varchar(1000) = null,
 	@company varchar(1000) = null,
 	@persclassid varchar(1000) = null,
-	@accesstype varchar(50)
+	@accesstype varchar(50),
+	@dateformat varchar(50) = 'dmy'
 with
 	encryption
 as
@@ -14,30 +15,29 @@ as
 declare @sql varchar(5000)  
 declare @where varchar(5000)  
 declare @server varchar(100)
+declare @codigoData varchar(50)
+declare @codigoHora varchar(100)
+
+--determinação do código do formato da data
+set @codigoData = CASE 
+	when @dateformat = 'dmy' then  '103' --dd/mm/yyyy
+	when @dateformat = 'mdy' then  '101'  --mm/dd/yyyy
+	else '103'
+End;
+--determinação do codigo do formato da hora
+set @codigoHora = CASE
+	when @dateformat = 'dmy' then 'convert(varchar, eventCreationtime, 108)' --hh:mm:ss (24h)
+	when @dateformat = 'mdy' then 'RIGHT(convert(varchar, eventCreationtime, 22), 11)' --mm/dd/yy hh:mi:ss AM (or PM) -> os 11 ultimos caracteres
+	else 'convert(varchar, eventCreationtime, 108)'
+End;
 
 set @server = convert(varchar, SERVERPROPERTY('MachineName')) + '\BIS_ACE'
 set @where = ' where '
 
--- consulta como estava
--- set @sql = 'SELECT LogEvent.ID, DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   
--- convert(varchar, eventCreationtime, 108), Nome = firstname + '' '' + isnull(lastname, ''''), 
--- Empresa = CompanyNO, CPF = case when persclass <> ''V'' then persno else passportno end,
--- Unidade = cli.Name, TipoAcesso = AddressTag from LogEventValue
--- inner join LogEvent2Value on LogEvent2Value.valueId = LogEventValue.Id
--- inner join LogEvent on LogEvent.Id = LogEvent2Value.eventId
--- inner join LogState on BISEventLog..LogState.Id = LogEvent.stateId 
--- inner join LogEventValueType on LogEventValueType.Id = LogEventValue.eventTypeId 
--- inner join LogEventType on LogEventType.ID = LogEvent.eventTypeId 
--- inner join LogAddress on LogAddress.ID = LogEvent.AddressID 
--- inner join [' + @server + '].acedb.bsuser.persons per on per.persid collate SQL_Latin1_General_CP1_CI_AS = stringValue 
--- inner join [' + @server + '].acedb.bsuser.persclasses perclass on perclass.persclassid = per.persclassid 
--- left outer join [' + @server + '].acedb.bsuser.companies cmp on cmp.companyid = per.companyid 
--- left outer join [' + @server + '].acedb.bsuser.visitors vis on vis.persid = per.persid 
--- inner join [' + @server + '].acedb.bsuser.clients cli on cli.clientid = per.clientid '
 
---Diogo : colocando as colunas iguais ao AccessGranted, com o cardNO ficou extremamente lento
-set @sql = 'SELECT 
-DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   convert(varchar, eventCreationtime, 108), 
+set @sql = 'set dateformat '+ @dateformat+' SELECT 
+LogEvent.ID,
+DataAcesso = convert(varchar, eventCreationtime, '+ @codigoData +') + '' '' +  '+ @codigoHora +', 
 Nome = firstname + '' '' + isnull(lastname, ''''), 
 Empresa = CompanyNO, 
 TipoAcesso = AddressTag,
@@ -56,8 +56,8 @@ left outer join [' + @server + '].acedb.bsuser.companies cmp on cmp.companyid = 
 left outer join [' + @server + '].acedb.bsuser.visitors vis on vis.persid = per.persid 
 inner join [' + @server + '].acedb.bsuser.clients cli on cli.clientid = per.clientid '
 
---set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (' + @accesstype + ') and eventValueName = ''PERSID'''
-set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (' + @accesstype + ')'
+set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (' + @accesstype + ') and eventValueName = ''PERSID'''
+--set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (' + @accesstype + ')'
 
 if (not @devices is null)
 	set @where = @where + ' and AddressTag in (' + @devices + ')'

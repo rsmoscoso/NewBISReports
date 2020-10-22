@@ -5,7 +5,8 @@ alter procedure [dbo].[spRPT_AccessGranted]
 	@clientid varchar(50) = null,
 	@devices varchar(1000) = null,
 	@company varchar(1000) = null,
-	@accesstype varchar(50)
+	@accesstype varchar(50),
+	@dateformat varchar(50) = 'dmy'
 with
 	encryption
 as
@@ -13,14 +14,30 @@ as
 declare @sql varchar(5000)  
 declare @where varchar(5000)  
 declare @server varchar(100)
+declare @codigoData varchar(50)
+declare @codigoHora varchar(100)
+
+--determinação do código do formato da data
+set @codigoData = CASE 
+	when @dateformat = 'dmy' then  '103' --dd/mm/yyyy
+	when @dateformat = 'mdy' then  '101'  --mm/dd/yyyy
+	else '103'
+End;
+--determinação do codigo do formato da hora
+set @codigoHora = CASE
+	when @dateformat = 'dmy' then 'convert(varchar, eventCreationtime, 108)' --hh:mm:ss (24h)
+	when @dateformat = 'mdy' then 'RIGHT(convert(varchar, eventCreationtime, 22), 11)' --mm/dd/yy hh:mi:ss AM (or PM) -> os 11 ultimos caracteres
+	else 'convert(varchar, eventCreationtime, 108)'
+End;
+
 
 set @server = convert(varchar, SERVERPROPERTY('MachineName')) + '\BIS_ACE'
 set @where = ' where '
 
---Diogo melhorando a legibilidade
-set @sql = 'SELECT 
+
+set @sql = 'set dateformat '+ @dateformat+' SELECT 
 LogEvent.ID,
-DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   convert(varchar, eventCreationtime, 108), 
+DataAcesso = convert(varchar, eventCreationtime, '+ @codigoData +') + '' '' +  '+ @codigoHora +', 
 Leitor = AddressTag,
 CONCAT(MAX(CASE WHEN LogEventValueType.eventValueName = ''FIRSTNAME'' THEN stringValue + '' '' ELSE NULL END), MAX(CASE WHEN LogEventValueType.eventValueName = ''NAME'' THEN stringValue ELSE NULL END)) AS Nome,  
 MAX(CASE WHEN LogEventValueType.eventValueName = ''PERSID'' THEN stringValue ELSE NULL END) AS Persid,    

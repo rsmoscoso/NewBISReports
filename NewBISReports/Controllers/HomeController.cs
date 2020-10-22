@@ -362,12 +362,10 @@ namespace NewBISReports.Controllers
                     addresstagprefix = "ControleAcesso.Devices.";
                 if (String.IsNullOrEmpty(addresstagsufix))
                     addresstagprefix = ".Evento";
-                //Diogo - A data agora já vem formatada do frontend com hora minuto
-                //return RPTBS_Analytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
-                return RPTBS_Analytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + ":00", reports.EndDate + ":59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
+                return RPTBS_Analytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate, reports.EndDate, LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
                     evtType, "", cli.Name, reports.CompanyNO, reports.DEVICEID, devices, reports.PERSCLASSID,
                     String.IsNullOrEmpty(reports.LISTPERSONS) ? (reports.SearchPersonsType == SEARCHPERSONS.SEARCHPERSONS_CARD ? reports.NAMESEARCH : reports.PERSNO) : reports.LISTPERSONS, meal, reports,
-                    this.config.TagBISServer, addresstagprefix, addresstagsufix, reports.AccessType);
+                    this.config.TagBISServer, addresstagprefix, addresstagsufix, reports.AccessType, _arvoreopcoes.FormatoDataSQL);
 
             }
             catch (Exception ex)
@@ -397,7 +395,7 @@ namespace NewBISReports.Controllers
                 {
                     List<TotalMeal> meals = new List<TotalMeal>();
                     using (DataTable table = RPTBS_Analytics.LoadTotalMeal(this.contextBIS, reports.StartDate, reports.EndDate,
-                        reports.CLIENTID))
+                        reports.CLIENTID, _arvoreopcoes.FormatoDataSQL))
                     {
                         if (table != null)
                             meals = GlobalFunctions.ConvertDataTable<TotalMeal>(table);
@@ -429,7 +427,7 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_EXPORTMEAL)
                 {
-                    using (System.Data.DataTable table = RPTAnalytics.LoadMeals(this.contextBIS, "exportmeal.txt", reports.StartDate, reports.EndDate))
+                    using (System.Data.DataTable table = RPTAnalytics.LoadMeals(this.contextBIS, "exportmeal.txt", reports.StartDate, reports.EndDate, _arvoreopcoes.FormatoDataSQL))
                     {
                         string filename = "c:\\Horizon\\exportmeal.txt";
                         if (reports.ExportMeal(table, filename))
@@ -508,7 +506,7 @@ namespace NewBISReports.Controllers
                     string divisao = Clients.GetClientDescription(this.contextACE, reports.CLIENTID);
                     //Diogo - O front end já passa hora e minuto
                     // using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, divisao))
-                    using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + ":00", reports.EndDate + ":59", config.TagBISServer, divisao))
+                    using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate, reports.EndDate , config.TagBISServer, divisao,_arvoreopcoes.FormatoDataSQL))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal")) != null)
                         {
@@ -613,7 +611,7 @@ namespace NewBISReports.Controllers
                 {
                     List<TotalMeal> meals = new List<TotalMeal>();
                     using (DataTable table = RPTBS_Analytics.LoadTotalMeal(this.contextBIS, reports.StartDate, reports.EndDate,
-                        reports.CLIENTID))
+                        reports.CLIENTID, _arvoreopcoes.FormatoDataSQL))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reporttotalmeal.xlsx", "Orion", "Crachas")) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reporttotalmeal.xlsx");

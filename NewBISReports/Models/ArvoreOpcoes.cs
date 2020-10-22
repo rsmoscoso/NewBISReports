@@ -65,11 +65,15 @@ namespace NewBISReports.Models
         public bool ShowDocumentSearch { get; set; }
         //colunas não desejadas no relatório analytics_granted_BIS
         public List<string> RemoverColunasAlanyticsGranted { get; set; }
+        //Formato data e hora
+        public string FormatoDataHora { get; set; }
+        public string FormatoDataSQL { get; set; }
         #endregion
 
 
         //propriedades para injeção de depedencia
         private IConfiguration _configuration { get; }
+
 
 
 
@@ -100,6 +104,23 @@ namespace NewBISReports.Models
             var remArray = _configuration.GetSection(nomeCliente + ":RemoverColunasAccessGranted").Get<string[]>();
             RemoverColunasAlanyticsGranted = remArray == null ? new List<string>() : remArray.ToList();
 
+            //formato da data e hora FormatoDataHora
+            FormatoDataHora = _configuration.GetSection(nomeCliente)["FormatoDataHora"];
+            //faz uma espécie de assert
+            switch (FormatoDataHora)
+            {
+                case "pt-BR":
+                    FormatoDataSQL = "dmy";
+                    break;
+                case "en":
+                    FormatoDataSQL = "mdy";
+                    break;
+                default:
+                    //força pt-BR
+                    FormatoDataHora = "pt-BR";
+                    FormatoDataSQL = "dmy";
+                    break;
+            }
 
             //começa pelo Login - avalia apenas se useLogin for verdadeiro
             if (UseLogin)

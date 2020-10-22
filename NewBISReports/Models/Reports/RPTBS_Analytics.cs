@@ -32,10 +32,11 @@ namespace NewBISReports.Models.Reports
         /// <param name="stringvalue">Desrição do item da pesquisa.</param>
         /// <param name="meal">Verifica os eventos de refeição.</param>
         /// <param name="server">Servidor da instância BIS_ACE.</param>
+        /// <param name="dateFormat"> formato de data</param>
         /// <returns></returns>
         public static DataTable GetEventsBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, string start, string end, LOGEVENT_STATE state, LOGEVENT_VALUETYPE type, string clientexternalid,
             string description, string[] company, string[] deviceid, string[] addresstag, string[] persclassid, string stringvalue, bool meal, HomeModel reports, string tagbisserver,
-            string addresstagprefix, string addresstagsufix, ACCESSTYPE accesstype)
+            string addresstagprefix, string addresstagsufix, ACCESSTYPE accesstype, string dateFormat)
         {
             try
             {
@@ -102,7 +103,7 @@ namespace NewBISReports.Models.Reports
 
                 if (String.IsNullOrEmpty(persclass))
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
+                    sql = String.Format("set dateformat '" + dateFormat + "' exec BISEventLog..spRPT_AccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
                         String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", start, end,
                         String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
                         String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
@@ -111,15 +112,15 @@ namespace NewBISReports.Models.Reports
                 }
                 else
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_PersClassAccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
-                    String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", 
+                    sql = String.Format("set dateformat '" + dateFormat + "' exec BISEventLog..spRPT_PersClassAccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
+                    String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'",
                     start,
                     end,
                     String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
                     String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
                     String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'",
                     String.IsNullOrEmpty(persclass) ? "null" : persclass,
-                   ((int)accesstype).ToString());                 
+                   ((int)accesstype).ToString());
                 }
 
                 StreamWriter w = new StreamWriter("erro.txt", true);
@@ -183,12 +184,13 @@ namespace NewBISReports.Models.Reports
         /// <param name="start">Data inicial do relatório.</param>
         /// <param name="end">Data final do relatório.</param>
         /// <param name="clientid">ID do cliente.</param>
+        /// <param name="dateFormat"> formato de data</param>
         /// <returns></returns>
-        public static DataTable LoadTotalMeal(DatabaseContext dbcontext, string start, string end, string clientid)
+        public static DataTable LoadTotalMeal(DatabaseContext dbcontext, string start, string end, string clientid, string dateFormat)
         {
             try
             {
-                string sql = String.Format("set dateformat 'dmy' exec BISEventLog..spREL_TotalMeal '{0}', '{1}', '{2}'", start, end, clientid);
+                string sql = String.Format("set dateformat '" + dateFormat + "' exec BISEventLog..spREL_TotalMeal '{0}', '{1}', '{2}', '{3}'", start, end, clientid, dateFormat);
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
@@ -205,12 +207,17 @@ namespace NewBISReports.Models.Reports
         /// <param name="startdate">Início da pesquisa.</param>
         /// <param name="enddate">Fim da pesquisa.</param>
         /// <param name="clientid">ID do cliente para pesquisa.</param>
+        /// <param name="dateFormat"> formato de data</param>
         /// <returns>Retorna a tabela com as refeições.</returns>
-        public static DataTable GetMealBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, MEALTYPE type, string startdate, string enddate, string tagbisserver, string clientid)
+        public static DataTable GetMealBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, MEALTYPE type, string startdate, string enddate, string tagbisserver, string clientid, string dateFormat)
         {
             try
             {
-                string sql = String.Format("set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, Divisao from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'", startdate, enddate);
+                //repassa o formato da data para o codigo SQL adequado
+                string dateConvertString = dateFormat == "dmy" ? "103" : "101";
+                string timeConvertString = dateFormat == "dmy" ? "convert(varchar, data, 108)" : "RIGHT(convert(varchar, eventCreationtime, 22), 11)";
+
+                string sql = String.Format("set dateformat '" + dateFormat + "' select CPF, Nome, Empresa, Data = convert(varchar, data, " + dateConvertString + ") + ' ' + " + timeConvertString + ", TipoRefeicao, EnderecoAcesso, Divisao from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'", startdate, enddate);
 
                 if (!String.IsNullOrEmpty(clientid) && clientid != "0")
                     sql += " and divisao = '" + tagbisserver + "." + clientid + "'";
