@@ -80,6 +80,7 @@ namespace NewBISReports.Controllers
 
         #region Injecao de dependencia
         private readonly ArvoreOpcoes _arvoreopcoes;
+        private readonly DateTimeConverter _dateTimeConverter;
 
         #endregion
 
@@ -470,6 +471,10 @@ namespace NewBISReports.Controllers
 
                 this.persisTempData();
 
+                //Diogo - Converte as strings de data e hora para PTBR
+                reports.StartDate = _dateTimeConverter.ToPtBR(reports.StartDate);
+                reports.EndDate = _dateTimeConverter.ToPtBR(reports.EndDate);
+
                 if (reports.Type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
                 {
                     using (DataTable table = this.getBISEvents(reports, config.AddressTagPrefix, config.AddressTagSufix, false))
@@ -486,7 +491,7 @@ namespace NewBISReports.Controllers
                                     table.Columns.Remove(ColName);
                             }
                         }
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bisevents.xlsx", "Orion", "Analytics")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bisevents.xlsx", "Orion", "Analytics", _dateTimeConverter)) != null)
                         {
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\bisevents.xlsx");
                         }
@@ -496,7 +501,7 @@ namespace NewBISReports.Controllers
                 {
                     using (DataTable table = this.getAnalytics(reports))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal", _dateTimeConverter)) != null)
                         {
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\bismeals.xlsx");
                         }
@@ -510,7 +515,7 @@ namespace NewBISReports.Controllers
                     // using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, divisao))
                     using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + ":00", reports.EndDate + ":59", config.TagBISServer, divisao))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal", _dateTimeConverter)) != null)
                         {
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\bismeals.xlsx");
                         }
@@ -529,7 +534,7 @@ namespace NewBISReports.Controllers
                 {
                     using (DataTable table = RPTBS_Acedb.LoadNoBadge(this.contextACE, reports.CLIENTID))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reportphoto.xlsx", "Orion", "Crachas")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reportphoto.xlsx", "Orion", "Crachas", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reportphoto.xlsx");
                     }
                 }
@@ -541,7 +546,7 @@ namespace NewBISReports.Controllers
 
                     using (DataTable table = RPTBS_Acedb.LoadVisitorQRCode(this.contextACE, visitorname))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\visqrcode.xlsx", "Orion", "QRCode")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\visqrcode.xlsx", "Orion", "QRCode", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\visqrcode.xlsx");
                     }
                 }
@@ -549,7 +554,7 @@ namespace NewBISReports.Controllers
                 {
                     using (DataTable table = RPTBS_Acedb.LoadReaderAuthorization(this.contextACE, reports.CLIENTID, reports.AUTHID))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\ReaderAuth.xlsx", "Orion", "ReaderAuth")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\ReaderAuth.xlsx", "Orion", "ReaderAuth", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\ReaderAuth.xlsx");
                     }
                 }
@@ -557,7 +562,7 @@ namespace NewBISReports.Controllers
                 {
                     using (System.Data.DataTable table = RPTBS_Acedb.LoadBadgeNoUse(this.contextACE, reports.NDays))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reportbadgesnouse.xlsx", "Orion", "Crachas")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reportbadgesnouse.xlsx", "Orion", "Crachas", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reportbadges.xlsx");
                     }
                 }
@@ -565,7 +570,7 @@ namespace NewBISReports.Controllers
                 {
                     using (System.Data.DataTable table = RPTBS_Acedb.LoadPersonProfiles(this.contextACE, reports.CLIENTID, reports.AUTHID))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\personprofile.xlsx", "Orion", "Profiles")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\personprofile.xlsx", "Orion", "Profiles", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\personprofile.xlsx");
                     }
                 }
@@ -573,7 +578,7 @@ namespace NewBISReports.Controllers
                 {
                     using (System.Data.DataTable table = RPTBS_Acedb.LoadPersonAuths(this.contextACE, reports.CLIENTID, reports.AUTHID))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\personauth.xlsx", "Orion", "Crachas")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\personauth.xlsx", "Orion", "Crachas", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\personauth.xlsx");
                     }
                 }
@@ -581,7 +586,7 @@ namespace NewBISReports.Controllers
                 {
                     using (System.Data.DataTable table = RPTBS_Acedb.LoadAllLocked(this.contextACE, reports.CLIENTID))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\peoplelockout.xlsx", "Orion", "Locked")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\peoplelockout.xlsx", "Orion", "Locked", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\peoplelockout.xlsx");
                     }
                 }
@@ -589,7 +594,7 @@ namespace NewBISReports.Controllers
                 {
                     using (System.Data.DataTable table = RPTBS_Acedb.LoadAllVisitors(this.contextACE, reports.CLIENTID))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\visitors.xlsx", "Orion", "Visitors")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\visitors.xlsx", "Orion", "Visitors", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\visitors.xlsx");
                     }
                 }
@@ -597,7 +602,7 @@ namespace NewBISReports.Controllers
                 {
                     using (System.Data.DataTable table = RPTBS_Acedb.LoadPersonsArea(this.contextACE, reports.AREAID, this.AreaExterna))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\area.xlsx", "Orion", "Area")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\area.xlsx", "Orion", "Area", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\area.xlsx");
                     }
                 }
@@ -605,7 +610,7 @@ namespace NewBISReports.Controllers
                 {
                     using (System.Data.DataTable table = RPTBS_Acedb.LoadAllPerson(this.contextACE, this.ReportFields, this.CustomFields, reports.PERSNO, reports.PERSCLASSID, reports.CLIENTID, reports.CompanyNO))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\people.xlsx", "Orion", "PEOPLE")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\people.xlsx", "Orion", "PEOPLE", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\people.xlsx");
                     }
                 }
@@ -615,7 +620,7 @@ namespace NewBISReports.Controllers
                     using (DataTable table = RPTBS_Analytics.LoadTotalMeal(this.contextBIS, reports.StartDate, reports.EndDate,
                         reports.CLIENTID))
                     {
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reporttotalmeal.xlsx", "Orion", "Crachas")) != null)
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reporttotalmeal.xlsx", "Orion", "Crachas", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reporttotalmeal.xlsx");
                     }
                 }
@@ -748,11 +753,13 @@ namespace NewBISReports.Controllers
         }
 
         public HomeController(IConfiguration configuration,
-                                ArvoreOpcoes arvoreOpcoes)
+                                ArvoreOpcoes arvoreOpcoes,
+                                DateTimeConverter dateTimeConverter)
         {
             //Classe que contempla opções do appssetings
             //TODO: mover as configurações dentro do Try abaixo para dentro del
             _arvoreopcoes = arvoreOpcoes;
+            _dateTimeConverter = dateTimeConverter;
             try
             {
                 this.contextBIS = new DatabaseContext(configuration.GetConnectionString("BIS"));

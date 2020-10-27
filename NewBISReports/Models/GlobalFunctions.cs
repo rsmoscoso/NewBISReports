@@ -206,13 +206,30 @@ namespace NewBISReports.Models
         /// <param name="company">Nome da empresa para o arquivo Excel.</param>
         /// <param name="sheet">Nome da planilha.</param>
         /// <returns></returns>
-        public static byte[] SaveExcel(DataTable table, string filename, string company, string sheet)
+        public static byte[] SaveExcel(DataTable table, string filename, string company, string sheet, DateTimeConverter _dateTimeConverter)
         {
             try
             {
                 byte[] retval = null;
                 if (!Directory.Exists(Path.GetDirectoryName(filename)))
                     Directory.CreateDirectory(Path.GetDirectoryName(filename));
+                //Diogo - converte a coluna de "DataAcesso" para o formato de data especificado
+                if (table.Columns.Contains("DataAcesso"))
+                {
+                    //tira o atributo readonly da coluna
+                    table.Columns["DataAcesso"].ReadOnly = false;
+                    //itera entre todas as linhas0
+                    foreach (DataRow dr in table.Rows)
+                    {
+                        dr.BeginEdit();
+                        dr["DataAcesso"] = _dateTimeConverter.FromPtBRWithSeconds(dr["DataAcesso"].ToString());
+                        dr.EndEdit();
+                    }
+                    //confirma todas as alterações feitas
+                    table.AcceptChanges();
+
+                }
+
                 HzNPOIWorkbook wb = HzNPOIWorkbook.Export(table, company, sheet);
                 if (wb != null && wb.Save(filename))
                     retval = System.IO.File.ReadAllBytes(filename);

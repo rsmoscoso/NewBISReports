@@ -174,6 +174,8 @@ namespace NewBISReports
 
             //cria o Singleton de criação de menu lateral do site, e outras opções
             services.AddSingleton<ArvoreOpcoes>();
+            //serviço de conversão de data no frontend
+            services.AddScoped<DateTimeConverter>();
 
             services.AddLogging();
             services.AddCors();

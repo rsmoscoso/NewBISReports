@@ -1,11 +1,32 @@
 ﻿@using NewBISReports.Models.Classes;
 @model NewBISReports.Models.HomeModel
+@inject NewBISReports.Models.ArvoreOpcoes _arvoreOpcoes
 
 @{
-    //comentário.
     var buttonname = "Excel";
-    var startdate = Model != null && !String.IsNullOrEmpty(Model.StartDate) ? Model.StartDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy HH:mm");
-    var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy HH:mm");
+    //definição de formato de data, tanto par ao código em C# quanto para o código em Javascript
+    var dateFormatStringRazor = "";
+    var dateFormatStringJs = "";
+    switch (_arvoreOpcoes.FormatoDataHora)
+    {
+        case "pt-BR":
+            dateFormatStringRazor = "dd/MM/yyyy HH:mm";
+            dateFormatStringJs = "dd/mm/yyyy HH:ii";
+            break;
+        case "en":
+            dateFormatStringRazor = "MM/dd/yyyy hh:mm tt";
+            dateFormatStringJs = "mm/dd/yyyy HH:ii P";
+            break;
+        default:
+            dateFormatStringRazor = "dd/MM/yyyy HH:mm";
+            dateFormatStringJs = "dd/mm/yyyy HH:ii";
+            break;
+    }
+
+    var startdate = Model != null && !String.IsNullOrEmpty(Model.StartDate) ? Model.StartDate.ToString() :
+        DateTime.Now.ToString(dateFormatStringRazor);
+    var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() :
+        DateTime.Now.ToString(dateFormatStringRazor);
     REPORTTYPE type = REPORTTYPE.RPT_ANALYTICGRANTEDBIS;
     if (ViewBag.Type != null)
     {
@@ -54,8 +75,10 @@
         <div class="widget-header">
             <h3><i class="fa fa-book"></i>@title</h3> <em>- @titlecomment</em>
             <div class="btn-group widget-header-toolbar">
-                <a href="#" id="tour-focus" title="Destaque" class="btn-borderless btn-focus"><i class="fa fa-eye"></i></a>
-                <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i class="fa fa-chevron-up"></i></a>
+                <a href="#" id="tour-focus" title="Destaque" class="btn-borderless btn-focus"><i
+                    class="fa fa-eye"></i></a>
+                <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i
+                    class="fa fa-chevron-up"></i></a>
                 <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a>
             </div>
         </div>
@@ -65,38 +88,48 @@
                 <div class="widget">
                     <div class="widget-content">
                         <div class="form-inline">
-                            @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
-                         type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type != REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
-                            {      
+                            @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type !=
+                                REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
+                            type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type !=
+                            REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type !=
+                            REPORTTYPE.RPT_PERSONSAREA)
+                            {
                                 <div class="form-group">
                                     <div class="input-group date form_datetime">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" size="16" type="text" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                        <input class="form-control" size="16" type="text" name="StartDate"
+    asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
                                     </div>
-                                </div>   
+                                </div>
                                 <div class="form-group">
                                     <div class="input-group date form_datetime">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
+                                        <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate"
+    class="form-control" placeholder="Data Final" required>
                                     </div>
-                                </div>                       
+                                </div>
                                 @* <div class="input-group">
-                                    <span class="input-group-addon  date form_datetime" data-date="1979-09-16T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p"><i class="fa fa-calendar"></i></span>
-                                    <input  type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
-                                </div> 
-                                <div class="input-group">
+                                    <span class="input-group-addon date form_datetime" data-date="1979-09-16T05:25:07Z"
+                                    data-date-format="dd MM yyyy - HH:ii p"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control"
+                                    placeholder="Data Inicial" required>
+                                    </div>
+                                    <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
-                                </div> *@
+                                    <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control"
+                                    placeholder="Data Final" required>
+                                    </div> *@
                                 <div class="input-group">
                                     <div class="custom-control custom-checkbox mb-3">
-                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType" value="4101" checked="checked">
+                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+    value="4101" checked="checked">
                                         <label class="custom-control-label" for="grant">Acesso Permitido</label>
                                     </div>
                                 </div>
                                 <div class="input-group">
                                     <div class="custom-control custom-checkbox mb-3">
-                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType" value="4112">
+                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+    value="4112">
                                         <label class="custom-control-label" for="grant">Não Permitido</label>
                                     </div>
                                 </div>
@@ -108,10 +141,12 @@
                                     <div class="col-sm-12">
 
                                         <label>Áreas</label>
-                                        <select multiple="multiple" asp-for="AREAID" class="select2 select2-multiple" name="AREAID"
-                                                asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))"></select>
+                                        <select multiple="multiple" asp-for="AREAID" class="select2 select2-multiple"
+    name="AREAID"
+    asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))"></select>
                                         <div class="custom-control custom-checkbox mb-3">
-                                            <input class="custom-control-input" id="grant" type="checkbox" asp-for="ALLINSIDE" value="true">
+                                            <input class="custom-control-input" id="grant" type="checkbox"
+    asp-for="ALLINSIDE" value="true">
                                             <label class="custom-control-label" for="grant">Todos dentro da unidade</label>
                                         </div>
                                     </div>
@@ -121,31 +156,36 @@
 
                             @if (type == REPORTTYPE.RPT_BADGENOUSE)
                             {
-                                <input type="text" id="NDays" name="NDays" asp-for="NDays" class="form-control" placeholder="N. de Dias sem Uso do Crachá" value="30" required>
+                                <input type="text" id="NDays" name="NDays" asp-for="NDays" class="form-control"
+    placeholder="N. de Dias sem Uso do Crachá" value="30" required>
                             }
 
-                            @if (type == REPORTTYPE.RPT_TOTALMEAL || type == REPORTTYPE.RPT_EXPORTMEAL || type == REPORTTYPE.RPT_COUNTBATH)
+                            @if (type == REPORTTYPE.RPT_TOTALMEAL || type == REPORTTYPE.RPT_EXPORTMEAL || type ==
+                                REPORTTYPE.RPT_COUNTBATH)
                             {
-                                <button type="submit" name="exec" id="exec" asp-action="ExecPage" class="btn">Executar</button>
+                                <button type="submit" name="exec" id="exec" asp-action="ExecPage"
+    class="btn">Executar</button>
                             }
-                            @if (type != REPORTTYPE.RPT_EXPORTMEAL && type != REPORTTYPE.RPT_COUNTBATH)
+                                @if (type != REPORTTYPE.RPT_EXPORTMEAL && type != REPORTTYPE.RPT_COUNTBATH)
                             {
                                 if (type == REPORTTYPE.RPT_PHOTOS)
                                 {
                                     buttonname = "Gerar";
                                 }
-                                <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn" style="background-color: Green; color: White;">@buttonname</button>
+                                <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
+    style="background-color: Green; color: White;">@buttonname</button>
                             }
-                        </div>
+                            </div>
 
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- FIM PERÍODO -->
-        <!-- INÍCIO DO CARD PESSOAS E UNIDADE -->
-        <div class="row">
-            @if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS || type == REPORTTYPE.RPT_PERSONGENERAL || type == REPORTTYPE.RPT_LOGQRCODE)
+            <!-- FIM PERÍODO -->
+            <!-- INÍCIO DO CARD PESSOAS E UNIDADE -->
+            <div class="row">
+                @if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS || type == REPORTTYPE.RPT_PERSONGENERAL || type ==
+                REPORTTYPE.RPT_LOGQRCODE)
             {
                 @Html.Partial("IndexPessoas")
             }
@@ -153,16 +193,18 @@
             {
                 @Html.Partial("IndexRefeicoes")
             }
-            <!-- INÍCIO DO CARD UNIDADES -->
+                <!-- INÍCIO DO CARD UNIDADES -->
 
-            @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONGENERAL &&
-              type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
+                @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE &&
+                type != REPORTTYPE.RPT_PERSONGENERAL &&
+            type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
             {
                 <div class="col-sm-6">
                     <div class="widget widget-table">
                         <div class="widget-header">
                             <h3><i class="fa fa-home"></i>Unidades</h3>
-                            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top" title="Informações das divisões e leitoras"><i class="fa fa-question-circle"></i></button>
+                            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top"
+                            title="Informações das divisões e leitoras"><i class="fa fa-question-circle"></i></button>
                         </div>
                         <div class="widget-content">
                             <div class="row">
@@ -173,8 +215,9 @@
                                             <div class="input-group input-group-sm">
                                                 <label>Unidade:</label>
                                             </div>
-                                            <select asp-for="CLIENTID" class="select2" name="CLIENTID" asp-controller="Home" asp-action="Index" onclick="form.submit();"
-                                                    asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID", "Description"))"></select>
+                                            <select asp-for="CLIENTID" class="select2" name="CLIENTID" asp-controller="Home"
+    asp-action="Index" onclick="form.submit();"
+    asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID", "Description"))"></select>
                                         </div>
                                     </div>
 
@@ -187,21 +230,24 @@
                                         <div class="col-sm-12">
 
                                             <label>Leitora de Acesso</label>
-                                            <select multiple="multiple" asp-for="DEVICEID" class="select2 select2-multiple" name="DEVICEID"
-                                                    asp-items="@(new SelectList(ViewBag.Devices, "ID", "DESCRIPTION"))"></select>
+                                            <select multiple="multiple" asp-for="DEVICEID" class="select2 select2-multiple"
+        name="DEVICEID"
+        asp-items="@(new SelectList(ViewBag.Devices, "ID", "DESCRIPTION"))"></select>
                                         </div>
                                     </fieldset>
                                     <!-- FIM DEVICES-->
                                 }
-                                @if (type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS || type == REPORTTYPE.RPT_READERAUTHORIZATION)
+                                @if (type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS || type ==
+                                    REPORTTYPE.RPT_READERAUTHORIZATION)
                                 {
                                     <!-- INICIO AUTORIZAÇÕES-->
                                     <fieldset>
                                         <div class="col-sm-12">
 
                                             <label>Autorizações</label>
-                                            <select multiple="multiple" asp-for="AUTHID" class="select2 select2-multiple" name="AUTHID"
-                                                    asp-items="@(new SelectList(ViewBag.Authorizations, "AuthID", "Shortname"))"></select>
+                                            <select multiple="multiple" asp-for="AUTHID" class="select2 select2-multiple"
+        name="AUTHID"
+        asp-items="@(new SelectList(ViewBag.Authorizations, "AuthID", "Shortname"))"></select>
                                         </div>
                                     </fieldset>
                                     <!-- FIM AUTORIZAÇÕES-->
@@ -210,7 +256,6 @@
                         </div>
                     </div>
                 </div>
-
             }
         </div>
         <!-- FIM DO CARD UNIDADES-->
@@ -223,79 +268,74 @@
         @Html.Partial("IndexPivot");
     }
 
-    @if (type == REPORTTYPE.RPT_COUNTBATH && @Model != null && @Model.Acessos != null)
+        @if (type == REPORTTYPE.RPT_COUNTBATH && @Model != null && @Model.Acessos != null)
     {
         @Html.Partial("IndexCount");
     }
-</form>
+    </form>
 
-<div class="modal fade" id="mdAlertas" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal fade" id="mdAlertas" role="dialog">
+        <div class="modal-dialog">
 
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">,
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Mensagem:</h4>
-            </div>
-            <div class="modal-body">
-                <h3 >@ViewBag.MensagemErro </h3>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">,
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Mensagem:</h4>
+                </div>
+                <div class="modal-body">
+                    <h3>@ViewBag.MensagemErro </h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
- <!-- Javascript Mínimo -->
-<script src="~/KingAdmin/assets/js/jquery/jquery-2.1.0.min.js"></script>
-<script src="~/KingAdmin/assets/js/bootstrap/bootstrap.js"></script>
-<script src="~/KingAdmin/assets/js/plugins/modernizr/modernizr.js"></script>
-<script src="~/KingAdmin/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
+    <!-- Javascript Mínimo -->
+    <script src="~/KingAdmin/assets/js/jquery/jquery-2.1.0.min.js"></script>
+    <script src="~/KingAdmin/assets/js/bootstrap/bootstrap.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/modernizr/modernizr.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
 
-<!-- Javascript Datepicker -->
-<script src="~/KingAdmin/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-<script src="~/KingAdmin/assets/js/king-common.js"></script>
-<script src="~/KingAdmin/assets/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
-<script src="~/KingAdmin/assets/js/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
-<script src="~/KingAdmin/assets/js/plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.pt-BR.js"></script>
-<script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
+    <!-- Javascript Datepicker -->
+    <script src="~/KingAdmin/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="~/KingAdmin/assets/js/king-common.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.pt-BR.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
 
-<!-- JQUERY -->
+    <!-- JQUERY -->
 
-@if (@ViewBag.MensagemErro != null)
+    @if (@ViewBag.MensagemErro != null)
 {
 
     <script type="text/javascript">
         window.onload = function () {
-            $('#mdAlertas').modal('show');
+        $('#mdAlertas').modal('show');
         };
     </script>
 }
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
 
-        $('.form_datetime').datetimepicker({
-        language:  'pt-BR',
-        format: 'dd/mm/yyyy HH:ii',
-        weekStart: 1,
-        todayBtn:  1,
-		autoclose: 1,
-		todayHighlight: 1,
-		startView: 2,
-		forceParse: 0,
-        showMeridian: 1
+    $('.form_datetime').datetimepicker({
+    language: '@_arvoreOpcoes.FormatoDataHora',
+    format: '@dateFormatStringJs',
+    mask: true,
+    weekStart: 1,
+    todayBtn: 1,
+    autoclose: 1,
+    todayHighlight: 1,
+    startView: 2,
+    forceParse: 0,
+    showMeridian: 1
     });
-            
-});
 
-    //se houver mensagem de erro na viewBAg, mostrar.
-    // var msgErro = '@ViewBag.MensagemErro';
-    //if(msgErro !== "")
-    //    alert('@ViewBag.MensagemErro'); 
-    
+    });
+
 </script>
-
