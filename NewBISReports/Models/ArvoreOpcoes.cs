@@ -105,11 +105,11 @@ namespace NewBISReports.Models
             switch (FormatoDataHora)
             {
                 case "pt-BR":
-                       break;
+                    break;
                 case "en":
                     break;
                 default:
-                 //força pt-BR
+                    //força pt-BR
                     FormatoDataHora = "pt-BR";
                     break;
             }
