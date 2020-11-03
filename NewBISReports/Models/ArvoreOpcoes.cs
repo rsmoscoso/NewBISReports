@@ -1,12 +1,8 @@
 
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Binder;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
+
 
 
 namespace NewBISReports.Models
@@ -65,11 +61,14 @@ namespace NewBISReports.Models
         public bool ShowDocumentSearch { get; set; }
         //colunas não desejadas no relatório analytics_granted_BIS
         public List<string> RemoverColunasAlanyticsGranted { get; set; }
+        //Formato data e hora
+        public string FormatoDataHora { get; set; }
         #endregion
 
 
         //propriedades para injeção de depedencia
         private IConfiguration _configuration { get; }
+
 
 
 
@@ -100,6 +99,20 @@ namespace NewBISReports.Models
             var remArray = _configuration.GetSection(nomeCliente + ":RemoverColunasAccessGranted").Get<string[]>();
             RemoverColunasAlanyticsGranted = remArray == null ? new List<string>() : remArray.ToList();
 
+            //formato da data e hora FormatoDataHora
+            FormatoDataHora = _configuration.GetSection(nomeCliente)["FormatoDataHora"];
+            //faz uma espécie de assert, se não for os casos esperados, força pt - BR para não quebrar o Front - end
+            switch (FormatoDataHora)
+            {
+                case "pt-BR":
+                    break;
+                case "en":
+                    break;
+                default:
+                    //força pt-BR
+                    FormatoDataHora = "pt-BR";
+                    break;
+            }
 
             //começa pelo Login - avalia apenas se useLogin for verdadeiro
             if (UseLogin)
