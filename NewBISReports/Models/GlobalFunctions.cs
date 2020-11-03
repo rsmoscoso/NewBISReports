@@ -234,7 +234,6 @@ namespace NewBISReports.Models
                     }
                     //confirma todas as alterações feitas
                     table.AcceptChanges();
-
                 }
 
                 HzNPOIWorkbook wb = HzNPOIWorkbook.Export(table, company, sheet);

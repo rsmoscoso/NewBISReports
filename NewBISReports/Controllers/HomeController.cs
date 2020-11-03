@@ -511,9 +511,8 @@ namespace NewBISReports.Controllers
                 else if (reports.Type == REPORTTYPE.RPT_ANALYTICSMEALBIS)
                 {
                     string divisao = Clients.GetClientDescription(this.contextACE, reports.CLIENTID);
-                    //Diogo - O front end já passa hora e minuto
-                    // using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, divisao))
-                    using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + ":00", reports.EndDate + ":59", config.TagBISServer, divisao))
+                    //Diogo - único relatório em que se passa apenas data                  
+                    using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, divisao))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal", _dateTimeConverter)) != null)
                         {

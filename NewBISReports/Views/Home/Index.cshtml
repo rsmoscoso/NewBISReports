@@ -7,15 +7,20 @@
     //definição de formato de data, tanto par ao código em C# quanto para o código em Javascript
     var dateFormatStringRazor = "";
     var dateFormatStringJs = "";
+    var showHourMinute = true;
+    var showMeridian = false;
+    var showAccessGrantOption = false;
     switch (_arvoreOpcoes.FormatoDataHora)
     {
         case "pt-BR":
             dateFormatStringRazor = "dd/MM/yyyy HH:mm";
             dateFormatStringJs = "dd/mm/yyyy HH:ii";
+            showMeridian = false;
             break;
         case "en":
             dateFormatStringRazor = "MM/dd/yyyy hh:mm tt";
             dateFormatStringJs = "mm/dd/yyyy HH:ii P";
+            showMeridian = true;
             break;
         default:
             dateFormatStringRazor = "dd/MM/yyyy HH:mm";
@@ -31,6 +36,20 @@
     if (ViewBag.Type != null)
     {
         type = (REPORTTYPE)ViewBag.Type;
+        //Diogo - retirar minutos do relatório de meall
+        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS)
+        {
+            dateFormatStringRazor = dateFormatStringRazor.Substring(0, 10);
+            dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
+            showHourMinute = false;
+
+        }
+
+        //mostrar os radiobuttons de acessos garantidos/não permitidos apenas no analitico geral
+        if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
+        {
+            showAccessGrantOption = true;
+        }
     }
     var title = NewBISReports.Models.HomeModel.GetTypeDescription(type);
     var titlecomment = NewBISReports.Models.HomeModel.GetTypeComments(type);
@@ -94,7 +113,8 @@
                             REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type !=
                             REPORTTYPE.RPT_PERSONSAREA)
                             {
-                                <div class="form-group">
+                                if(showHourMinute){
+                                    <div class="form-group">
                                     <div class="input-group date form_datetime">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         <input class="form-control" size="16" type="text" name="StartDate"
@@ -108,18 +128,19 @@
     class="form-control" placeholder="Data Final" required>
                                     </div>
                                 </div>
-                                @* <div class="input-group">
-                                    <span class="input-group-addon date form_datetime" data-date="1979-09-16T05:25:07Z"
-                                    data-date-format="dd MM yyyy - HH:ii p"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control"
-                                    placeholder="Data Inicial" required>
-                                    </div>
+                                }else{
                                     <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control"
-                                    placeholder="Data Final" required>
-                                    </div> *@
+                                    <input type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                </div>
                                 <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
+                                </div>
+                                }
+                                
+                                if(showAccessGrantOption){
+                                    <div class="input-group">
                                     <div class="custom-control custom-checkbox mb-3">
                                         <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
     value="4101" checked="checked">
@@ -134,6 +155,8 @@
                                     </div>
                                 </div>
                             }
+                                }
+                                
                             @if (type == REPORTTYPE.RPT_PERSONSAREA)
                             {
                                 <!-- INICIO AREAS-->
@@ -305,6 +328,7 @@
     <script src="~/KingAdmin/assets/js/king-common.js"></script>
     <script src="~/KingAdmin/assets/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
     <script src="~/KingAdmin/assets/js/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
     <script src="~/KingAdmin/assets/js/plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.pt-BR.js"></script>
     <script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
 
@@ -321,20 +345,58 @@
 }
 
 <script type="text/javascript">
+    debugger;
     $(document).ready(function () {
 
-    $('.form_datetime').datetimepicker({
-    language: '@_arvoreOpcoes.FormatoDataHora',
-    format: '@dateFormatStringJs',
-    mask: true,
-    weekStart: 1,
-    todayBtn: 1,
-    autoclose: 1,
-    todayHighlight: 1,
-    startView: 2,
-    forceParse: 0,
-    showMeridian: 1
-    });
+        //detecta qual elemento deve usar: data ou data e hora
+        let showhourMinte = '@showHourMinute';
+
+        //seleciona datetime picker ou datepicker conforme a necessidade
+        if(showhourMinte === 'True'){
+            $('.form_datetime').datetimepicker({
+                language: '@_arvoreOpcoes.FormatoDataHora',
+                format: '@dateFormatStringJs',
+                mask: true,
+                todayBtn: 1,
+                autoclose: true,
+                todayHighlight: 1,
+                startView: 2,
+                forceParse: true,
+                showMeridian: '@showMeridian'
+            });
+        }else{
+            $('#StartDate').datepicker({
+                language: '@_arvoreOpcoes.FormatoDataHora',
+                format: '@dateFormatStringJs',
+                todayBtn: 'linked',
+                autoclose: true,
+                todayHighlight: true,
+                startView: 0,
+                forceParse: true
+            });
+            $('#EndDate').datepicker({
+                language: '@_arvoreOpcoes.FormatoDataHora',
+                format: '@dateFormatStringJs',
+                todayBtn: 'linked',
+                autoclose: true,
+                todayHighlight: true,
+                startView: 0,
+                forceParse: true
+            });
+        }
+
+        @* $(document).ready(function() {
+            $(function () {
+        window.prettyPrint && prettyPrint();
+        $('#StartDate').datepicker({
+            format: 'dd/mm/yyyy'
+        }).datepicker("setDate", document.getElementById('hidData_Start').defaultValue);;
+        $('#StartDate').datepicker()
+            .on('changeDate', function (ev) {
+                $('#StartDate').datepicker('hide');
+            }); *@
+
+    
 
     });
 

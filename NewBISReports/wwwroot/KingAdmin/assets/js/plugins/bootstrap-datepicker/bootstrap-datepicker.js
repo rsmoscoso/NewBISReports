@@ -1425,6 +1425,15 @@
 			monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
 			today: "Today",
 			clear: "Clear"
+		},
+		'pt-BR':{
+			days: ['Domingo','Segunda-feira','Ter&ccedil;a-feira','Quarta-feira','Quinta-feira','Sexta-feira','Sabado'],
+			daysShort:  ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
+			daysMin: ['Dom','Seg','Ter','Qua','Qui','Sex','Sab'],
+			months: ['Janeiro','Fevereiro','Mar&ccedil;o','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
+			monthsShort: ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'],
+			today: "Hoje",
+			clear: "Limpar"
 		}
 	};
 

@@ -78,11 +78,26 @@ namespace NewBISReports.Models
                     return (dateTime);
                 case "en":
                     //Converte a string em um objeto DAteTime
+                    //caso em que tem a data e hora
+                    string dataFormatFrom = "";
+                    string dataFormatTo = "";
+                    if (dateTime.Length > 10)
+                    {
+                        dataFormatFrom = "MM/dd/yyyy hh:mm tt";
+                        dataFormatTo = "dd/MM/yyyy HH:mm";
+                    }
+                    //caso com apenas data
+                    else
+                    {
+                        dataFormatFrom = "MM/dd/yyyy";
+                        dataFormatTo = "dd/MM/yyyy";
+                    }
                     DateTime enDateTime = DateTime.ParseExact(dateTime,
-                                                "MM/dd/yyyy hh:mm tt",
+                                                dataFormatFrom,
                                                 CultureInfo.InvariantCulture);
                     //Converte devolta para Pt-BR
-                    string value = enDateTime.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture);
+                    string value = enDateTime.ToString(dataFormatTo, CultureInfo.InvariantCulture);
+
                     return (value);
                 default:
                     return (dateTime);
