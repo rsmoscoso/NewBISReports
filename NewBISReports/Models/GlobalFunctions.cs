@@ -213,16 +213,23 @@ namespace NewBISReports.Models
                 byte[] retval = null;
                 if (!Directory.Exists(Path.GetDirectoryName(filename)))
                     Directory.CreateDirectory(Path.GetDirectoryName(filename));
-                //Diogo - converte a coluna de "DataAcesso" para o formato de data especificado
-                if (table.Columns.Contains("DataAcesso"))
+                //identifica qual o nome da coluna de data
+                //padrão
+                string nomeColunaData = "DataAcesso";
+                if (table.Columns.Contains("Data"))
+                {
+                    nomeColunaData = "Data";
+                }
+                //Diogo - converte a coluna de "Data" para o formato de data especificado
+                if (table.Columns.Contains(nomeColunaData))
                 {
                     //tira o atributo readonly da coluna
-                    table.Columns["DataAcesso"].ReadOnly = false;
+                    table.Columns[nomeColunaData].ReadOnly = false;
                     //itera entre todas as linhas0
                     foreach (DataRow dr in table.Rows)
                     {
                         dr.BeginEdit();
-                        dr["DataAcesso"] = _dateTimeConverter.FromPtBRWithSeconds(dr["DataAcesso"].ToString());
+                        dr[nomeColunaData] = _dateTimeConverter.FromPtBRWithSeconds(dr[nomeColunaData].ToString());
                         dr.EndEdit();
                     }
                     //confirma todas as alterações feitas
