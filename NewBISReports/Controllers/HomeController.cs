@@ -472,8 +472,14 @@ namespace NewBISReports.Controllers
                 this.persisTempData();
 
                 //Diogo - Converte as strings de data e hora para PTBR
-                reports.StartDate = _dateTimeConverter.ToPtBR(reports.StartDate);
-                reports.EndDate = _dateTimeConverter.ToPtBR(reports.EndDate);
+                if (!String.IsNullOrEmpty(reports.StartDate))
+                {
+                    reports.StartDate = _dateTimeConverter.ToPtBR(reports.StartDate);
+                }
+                if (!String.IsNullOrEmpty(reports.EndDate))
+                {
+                    reports.EndDate = _dateTimeConverter.ToPtBR(reports.EndDate);
+                }
 
                 if (reports.Type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
                 {
