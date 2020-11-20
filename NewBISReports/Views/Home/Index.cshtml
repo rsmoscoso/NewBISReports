@@ -383,12 +383,20 @@
         let response = $.ajax({
             url: window.SearchPersons,
             type: 'POST',
+            async: false,
             contentType: 'application/json',
             data: JSON.stringify(SearchParameterObj),
             //data: SearchParameterObj,
+        }).then(function (response) {
+            //diogo - parei aqui: pegar o array resultante e popular a selectlist de pessoas
+            var k;
+            if (response == 1) {
+                k = response;
+                //call another function that needs k here
+            }
+            debugger;
         });
 
-        debugger;
 
     }
 
@@ -431,5 +439,7 @@
             });
         }
 
+        //define o tipó de busca de pessoas padrão
+        window.SearchTypeValue = $('#searchTypeFieldSet input:radio').val();
     });
 </script>

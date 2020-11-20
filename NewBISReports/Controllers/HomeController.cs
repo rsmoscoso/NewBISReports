@@ -196,22 +196,16 @@ namespace NewBISReports.Controllers
         //Cópia do método acima, mas fazendo um endpoint para ajax
         [HttpPost]
         [Route("/Home/searchPersonsAjax", Name = "searchPersonsAjax")]
-        public JsonResult searchPersonsAjax([FromBody] NameSearch pesquisa)
+        public IActionResult searchPersonsAjax([FromBody] NameSearch pesquisa)
         {
             try
             {
-                //NameSearch pesquisa = JsonConvert.DeserializeObject<NameSearch>(content);
                 var persons = new List<Persons>();
 
                 if (pesquisa.searchField != null || (pesquisa.PersClassIdArray != null && pesquisa.PersClassIdArray.Length > 0))
                     persons = Persons.GetPersons(this.contextACE, pesquisa.SearchType, null, pesquisa.PersClassIdArray, pesquisa.searchField);
-
-                // ViewBag.Persons = persons;
-                // TempData["Persons"] = JsonConvert.SerializeObject(ViewBag.Persons);
-                // this.persisTempData();
-
+                //throw new Exception("fodasse");
                 return new JsonResult(persons);
-                //return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
             }
             catch (Exception ex)
             {
@@ -219,8 +213,7 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> searchpersons");
                 w.Close();
                 w = null;
-                //return JsonConvert.SerializeObject(new { mensagemErro = ex.Message });
-                return new JsonResult(new { mensagemErro = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
 
