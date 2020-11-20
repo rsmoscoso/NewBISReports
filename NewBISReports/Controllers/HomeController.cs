@@ -193,6 +193,38 @@ namespace NewBISReports.Controllers
             }
         }
 
+        //Cópia do método acima, mas fazendo um endpoint para ajax
+        [HttpPost]
+        [Route("/Home/searchPersonsAjax", Name = "searchPersonsAjax")]
+        public JsonResult searchPersonsAjax([FromBody] NameSearch pesquisa)
+        {
+            try
+            {
+                //NameSearch pesquisa = JsonConvert.DeserializeObject<NameSearch>(content);
+                var persons = new List<Persons>();
+
+                if (pesquisa.searchField != null || (pesquisa.PersClassIdArray != null && pesquisa.PersClassIdArray.Length > 0))
+                    persons = Persons.GetPersons(this.contextACE, pesquisa.SearchType, null, pesquisa.PersClassIdArray, pesquisa.searchField);
+
+                // ViewBag.Persons = persons;
+                // TempData["Persons"] = JsonConvert.SerializeObject(ViewBag.Persons);
+                // this.persisTempData();
+
+                return new JsonResult(persons);
+                //return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
+            }
+            catch (Exception ex)
+            {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(ex.Message + " --> searchpersons");
+                w.Close();
+                w = null;
+                //return JsonConvert.SerializeObject(new { mensagemErro = ex.Message });
+                return new JsonResult(new { mensagemErro = ex.Message });
+            }
+        }
+
+
         /// <summary>
         /// Pesquisa as empresas.
         /// </summary>
@@ -243,7 +275,7 @@ namespace NewBISReports.Controllers
                 if (reports.CLIENTID != null || reports.DEVICESEARCH != null)
                     devices = Devices.GetDevices(this.contextACE, reports.CLIENTID, reports.DEVICESEARCH);
 
-                TempData["Devices"] = JsonConvert.SerializeObject(devices); ;
+                TempData["Devices"] = JsonConvert.SerializeObject(devices);
 
                 this.persisTempData();
             }
@@ -674,6 +706,7 @@ namespace NewBISReports.Controllers
                     if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                         this.searchAuthorizations(reports);
                 }
+
                 return View("Index", reports);
                 //return RedirectToAction(nameof(Index), new{type=reports.Type});
             }

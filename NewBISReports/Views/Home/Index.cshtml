@@ -95,9 +95,9 @@
             <h3><i class="fa fa-book"></i>@title</h3> <em>- @titlecomment</em>
             <div class="btn-group widget-header-toolbar">
                 <a href="#" id="tour-focus" title="Destaque" class="btn-borderless btn-focus"><i
-                    class="fa fa-eye"></i></a>
+                        class="fa fa-eye"></i></a>
                 <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i
-                    class="fa fa-chevron-up"></i></a>
+                        class="fa fa-chevron-up"></i></a>
                 <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a>
             </div>
         </div>
@@ -113,50 +113,56 @@
                             REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type !=
                             REPORTTYPE.RPT_PERSONSAREA)
                             {
-                                if(showHourMinute){
+                                if (showHourMinute)
+                                {
                                     <div class="form-group">
-                                    <div class="input-group date form_datetime">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" size="16" type="text" name="StartDate"
-    asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                        <div class="input-group date form_datetime">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input class="form-control" size="16" type="text" name="StartDate"
+                                                asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="input-group date form_datetime">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate"
-    class="form-control" placeholder="Data Final" required>
+                                    <div class="form-group">
+                                        <div class="input-group date form_datetime">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate"
+                                                class="form-control" placeholder="Data Final" required>
+                                        </div>
                                     </div>
-                                </div>
-                                }else{
-                                    <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
-                                </div>
                                 }
-                                
-                                if(showAccessGrantOption){
+                                else
+                                {
                                     <div class="input-group">
-                                    <div class="custom-control custom-checkbox mb-3">
-                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
-    value="4101" checked="checked">
-                                        <label class="custom-control-label" for="grant">Acesso Permitido</label>
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" id="StartDate" name="StartDate" asp-for="StartDate"
+                                            class="form-control" placeholder="Data Inicial" required>
                                     </div>
-                                </div>
-                                <div class="input-group">
-                                    <div class="custom-control custom-checkbox mb-3">
-                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
-    value="4112">
-                                        <label class="custom-control-label" for="grant">Não Permitido</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control"
+                                            placeholder="Data Final" required>
                                     </div>
-                                </div>
+                                }
+
+                                if (showAccessGrantOption)
+                                {
+                                    <div class="input-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+                                                value="4101" checked="checked">
+                                            <label class="custom-control-label" for="grant">Acesso Permitido</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+                                                value="4112">
+                                            <label class="custom-control-label" for="grant">Não Permitido</label>
+                                        </div>
+                                    </div>
+                                }
                             }
-                                }
-                                
+
                             @if (type == REPORTTYPE.RPT_PERSONSAREA)
                             {
                                 <!-- INICIO AREAS-->
@@ -165,11 +171,11 @@
 
                                         <label>Áreas</label>
                                         <select multiple="multiple" asp-for="AREAID" class="select2 select2-multiple"
-    name="AREAID"
-    asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))"></select>
+                                            name="AREAID"
+                                            asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))"></select>
                                         <div class="custom-control custom-checkbox mb-3">
                                             <input class="custom-control-input" id="grant" type="checkbox"
-    asp-for="ALLINSIDE" value="true">
+                                                asp-for="ALLINSIDE" value="true">
                                             <label class="custom-control-label" for="grant">Todos dentro da unidade</label>
                                         </div>
                                     </div>
@@ -180,14 +186,14 @@
                             @if (type == REPORTTYPE.RPT_BADGENOUSE)
                             {
                                 <input type="text" id="NDays" name="NDays" asp-for="NDays" class="form-control"
-    placeholder="N. de Dias sem Uso do Crachá" value="30" required>
+                                    placeholder="N. de Dias sem Uso do Crachá" value="30" required>
                             }
 
                             @if (type == REPORTTYPE.RPT_TOTALMEAL || type == REPORTTYPE.RPT_EXPORTMEAL || type ==
                                 REPORTTYPE.RPT_COUNTBATH)
                             {
                                 <button type="submit" name="exec" id="exec" asp-action="ExecPage"
-    class="btn">Executar</button>
+                                    class="btn">Executar</button>
                             }
                                 @if (type != REPORTTYPE.RPT_EXPORTMEAL && type != REPORTTYPE.RPT_COUNTBATH)
                             {
@@ -196,7 +202,7 @@
                                     buttonname = "Gerar";
                                 }
                                 <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
-    style="background-color: Green; color: White;">@buttonname</button>
+                                    style="background-color: Green; color: White;">@buttonname</button>
                             }
                             </div>
 
@@ -227,7 +233,7 @@
                         <div class="widget-header">
                             <h3><i class="fa fa-home"></i>Unidades</h3>
                             <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top"
-                            title="Informações das divisões e leitoras"><i class="fa fa-question-circle"></i></button>
+                                title="Informações das divisões e leitoras"><i class="fa fa-question-circle"></i></button>
                         </div>
                         <div class="widget-content">
                             <div class="row">
@@ -239,8 +245,8 @@
                                                 <label>Unidade:</label>
                                             </div>
                                             <select asp-for="CLIENTID" class="select2" name="CLIENTID" asp-controller="Home"
-    asp-action="Index" onclick="form.submit();"
-    asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID", "Description"))"></select>
+                                                asp-action="Index" onclick="form.submit();"
+                                                asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID", "Description"))"></select>
                                         </div>
                                     </div>
 
@@ -254,8 +260,8 @@
 
                                             <label>Leitora de Acesso</label>
                                             <select multiple="multiple" asp-for="DEVICEID" class="select2 select2-multiple"
-        name="DEVICEID"
-        asp-items="@(new SelectList(ViewBag.Devices, "ID", "DESCRIPTION"))"></select>
+                                                name="DEVICEID"
+                                                asp-items="@(new SelectList(ViewBag.Devices, "ID", "DESCRIPTION"))"></select>
                                         </div>
                                     </fieldset>
                                     <!-- FIM DEVICES-->
@@ -269,8 +275,8 @@
 
                                             <label>Autorizações</label>
                                             <select multiple="multiple" asp-for="AUTHID" class="select2 select2-multiple"
-        name="AUTHID"
-        asp-items="@(new SelectList(ViewBag.Authorizations, "AuthID", "Shortname"))"></select>
+                                                name="AUTHID"
+                                                asp-items="@(new SelectList(ViewBag.Authorizations, "AuthID", "Shortname"))"></select>
                                         </div>
                                     </fieldset>
                                     <!-- FIM AUTORIZAÇÕES-->
@@ -339,20 +345,60 @@
 
     <script type="text/javascript">
         window.onload = function () {
-        $('#mdAlertas').modal('show');
+            $('#mdAlertas').modal('show');
         };
     </script>
 }
 
 <script type="text/javascript">
-    debugger;
+    //lidar com a pesquisa de pessoas via ajax
+    $('#searchTypeFieldSet input:radio').on('change', function () {
+        window.SearchTypeValue = $(this).val();
+        debugger;
+    });
+
+    function SearchPersonAjax() {
+        //determina o tipo de busca:
+        let SearchType = window.SearchTypeValue;
+
+        //recupera o nome do campo de busca
+        let SearchField = $('#searchField').val();
+
+        //recupera o array de tipos de pessoas
+        let PersClassArray = [];
+        let SelectedPerClass = $('#selectPersonType').val();
+        if (SelectedPerClass !== null) {
+            PersClassArray = SelectedPerClass;
+        }
+
+
+        //cria o objeto de retorno
+        let SearchParameterObj = {
+            "searchField": SearchField,
+            "PersClassIdArray": PersClassArray,
+            "SearchTypeString": SearchType
+        }
+
+        //faz a chamada síncriona do ajax
+        let response = $.ajax({
+            url: window.SearchPersons,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(SearchParameterObj),
+            //data: SearchParameterObj,
+        });
+
+        debugger;
+
+    }
+
     $(document).ready(function () {
 
         //detecta qual elemento deve usar: data ou data e hora
         let showhourMinte = '@showHourMinute';
 
         //seleciona datetime picker ou datepicker conforme a necessidade
-        if(showhourMinte === 'True'){
+        if (showhourMinte === 'True') {
             $('.form_datetime').datetimepicker({
                 language: '@_arvoreOpcoes.FormatoDataHora',
                 format: '@dateFormatStringJs',
@@ -364,7 +410,7 @@
                 forceParse: true,
                 showMeridian: '@showMeridian'
             });
-        }else{
+        } else {
             $('#StartDate').datepicker({
                 language: '@_arvoreOpcoes.FormatoDataHora',
                 format: '@dateFormatStringJs',
@@ -385,19 +431,5 @@
             });
         }
 
-        @* $(document).ready(function() {
-            $(function () {
-        window.prettyPrint && prettyPrint();
-        $('#StartDate').datepicker({
-            format: 'dd/mm/yyyy'
-        }).datepicker("setDate", document.getElementById('hidData_Start').defaultValue);;
-        $('#StartDate').datepicker()
-            .on('changeDate', function (ev) {
-                $('#StartDate').datepicker('hide');
-            }); *@
-
-    
-
     });
-
 </script>
