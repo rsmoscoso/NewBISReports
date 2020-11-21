@@ -32,6 +32,7 @@
         DateTime.Now.ToString(dateFormatStringRazor);
     var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() :
         DateTime.Now.ToString(dateFormatStringRazor);
+    string labelPessoas = _arvoreOpcoes.PersonsLabel;
     REPORTTYPE type = REPORTTYPE.RPT_ANALYTICGRANTEDBIS;
     if (ViewBag.Type != null)
     {
@@ -216,7 +217,104 @@
                 @if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS || type == REPORTTYPE.RPT_PERSONGENERAL || type ==
                 REPORTTYPE.RPT_LOGQRCODE)
             {
-                @Html.Partial("IndexPessoas")
+                // @Html.Partial("IndexPessoas")
+                <div class="col-sm-6">
+                    <div class="widget widget-table">
+                        <div class="widget-header">
+                            <h3><i class="fa fa-home"></i>Pessoas/Visitantes</h3>
+                            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top"
+                                title="Informações das pessoas e/ou visitantes"><i
+                                    class="fa fa-question-circle"></i></button>
+                        </div>
+                        <div class="widget-content">
+                            <div class="row">
+                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                {
+                                    <!-- INICIO TIPO PESSOA -->
+                                    <fieldset>
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Tipo de Pessoa</label>
+                                                <select id="selectPersonType" multiple="multiple" asp-for="PERSCLASSID"
+                                                    class="select2 select2-multiple" name="PERSCLASSID"
+                                                    asp-items="@(new SelectList(ViewBag.Persclassid, "PERSCLASSID", "DisplayTextCustomer"))"></select>
+
+                                            </div>
+                                        </div>
+                                        <!-- FIM TIPO PESSOA -->
+                                        <!-- INICIO EMPRESA -->
+                                        <div class="col-sm-12">
+                                            <label>Empresas</label>
+                                            @if (ViewBag.Company != null)
+                                            {
+                                                <select multiple="multiple" asp-for="CompanyNO" class="select2 select2-multiple"
+                                                    name="CompanyNO"
+                                                    asp-items="@(new SelectList(ViewBag.Company, "CompanyNO", "Name"))"></select>
+                                            }
+                                            </div>
+                                        </fieldset>
+                                    <!-- FIM EMPRESA -->
+                                }
+                                <!-- INICIO PESSOA -->
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <fieldset id="searchTypeFieldSet">
+                                        <div class="input-group">
+                                            <label class="control-inline">
+                                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                                {
+                                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                                        checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
+                                                    <!-- customização - nomenclatura para pessoa-->
+                                                    <span>@labelPessoas</span>
+                                                }
+                                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                                    value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
+                                                <span>Visitante</span>
+                                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                                {
+                                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                                        value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
+                                                    <span>Matrícula/CPF</span>
+                                                }
+                                                @if (_arvoreOpcoes.ShowDocumentSearch)
+                                                {
+                                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                                        value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
+                                                    <span>Documento</span>
+                                                }
+                                            </label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="input-group input-group-sm">
+                                                    <input id="searchField" type="search" placeholder="pessoas/visitantes"
+                                                        class="form-control">
+                                                    <span class="input-group-btn">
+                                                        <!--<button class="btn" name="srcname" asp-action="searchPersons" type="submit"><i class="fa fa-search"></i></button>-->
+                                                        <button type="button" class="btn" onclick="SearchPersonAjax()">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @* <select asp-for="PERSNO" class="select2" name="PERSNO"
+                                        asp-items="@(new SelectList(ViewBag.Persons, "Persid", "Nome", 0))"></select> *@
+                                    <select id="SelectPersonFilerResult" asp-for="PERSNO" class="select2"
+                                        name="PERSNO"></select>
+                                </div>
+                                <!-- FIM PESSOA -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
             else if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS)
             {
@@ -225,8 +323,8 @@
                 <!-- INÍCIO DO CARD UNIDADES -->
 
                 @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE &&
-                type != REPORTTYPE.RPT_PERSONGENERAL &&
-            type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
+                @*type != REPORTTYPE.RPT_PERSONGENERAL && *@
+                type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
             {
                 <div class="col-sm-6">
                     <div class="widget widget-table">
@@ -351,55 +449,6 @@
 }
 
 <script type="text/javascript">
-    //lidar com a pesquisa de pessoas via ajax
-    $('#searchTypeFieldSet input:radio').on('change', function () {
-        window.SearchTypeValue = $(this).val();
-        debugger;
-    });
-
-    function SearchPersonAjax() {
-        //determina o tipo de busca:
-        let SearchType = window.SearchTypeValue;
-
-        //recupera o nome do campo de busca
-        let SearchField = $('#searchField').val();
-
-        //recupera o array de tipos de pessoas
-        let PersClassArray = [];
-        let SelectedPerClass = $('#selectPersonType').val();
-        if (SelectedPerClass !== null) {
-            PersClassArray = SelectedPerClass;
-        }
-
-
-        //cria o objeto de retorno
-        let SearchParameterObj = {
-            "searchField": SearchField,
-            "PersClassIdArray": PersClassArray,
-            "SearchTypeString": SearchType
-        }
-
-        //faz a chamada síncriona do ajax
-        let response = $.ajax({
-            url: window.SearchPersons,
-            type: 'POST',
-            async: false,
-            contentType: 'application/json',
-            data: JSON.stringify(SearchParameterObj),
-            //data: SearchParameterObj,
-        }).then(function (response) {
-            //diogo - parei aqui: pegar o array resultante e popular a selectlist de pessoas
-            var k;
-            if (response == 1) {
-                k = response;
-                //call another function that needs k here
-            }
-            debugger;
-        });
-
-
-    }
-
     $(document).ready(function () {
 
         //detecta qual elemento deve usar: data ou data e hora
@@ -442,4 +491,66 @@
         //define o tipó de busca de pessoas padrão
         window.SearchTypeValue = $('#searchTypeFieldSet input:radio').val();
     });
+</script>
+
+<script type="text/javascript">
+    //lidar com a pesquisa de pessoas via ajax
+    $('#searchTypeFieldSet input:radio').on('change', function () {
+        window.SearchTypeValue = $(this).val();
+        debugger;
+    });
+
+    function SearchPersonAjax() {
+        //determina o tipo de busca:
+        let SearchType = window.SearchTypeValue;
+
+        //recupera o nome do campo de busca
+        let SearchField = $('#searchField').val();
+
+        //recupera o array de tipos de pessoas
+        let PersClassArray = [];
+        let SelectedPerClass = $('#selectPersonType').val();
+        if (SelectedPerClass !== null) {
+            PersClassArray = SelectedPerClass;
+        }
+
+
+        //cria o objeto de retorno
+        let SearchParameterObj = {
+            "searchField": SearchField,
+            "PersClassIdArray": PersClassArray,
+            "SearchTypeString": SearchType
+        }
+
+        //faz a chamada síncriona do ajax
+        $.ajax({
+            url: window.SearchPersons,
+            type: 'POST',
+            async: false,
+            contentType: 'application/json',
+            data: JSON.stringify(SearchParameterObj),
+            dataType: 'json',
+            success: function (response) {
+                //determinar se houve algum resultado
+                if (response.length > 0) {
+                    //limpa a selectlist atual
+                    $('#SelectPersonFilerResult').val(null);
+                    //iterar entre os itens do array                
+                    for (let i in response) {
+
+                        //constrói um item de selectlist
+                        let newOption = new Option(response[i].nome, response[i].persid, false, false);
+
+                        //e adiciona ao selectlist de pessoas                    
+                        $('#SelectPersonFilerResult').append(newOption);
+                    }
+                }
+            }
+            //todo error
+        }).then(function () {
+            //re-desenha a selectlist
+            $('#SelectPersonFilerResult').trigger('change');
+        });
+
+    }
 </script>

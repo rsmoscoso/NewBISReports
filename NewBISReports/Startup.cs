@@ -113,6 +113,7 @@ namespace NewBISReports
                 options.ValidationInterval = TimeSpan.Zero;
             });
 
+
             services.AddAuthentication(o =>
             {
                 o.DefaultScheme = IdentityConstants.ApplicationScheme;

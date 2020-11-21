@@ -94,8 +94,9 @@
             </div>
             <div class="row">
                 <div class="col-sm-12">
-                    <select asp-for="PERSNO" class="select2" name="PERSNO"
-                        asp-items="@(new SelectList(ViewBag.Persons, "Persid", "Nome", 0))"></select>
+                    @* <select asp-for="PERSNO" class="select2" name="PERSNO"
+                        asp-items="@(new SelectList(ViewBag.Persons, "Persid", "Nome", 0))"></select> *@
+                    <select id="SelectPersonFilerResult" asp-for="PERSNO" class="select2" name="PERSNO"></select>
                 </div>
                 <!-- FIM PESSOA -->
             </div>
@@ -108,7 +109,7 @@
     <div class="col-sm-6">
         <div class="widget widget-table">
             <div class="widget-header">
-                <h3><i class="fa fa-home"></i>Unidades</h3>
+                <h3><i class="fa fa-home"></i>Unidadesd</h3>
                 <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top"
                     title="Informações das divisões e leitoras"><i class="fa fa-question-circle"></i></button>
             </div>
