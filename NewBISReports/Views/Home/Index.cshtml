@@ -44,9 +44,9 @@
             dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
             showHourMinute = false;
 
-        }       
+        }
     }
-     //mostrar os radiobuttons de acessos garantidos/não permitidos apenas no analitico geral
+    //mostrar os radiobuttons de acessos garantidos/não permitidos apenas no analitico geral
     if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
     {
         showAccessGrantOption = true;
@@ -192,6 +192,7 @@
                             @if (type == REPORTTYPE.RPT_TOTALMEAL || type == REPORTTYPE.RPT_EXPORTMEAL || type ==
                                 REPORTTYPE.RPT_COUNTBATH)
                             {
+                                @*Diogo - Conferir o ExecPage e o excel page abaixo*@
                                 <button type="submit" name="exec" id="exec" asp-action="ExecPage"
                                     class="btn">Executar</button>
                             }
@@ -341,9 +342,16 @@
                                             <div class="input-group input-group-sm">
                                                 <label>Unidade:</label>
                                             </div>
-                                            <select asp-for="CLIENTID" class="select2" name="CLIENTID" asp-controller="Home"
-                                                asp-action="Index" onclick="form.submit();"
-                                                asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID", "Description"))"></select>
+                                            @*Diogo - Trocar o submit por uma chamada ajax no backend, mas apenas se o
+                                                elemento de devices for caregado igual ao post do Index*@
+                                            @* <select asp-for="CLIENTID" class="select2" name="CLIENTID"
+                                                asp-controller="Home"
+                                                asp-action="Index" onclick="form.submit();" asp-items="@(new
+                                                SelectList(ViewBag.Clients, "CLIENTID",
+                                                "Description"))"></select> *@
+                                            <select id="SearchClientId" asp-for="CLIENTID" class="select2" name="CLIENTID"
+                                                onclick="SearchDevicesAjax()" asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID",
+                                                           "Description"))"></select>
                                         </div>
                                     </div>
 
@@ -356,8 +364,8 @@
                                         <div class="col-sm-12">
 
                                             <label>Leitora de Acesso</label>
-                                            <select multiple="multiple" asp-for="DEVICEID" class="select2 select2-multiple"
-                                                name="DEVICEID"
+                                            <select id="SelectDeviceFilerResult" multiple="multiple" asp-for="DEVICEID"
+                                                class="select2 select2-multiple" name="DEVICEID"
                                                 asp-items="@(new SelectList(ViewBag.Devices, "ID", "DESCRIPTION"))"></select>
                                         </div>
                                     </fieldset>
@@ -496,9 +504,59 @@
     //lidar com a pesquisa de pessoas via ajax
     $('#searchTypeFieldSet input:radio').on('change', function () {
         window.SearchTypeValue = $(this).val();
-        debugger;
     });
 
+    //função de pesqusia de leitoras no back-end
+
+    function SearchDevicesAjax() {
+
+        //testa se a selectlist dos devices existe, senão, retorna
+        if (!($('#SelectDeviceFilerResult').length)) {
+            debugger
+            return;
+        }
+        //determina qual clientId foi selecionado
+        let SelectedClientId = $('#SearchClientId').val();
+
+        //cria o objeto de retorno
+        let SearchParameterObj = {
+            "ClientId": SelectedClientId
+        }
+
+        //faz a chamada síncriona do ajax
+        $.ajax({
+            url: window.SearchDevices,
+            type: 'POST',
+            async: false,
+            contentType: 'application/json',
+            data: JSON.stringify(SearchParameterObj),
+            dataType: 'json',
+            success: function (response) {
+                debugger;
+                //determinar se houve algum resultado
+                if (response.length > 0) {
+                    //limpa a selectlist atual
+                    $('#SelectDeviceFilerResult').val(null);
+                    //iterar entre os itens do array                
+                    for (let i in response) {
+
+                        //constrói um item de selectlist
+                        let newOption = new Option(response[i].description, response[i].id, false, false);
+
+                        //e adiciona ao selectlist de pessoas                    
+                        $('#SelectDeviceFilerResult').append(newOption);
+                    }
+                }
+            }
+            //todo error
+        }).then(function () {
+            //re-desenha a selectlist
+            $('#SelectDeviceFilerResult').trigger('change');
+        });
+    }
+
+
+    //funçaõ de pesquisa de pessoas/documentos no backend
     function SearchPersonAjax() {
         //determina o tipo de busca:
         let SearchType = window.SearchTypeValue;

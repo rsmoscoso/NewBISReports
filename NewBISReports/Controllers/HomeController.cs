@@ -164,37 +164,6 @@ namespace NewBISReports.Controllers
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
         [HttpPost]
-        public IActionResult searchPersons(HomeModel model)
-        {
-            try
-            {
-                var persons = new List<Persons>();
-
-                if (model.NAMESEARCH != null || (model.PERSCLASSID != null && model.PERSCLASSID.Length > 0))
-                    persons = Persons.GetPersons(this.contextACE, model.SearchPersonsType, null, model.PERSCLASSID, model.NAMESEARCH);
-
-                ModelState["NAMESEARCH"].RawValue = "";
-
-                ViewBag.Persons = persons;
-                TempData["Persons"] = JsonConvert.SerializeObject(ViewBag.Persons);
-                this.persisTempData();
-
-                return View("Index", model);
-                //return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
-            }
-            catch (Exception ex)
-            {
-                StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(ex.Message + " --> searchpersons");
-                w.Close();
-                w = null;
-                //return View("Index", model);
-                return RedirectToAction(nameof(Index), new { type = model.Type, mensagemErro = ex.Message });
-            }
-        }
-
-        //Cópia do método acima, mas fazendo um endpoint para ajax
-        [HttpPost]
         [Route("/Home/searchPersonsAjax", Name = "searchPersonsAjax")]
         public IActionResult searchPersonsAjax([FromBody] NameSearch pesquisa)
         {
@@ -204,7 +173,6 @@ namespace NewBISReports.Controllers
 
                 if (pesquisa.searchField != null || (pesquisa.PersClassIdArray != null && pesquisa.PersClassIdArray.Length > 0))
                     persons = Persons.GetPersons(this.contextACE, pesquisa.SearchType, null, pesquisa.PersClassIdArray, pesquisa.searchField);
-                //throw new Exception("fodasse");
                 return new JsonResult(persons);
             }
             catch (Exception ex)
@@ -279,6 +247,30 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
             }
+        }
+
+        [HttpPost]
+        [Route("/Home/searchDevicesAjax", Name = "searchDevicesAjax")]
+        public IActionResult searchDevicesAjax([FromBody] DeviceSearch pesquisa)
+        {
+            try
+            {
+                var devices = new List<Devices>();
+
+                if (pesquisa.ClientId != null || pesquisa.DeviceToSearch != null)
+                    devices = Devices.GetDevices(this.contextACE, pesquisa.ClientId, pesquisa.DeviceToSearch);
+
+                return new JsonResult(devices);
+            }
+            catch (Exception ex)
+            {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(ex.Message + " --> searchDevices");
+                w.Close();
+                w = null;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
         }
 
         /// <summary>
