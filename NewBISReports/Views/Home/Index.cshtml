@@ -44,13 +44,12 @@
             dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
             showHourMinute = false;
 
-        }
-
-        //mostrar os radiobuttons de acessos garantidos/não permitidos apenas no analitico geral
-        if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
-        {
-            showAccessGrantOption = true;
-        }
+        }       
+    }
+     //mostrar os radiobuttons de acessos garantidos/não permitidos apenas no analitico geral
+    if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
+    {
+        showAccessGrantOption = true;
     }
     var title = NewBISReports.Models.HomeModel.GetTypeDescription(type);
     var titlecomment = NewBISReports.Models.HomeModel.GetTypeComments(type);
