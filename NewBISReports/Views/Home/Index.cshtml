@@ -418,7 +418,7 @@
                     <h4 class="modal-title">Mensagem:</h4>
                 </div>
                 <div class="modal-body">
-                    <h3>@ViewBag.MensagemErro </h3>
+                    <h3 id="AlertModalMEssage">@ViewBag.MensagemErro </h3>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
@@ -506,8 +506,17 @@
         window.SearchTypeValue = $(this).val();
     });
 
-    //função de pesqusia de leitoras no back-end
+    //declara função de ordenamento dos objetos por propriedade string
+    function sortOnStringProperty(property) {
+        return function (a, b) {
+            var textA = a[property].toUpperCase();
+            var textB = b[property].toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        }
+    }
 
+
+    //função de pesqusia de leitoras no back-end
     function SearchDevicesAjax() {
 
         //testa se a selectlist dos devices existe, senão, retorna
@@ -525,16 +534,22 @@
 
         //faz a chamada síncriona do ajax
         $.ajax({
+            //url montada no LAyout.cshtml, para ficar independente da raiz dapublicação
             url: window.SearchDevices,
             type: 'POST',
+            //chamada síncrona
             async: false,
             contentType: 'application/json',
+            //dados enviados no corpo
             data: JSON.stringify(SearchParameterObj),
+            //token antiforgey, fucniona junto com o services.AddAntiforgey no Statup.cs
+            headers: { 'RequestVerificationToken': gettoken() },
             dataType: 'json',
             success: function (response) {
-                debugger;
                 //determinar se houve algum resultado
                 if (response.length > 0) {
+                    //ordem alfabética
+                    response.sort(sortOnStringProperty("description"));
                     //limpa a selectlist atual
                     $('#SelectDeviceFilerResult').val(null);
                     //iterar entre os itens do array                
@@ -547,8 +562,14 @@
                         $('#SelectDeviceFilerResult').append(newOption);
                     }
                 }
+            },
+            error: function (errorObject) {
+                //configura a mensagem de alerta no modal
+                let errorMessage = 'Erro ' + errorObject.status + ':' + errorObject.statusText + ': ' + errorObject.responseText;
+                $('#AlertModalMEssage').text(errorMessage);
+                //mostra o modal
+                $('#mdAlertas').modal('show');
             }
-            //todo error
         }).then(function () {
             //re-desenha a selectlist
             $('#SelectDeviceFilerResult').trigger('change');
@@ -586,10 +607,13 @@
             async: false,
             contentType: 'application/json',
             data: JSON.stringify(SearchParameterObj),
+            headers: { 'RequestVerificationToken': gettoken() },
             dataType: 'json',
             success: function (response) {
                 //determinar se houve algum resultado
                 if (response.length > 0) {
+                    //ordem alfabética
+                    response.sort(sortOnStringProperty("nome"));
                     //limpa a selectlist atual
                     $('#SelectPersonFilerResult').val(null);
                     //iterar entre os itens do array                
@@ -601,9 +625,18 @@
                         //e adiciona ao selectlist de pessoas                    
                         $('#SelectPersonFilerResult').append(newOption);
                     }
+
+                    //TODO: ordenar em ordem alfabética
                 }
+            },
+            error: function (errorObject) {
+                debugger;
+                //configura a mensagem de alerta no modal
+                let errorMessage = 'Erro ' + errorObject.status + ':' + errorObject.statusText + ': ' + errorObject.responseText;
+                $('#AlertModalMEssage').text(errorMessage);
+                //mostra o modal
+                $('#mdAlertas').modal('show');
             }
-            //todo error
         }).then(function () {
             //re-desenha a selectlist
             $('#SelectPersonFilerResult').trigger('change');

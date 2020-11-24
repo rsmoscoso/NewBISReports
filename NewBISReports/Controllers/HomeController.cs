@@ -163,7 +163,7 @@ namespace NewBISReports.Controllers
         /// Pesquisa as pessoas.
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         [Route("/Home/searchPersonsAjax", Name = "searchPersonsAjax")]
         public IActionResult searchPersonsAjax([FromBody] NameSearch pesquisa)
         {
@@ -249,7 +249,7 @@ namespace NewBISReports.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost, ValidateAntiForgeryToken]
         [Route("/Home/searchDevicesAjax", Name = "searchDevicesAjax")]
         public IActionResult searchDevicesAjax([FromBody] DeviceSearch pesquisa)
         {
