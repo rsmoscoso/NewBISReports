@@ -32,6 +32,7 @@
         DateTime.Now.ToString(dateFormatStringRazor);
     var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() :
         DateTime.Now.ToString(dateFormatStringRazor);
+    string labelPessoas = _arvoreOpcoes.PersonsLabel;
     REPORTTYPE type = REPORTTYPE.RPT_ANALYTICGRANTEDBIS;
     if (ViewBag.Type != null)
     {
@@ -44,12 +45,11 @@
             showHourMinute = false;
 
         }
-
-        //mostrar os radiobuttons de acessos garantidos/não permitidos apenas no analitico geral
-        if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
-        {
-            showAccessGrantOption = true;
-        }
+    }
+    //mostrar os radiobuttons de acessos garantidos/não permitidos apenas no analitico geral
+    if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
+    {
+        showAccessGrantOption = true;
     }
     var title = NewBISReports.Models.HomeModel.GetTypeDescription(type);
     var titlecomment = NewBISReports.Models.HomeModel.GetTypeComments(type);
@@ -95,9 +95,9 @@
             <h3><i class="fa fa-book"></i>@title</h3> <em>- @titlecomment</em>
             <div class="btn-group widget-header-toolbar">
                 <a href="#" id="tour-focus" title="Destaque" class="btn-borderless btn-focus"><i
-                    class="fa fa-eye"></i></a>
+                        class="fa fa-eye"></i></a>
                 <a href="#" title="Expand/Collapse" class="btn-borderless btn-toggle-expand"><i
-                    class="fa fa-chevron-up"></i></a>
+                        class="fa fa-chevron-up"></i></a>
                 <a href="#" title="Remove" class="btn-borderless btn-remove"><i class="fa fa-times"></i></a>
             </div>
         </div>
@@ -113,50 +113,56 @@
                             REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type !=
                             REPORTTYPE.RPT_PERSONSAREA)
                             {
-                                if(showHourMinute){
+                                if (showHourMinute)
+                                {
                                     <div class="form-group">
-                                    <div class="input-group date form_datetime">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" size="16" type="text" name="StartDate"
-    asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                        <div class="input-group date form_datetime">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input class="form-control" size="16" type="text" name="StartDate"
+                                                asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="input-group date form_datetime">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate"
-    class="form-control" placeholder="Data Final" required>
+                                    <div class="form-group">
+                                        <div class="input-group date form_datetime">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate"
+                                                class="form-control" placeholder="Data Final" required>
+                                        </div>
                                     </div>
-                                </div>
-                                }else{
-                                    <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="StartDate" name="StartDate" asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
-                                </div>
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control" placeholder="Data Final" required>
-                                </div>
                                 }
-                                
-                                if(showAccessGrantOption){
+                                else
+                                {
                                     <div class="input-group">
-                                    <div class="custom-control custom-checkbox mb-3">
-                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
-    value="4101" checked="checked">
-                                        <label class="custom-control-label" for="grant">Acesso Permitido</label>
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" id="StartDate" name="StartDate" asp-for="StartDate"
+                                            class="form-control" placeholder="Data Inicial" required>
                                     </div>
-                                </div>
-                                <div class="input-group">
-                                    <div class="custom-control custom-checkbox mb-3">
-                                        <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
-    value="4112">
-                                        <label class="custom-control-label" for="grant">Não Permitido</label>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control"
+                                            placeholder="Data Final" required>
                                     </div>
-                                </div>
+                                }
+
+                                if (showAccessGrantOption)
+                                {
+                                    <div class="input-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+                                                value="4101" checked="checked">
+                                            <label class="custom-control-label" for="grant">Acesso Permitido</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+                                                value="4112">
+                                            <label class="custom-control-label" for="grant">Não Permitido</label>
+                                        </div>
+                                    </div>
+                                }
                             }
-                                }
-                                
+
                             @if (type == REPORTTYPE.RPT_PERSONSAREA)
                             {
                                 <!-- INICIO AREAS-->
@@ -165,11 +171,11 @@
 
                                         <label>Áreas</label>
                                         <select multiple="multiple" asp-for="AREAID" class="select2 select2-multiple"
-    name="AREAID"
-    asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))"></select>
+                                            name="AREAID"
+                                            asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))"></select>
                                         <div class="custom-control custom-checkbox mb-3">
                                             <input class="custom-control-input" id="grant" type="checkbox"
-    asp-for="ALLINSIDE" value="true">
+                                                asp-for="ALLINSIDE" value="true">
                                             <label class="custom-control-label" for="grant">Todos dentro da unidade</label>
                                         </div>
                                     </div>
@@ -180,14 +186,15 @@
                             @if (type == REPORTTYPE.RPT_BADGENOUSE)
                             {
                                 <input type="text" id="NDays" name="NDays" asp-for="NDays" class="form-control"
-    placeholder="N. de Dias sem Uso do Crachá" value="30" required>
+                                    placeholder="N. de Dias sem Uso do Crachá" value="30" required>
                             }
 
                             @if (type == REPORTTYPE.RPT_TOTALMEAL || type == REPORTTYPE.RPT_EXPORTMEAL || type ==
                                 REPORTTYPE.RPT_COUNTBATH)
                             {
+                                @*Diogo - Conferir o ExecPage e o excel page abaixo*@
                                 <button type="submit" name="exec" id="exec" asp-action="ExecPage"
-    class="btn">Executar</button>
+                                    class="btn">Executar</button>
                             }
                                 @if (type != REPORTTYPE.RPT_EXPORTMEAL && type != REPORTTYPE.RPT_COUNTBATH)
                             {
@@ -196,7 +203,7 @@
                                     buttonname = "Gerar";
                                 }
                                 <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
-    style="background-color: Green; color: White;">@buttonname</button>
+                                    style="background-color: Green; color: White;">@buttonname</button>
                             }
                             </div>
 
@@ -210,7 +217,104 @@
                 @if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS || type == REPORTTYPE.RPT_PERSONGENERAL || type ==
                 REPORTTYPE.RPT_LOGQRCODE)
             {
-                @Html.Partial("IndexPessoas")
+                // @Html.Partial("IndexPessoas")
+                <div class="col-sm-6">
+                    <div class="widget widget-table">
+                        <div class="widget-header">
+                            <h3><i class="fa fa-home"></i>Pessoas/Visitantes</h3>
+                            <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top"
+                                title="Informações das pessoas e/ou visitantes"><i
+                                    class="fa fa-question-circle"></i></button>
+                        </div>
+                        <div class="widget-content">
+                            <div class="row">
+                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                {
+                                    <!-- INICIO TIPO PESSOA -->
+                                    <fieldset>
+                                        <div class="col-sm-12">
+                                            <div class="form-group">
+                                                <label>Tipo de Pessoa</label>
+                                                <select id="selectPersonType" multiple="multiple" asp-for="PERSCLASSID"
+                                                    class="select2 select2-multiple" name="PERSCLASSID"
+                                                    asp-items="@(new SelectList(ViewBag.Persclassid, "PERSCLASSID", "DisplayTextCustomer"))"></select>
+
+                                            </div>
+                                        </div>
+                                        <!-- FIM TIPO PESSOA -->
+                                        <!-- INICIO EMPRESA -->
+                                        <div class="col-sm-12">
+                                            <label>Empresas</label>
+                                            @if (ViewBag.Company != null)
+                                            {
+                                                <select multiple="multiple" asp-for="CompanyNO" class="select2 select2-multiple"
+                                                    name="CompanyNO"
+                                                    asp-items="@(new SelectList(ViewBag.Company, "CompanyNO", "Name"))"></select>
+                                            }
+                                            </div>
+                                        </fieldset>
+                                    <!-- FIM EMPRESA -->
+                                }
+                                <!-- INICIO PESSOA -->
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <fieldset id="searchTypeFieldSet">
+                                        <div class="input-group">
+                                            <label class="control-inline">
+                                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                                {
+                                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                                        checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
+                                                    <!-- customização - nomenclatura para pessoa-->
+                                                    <span>@labelPessoas</span>
+                                                }
+                                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                                    value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
+                                                <span>Visitante</span>
+                                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                                {
+                                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                                        value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
+                                                    <span>Matrícula/CPF</span>
+                                                }
+                                                @if (_arvoreOpcoes.ShowDocumentSearch)
+                                                {
+                                                    <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                                        value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
+                                                    <span>Documento</span>
+                                                }
+                                            </label>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <div class="input-group input-group-sm">
+                                                    <input id="searchField" type="search" placeholder="pessoas/visitantes"
+                                                        class="form-control">
+                                                    <span class="input-group-btn">
+                                                        <!--<button class="btn" name="srcname" asp-action="searchPersons" type="submit"><i class="fa fa-search"></i></button>-->
+                                                        <button type="button" class="btn" onclick="SearchPersonAjax()">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    @* <select asp-for="PERSNO" class="select2" name="PERSNO"
+                                        asp-items="@(new SelectList(ViewBag.Persons, "Persid", "Nome", 0))"></select> *@
+                                    <select id="SelectPersonFilerResult" asp-for="PERSNO" class="select2"
+                                        name="PERSNO"></select>
+                                </div>
+                                <!-- FIM PESSOA -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
             else if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS)
             {
@@ -219,15 +323,15 @@
                 <!-- INÍCIO DO CARD UNIDADES -->
 
                 @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE &&
-                type != REPORTTYPE.RPT_PERSONGENERAL &&
-            type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
+                @*type != REPORTTYPE.RPT_PERSONGENERAL && *@
+                type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
             {
                 <div class="col-sm-6">
                     <div class="widget widget-table">
                         <div class="widget-header">
                             <h3><i class="fa fa-home"></i>Unidades</h3>
                             <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top"
-                            title="Informações das divisões e leitoras"><i class="fa fa-question-circle"></i></button>
+                                title="Informações das divisões e leitoras"><i class="fa fa-question-circle"></i></button>
                         </div>
                         <div class="widget-content">
                             <div class="row">
@@ -238,9 +342,16 @@
                                             <div class="input-group input-group-sm">
                                                 <label>Unidade:</label>
                                             </div>
-                                            <select asp-for="CLIENTID" class="select2" name="CLIENTID" asp-controller="Home"
-    asp-action="Index" onclick="form.submit();"
-    asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID", "Description"))"></select>
+                                            @*Diogo - Trocar o submit por uma chamada ajax no backend, mas apenas se o
+                                                elemento de devices for caregado igual ao post do Index*@
+                                            @* <select asp-for="CLIENTID" class="select2" name="CLIENTID"
+                                                asp-controller="Home"
+                                                asp-action="Index" onclick="form.submit();" asp-items="@(new
+                                                SelectList(ViewBag.Clients, "CLIENTID",
+                                                "Description"))"></select> *@
+                                            <select id="SearchClientId" asp-for="CLIENTID" class="select2" name="CLIENTID"
+                                                onclick="SearchDevicesAjax()" asp-items="@(new SelectList(ViewBag.Clients, "CLIENTID",
+                                                           "Description"))"></select>
                                         </div>
                                     </div>
 
@@ -253,9 +364,9 @@
                                         <div class="col-sm-12">
 
                                             <label>Leitora de Acesso</label>
-                                            <select multiple="multiple" asp-for="DEVICEID" class="select2 select2-multiple"
-        name="DEVICEID"
-        asp-items="@(new SelectList(ViewBag.Devices, "ID", "DESCRIPTION"))"></select>
+                                            <select id="SelectDeviceFilerResult" multiple="multiple" asp-for="DEVICEID"
+                                                class="select2 select2-multiple" name="DEVICEID"
+                                                asp-items="@(new SelectList(ViewBag.Devices, "ID", "DESCRIPTION"))"></select>
                                         </div>
                                     </fieldset>
                                     <!-- FIM DEVICES-->
@@ -269,8 +380,8 @@
 
                                             <label>Autorizações</label>
                                             <select multiple="multiple" asp-for="AUTHID" class="select2 select2-multiple"
-        name="AUTHID"
-        asp-items="@(new SelectList(ViewBag.Authorizations, "AuthID", "Shortname"))"></select>
+                                                name="AUTHID"
+                                                asp-items="@(new SelectList(ViewBag.Authorizations, "AuthID", "Shortname"))"></select>
                                         </div>
                                     </fieldset>
                                     <!-- FIM AUTORIZAÇÕES-->
@@ -307,7 +418,7 @@
                     <h4 class="modal-title">Mensagem:</h4>
                 </div>
                 <div class="modal-body">
-                    <h3>@ViewBag.MensagemErro </h3>
+                    <h3 id="AlertModalMEssage">@ViewBag.MensagemErro </h3>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
@@ -339,20 +450,19 @@
 
     <script type="text/javascript">
         window.onload = function () {
-        $('#mdAlertas').modal('show');
+            $('#mdAlertas').modal('show');
         };
     </script>
 }
 
 <script type="text/javascript">
-    debugger;
     $(document).ready(function () {
 
         //detecta qual elemento deve usar: data ou data e hora
         let showhourMinte = '@showHourMinute';
 
         //seleciona datetime picker ou datepicker conforme a necessidade
-        if(showhourMinte === 'True'){
+        if (showhourMinte === 'True') {
             $('.form_datetime').datetimepicker({
                 language: '@_arvoreOpcoes.FormatoDataHora',
                 format: '@dateFormatStringJs',
@@ -364,7 +474,7 @@
                 forceParse: true,
                 showMeridian: '@showMeridian'
             });
-        }else{
+        } else {
             $('#StartDate').datepicker({
                 language: '@_arvoreOpcoes.FormatoDataHora',
                 format: '@dateFormatStringJs',
@@ -385,19 +495,152 @@
             });
         }
 
-        @* $(document).ready(function() {
-            $(function () {
-        window.prettyPrint && prettyPrint();
-        $('#StartDate').datepicker({
-            format: 'dd/mm/yyyy'
-        }).datepicker("setDate", document.getElementById('hidData_Start').defaultValue);;
-        $('#StartDate').datepicker()
-            .on('changeDate', function (ev) {
-                $('#StartDate').datepicker('hide');
-            }); *@
+        //define o tipó de busca de pessoas padrão
+        window.SearchTypeValue = $('#searchTypeFieldSet input:radio').val();
+    });
+</script>
 
-    
-
+<script type="text/javascript">
+    //lidar com a pesquisa de pessoas via ajax
+    $('#searchTypeFieldSet input:radio').on('change', function () {
+        window.SearchTypeValue = $(this).val();
     });
 
+    //declara função de ordenamento dos objetos por propriedade string
+    function sortOnStringProperty(property) {
+        return function (a, b) {
+            var textA = a[property].toUpperCase();
+            var textB = b[property].toUpperCase();
+            return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+        }
+    }
+
+
+    //função de pesqusia de leitoras no back-end
+    function SearchDevicesAjax() {
+
+        //testa se a selectlist dos devices existe, senão, retorna
+        if (!($('#SelectDeviceFilerResult').length)) {
+            debugger
+            return;
+        }
+        //determina qual clientId foi selecionado
+        let SelectedClientId = $('#SearchClientId').val();
+
+        //cria o objeto de retorno
+        let SearchParameterObj = {
+            "ClientId": SelectedClientId
+        }
+
+        //faz a chamada síncriona do ajax
+        $.ajax({
+            //url montada no LAyout.cshtml, para ficar independente da raiz dapublicação
+            url: window.SearchDevices,
+            type: 'POST',
+            //chamada síncrona
+            async: false,
+            contentType: 'application/json',
+            //dados enviados no corpo
+            data: JSON.stringify(SearchParameterObj),
+            //token antiforgey, fucniona junto com o services.AddAntiforgey no Statup.cs
+            headers: { 'RequestVerificationToken': gettoken() },
+            dataType: 'json',
+            success: function (response) {
+                //determinar se houve algum resultado
+                if (response.length > 0) {
+                    //ordem alfabética
+                    response.sort(sortOnStringProperty("description"));
+                    //limpa a selectlist atual
+                    $('#SelectDeviceFilerResult').val(null);
+                    //iterar entre os itens do array                
+                    for (let i in response) {
+
+                        //constrói um item de selectlist
+                        let newOption = new Option(response[i].description, response[i].id, false, false);
+
+                        //e adiciona ao selectlist de pessoas                    
+                        $('#SelectDeviceFilerResult').append(newOption);
+                    }
+                }
+            },
+            error: function (errorObject) {
+                //configura a mensagem de alerta no modal
+                let errorMessage = 'Erro ' + errorObject.status + ':' + errorObject.statusText + ': ' + errorObject.responseText;
+                $('#AlertModalMEssage').text(errorMessage);
+                //mostra o modal
+                $('#mdAlertas').modal('show');
+            }
+        }).then(function () {
+            //re-desenha a selectlist
+            $('#SelectDeviceFilerResult').trigger('change');
+        });
+    }
+
+
+    //funçaõ de pesquisa de pessoas/documentos no backend
+    function SearchPersonAjax() {
+        //determina o tipo de busca:
+        let SearchType = window.SearchTypeValue;
+
+        //recupera o nome do campo de busca
+        let SearchField = $('#searchField').val();
+
+        //recupera o array de tipos de pessoas
+        let PersClassArray = [];
+        let SelectedPerClass = $('#selectPersonType').val();
+        if (SelectedPerClass !== null) {
+            PersClassArray = SelectedPerClass;
+        }
+
+
+        //cria o objeto de retorno
+        let SearchParameterObj = {
+            "searchField": SearchField,
+            "PersClassIdArray": PersClassArray,
+            "SearchTypeString": SearchType
+        }
+
+        //faz a chamada síncriona do ajax
+        $.ajax({
+            url: window.SearchPersons,
+            type: 'POST',
+            async: false,
+            contentType: 'application/json',
+            data: JSON.stringify(SearchParameterObj),
+            headers: { 'RequestVerificationToken': gettoken() },
+            dataType: 'json',
+            success: function (response) {
+                //determinar se houve algum resultado
+                if (response.length > 0) {
+                    //ordem alfabética
+                    response.sort(sortOnStringProperty("nome"));
+                    //limpa a selectlist atual
+                    $('#SelectPersonFilerResult').val(null);
+                    //iterar entre os itens do array                
+                    for (let i in response) {
+
+                        //constrói um item de selectlist
+                        let newOption = new Option(response[i].nome, response[i].persid, false, false);
+
+                        //e adiciona ao selectlist de pessoas                    
+                        $('#SelectPersonFilerResult').append(newOption);
+                    }
+
+                    //TODO: ordenar em ordem alfabética
+                }
+            },
+            error: function (errorObject) {
+                debugger;
+                //configura a mensagem de alerta no modal
+                let errorMessage = 'Erro ' + errorObject.status + ':' + errorObject.statusText + ': ' + errorObject.responseText;
+                $('#AlertModalMEssage').text(errorMessage);
+                //mostra o modal
+                $('#mdAlertas').modal('show');
+            }
+        }).then(function () {
+            //re-desenha a selectlist
+            $('#SelectPersonFilerResult').trigger('change');
+        });
+
+    }
 </script>
