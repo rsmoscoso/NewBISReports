@@ -163,24 +163,17 @@ namespace NewBISReports.Controllers
         /// Pesquisa as pessoas.
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
-        [HttpPost]
-        public IActionResult searchPersons(HomeModel model)
+        [HttpPost, ValidateAntiForgeryToken]
+        [Route("/Home/searchPersonsAjax", Name = "searchPersonsAjax")]
+        public IActionResult searchPersonsAjax([FromBody] NameSearch pesquisa)
         {
             try
             {
                 var persons = new List<Persons>();
 
-                if (model.NAMESEARCH != null || (model.PERSCLASSID != null && model.PERSCLASSID.Length > 0))
-                    persons = Persons.GetPersons(this.contextACE, model.SearchPersonsType, null, model.PERSCLASSID, model.NAMESEARCH);
-
-                ModelState["NAMESEARCH"].RawValue = "";
-
-                ViewBag.Persons = persons;
-                TempData["Persons"] = JsonConvert.SerializeObject(ViewBag.Persons);
-                this.persisTempData();
-
-                return View("Index", model);
-                //return RedirectToAction(nameof(Index), new{type=model.Type, mensagemErro = ""});
+                if (pesquisa.searchField != null || (pesquisa.PersClassIdArray != null && pesquisa.PersClassIdArray.Length > 0))
+                    persons = Persons.GetPersons(this.contextACE, pesquisa.SearchType, null, pesquisa.PersClassIdArray, pesquisa.searchField);
+                return new JsonResult(persons);
             }
             catch (Exception ex)
             {
@@ -188,10 +181,10 @@ namespace NewBISReports.Controllers
                 w.WriteLine(ex.Message + " --> searchpersons");
                 w.Close();
                 w = null;
-                //return View("Index", model);
-                return RedirectToAction(nameof(Index), new { type = model.Type, mensagemErro = ex.Message });
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
             }
         }
+
 
         /// <summary>
         /// Pesquisa as empresas.
@@ -243,7 +236,7 @@ namespace NewBISReports.Controllers
                 if (reports.CLIENTID != null || reports.DEVICESEARCH != null)
                     devices = Devices.GetDevices(this.contextACE, reports.CLIENTID, reports.DEVICESEARCH);
 
-                TempData["Devices"] = JsonConvert.SerializeObject(devices); ;
+                TempData["Devices"] = JsonConvert.SerializeObject(devices);
 
                 this.persisTempData();
             }
@@ -254,6 +247,30 @@ namespace NewBISReports.Controllers
                 w.Close();
                 w = null;
             }
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Route("/Home/searchDevicesAjax", Name = "searchDevicesAjax")]
+        public IActionResult searchDevicesAjax([FromBody] DeviceSearch pesquisa)
+        {
+            try
+            {
+                var devices = new List<Devices>();
+
+                if (pesquisa.ClientId != null || pesquisa.DeviceToSearch != null)
+                    devices = Devices.GetDevices(this.contextACE, pesquisa.ClientId, pesquisa.DeviceToSearch);
+
+                return new JsonResult(devices);
+            }
+            catch (Exception ex)
+            {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(ex.Message + " --> searchDevices");
+                w.Close();
+                w = null;
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+
         }
 
         /// <summary>
@@ -472,8 +489,14 @@ namespace NewBISReports.Controllers
                 this.persisTempData();
 
                 //Diogo - Converte as strings de data e hora para PTBR
-                reports.StartDate = _dateTimeConverter.ToPtBR(reports.StartDate);
-                reports.EndDate = _dateTimeConverter.ToPtBR(reports.EndDate);
+                if (!String.IsNullOrEmpty(reports.StartDate))
+                {
+                    reports.StartDate = _dateTimeConverter.ToPtBR(reports.StartDate);
+                }
+                if (!String.IsNullOrEmpty(reports.EndDate))
+                {
+                    reports.EndDate = _dateTimeConverter.ToPtBR(reports.EndDate);
+                }
 
                 if (reports.Type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
                 {
@@ -668,6 +691,7 @@ namespace NewBISReports.Controllers
                     if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                         this.searchAuthorizations(reports);
                 }
+
                 return View("Index", reports);
                 //return RedirectToAction(nameof(Index), new{type=reports.Type});
             }

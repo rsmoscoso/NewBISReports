@@ -270,6 +270,18 @@
         <!-- END CONTENT WRAPPER -->
     </div>
     <!-- END WRAPPER -->
+    <script>
+        //Rotas globais de API
+         window.SearchPersons = "@Url.Content("~/Home/searchPersonsAjax")";
+         window.SearchDevices = "@Url.Content("~/Home/searchDevicesAjax")";
+
+        //função para ler o antiforgery token enviado pelo servidor
+        function gettoken() {
+            let tokenElement = '@Html.AntiForgeryToken()';
+            let token = $(tokenElement).val();
+            return token;
+        }
+    </script>
    
 
 </body>

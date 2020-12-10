@@ -113,6 +113,7 @@ namespace NewBISReports
                 options.ValidationInterval = TimeSpan.Zero;
             });
 
+
             services.AddAuthentication(o =>
             {
                 o.DefaultScheme = IdentityConstants.ApplicationScheme;
@@ -145,7 +146,11 @@ namespace NewBISReports
                 options.AddPolicy("CriarNovaSenha", pB => pB.RequireAssertion(c => (c.User.HasClaim(x => x.Type == Claims.Admin) || c.User.HasClaim(x => x.Type == Claims.Usuario)) && c.User.HasClaim(x => x.Type == "MustChangePassword")));
             });
 
-            //Politica de filtro global para usuários que necessitam trocar a senha
+            //Antigirgey para chamadas Ajax:
+            services.AddAntiforgery(options =>
+            {
+                options.HeaderName = "RequestVerificationToken";
+            });
 
 
             //habilia o middleware mvc, com filtro de allowanony mous se o login estiver desabilitado
