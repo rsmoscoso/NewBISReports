@@ -10,15 +10,52 @@ with
 	encryption
 as
 
-declare @sql varchar(5000)  
-declare @where varchar(5000)  
-declare @server varchar(100)
+declare @sql varchar(5000)  = ' ';
+declare @where varchar(5000)  = ' where '
+/*** Lógica de filtro de resultados
+	Como não é possível usar o "LogEventValueType.eventValueName" para filtrar mais de um parâmetro,
+	do segundo em diante deve-se filtrar em um select por fora.
 
-set @server = convert(varchar, SERVERPROPERTY('MachineName')) + '\BIS_ACE'
-set @where = ' where '
+	Assim, o passo a oasso de gerar a string de consulta é:
+	1-Determina-se o numero de filtros que dependem de "LogEventValueType.eventValueName", ou seja mutuamente exclusivos
+	2-Escolhe-se o filtro interno, ou seja que será executado no Select mais central
+	3- Se houver mais filtros além do usado no passo 2, constrói-se o select por fora com os filtros extra
+***/
+--detectar se há mais de um filtro
+declare @num_filtros smallint = 0
 
---Diogo melhorando a legibilidade
-set @sql = 'SELECT 
+--uma flag para cada tipo de filtro mutuamente exclusivo
+declare @filtro_Persid BIT = 0
+declare @filtro_UnidadedaPessoa BIT = 0
+declare @filtro_Empresa BIT = 0
+
+--avalia filtro de persid
+if (not @persid is null)
+begin
+	set @filtro_Persid = 1
+	set @num_filtros = @num_filtros + 1
+end
+
+--avalia filtro de UnidadePEssoa (client)
+ if (not @clientid is null and not (@devices is null and @clientid = 'Common'))
+begin
+	set @filtro_UnidadedaPessoa = 1
+	set @num_filtros = @num_filtros+1
+end
+
+--avalia filtro de Empresa
+if (not @company is null)
+begin
+	set @filtro_Empresa = 1
+	set @num_filtros = @num_filtros+1
+end
+
+--se houver mais de um filtro, já construir o SELECT mais externo. As colunas devem estar com os msmos nomes das do select intermediário
+if(@num_filtros > 1)
+	set @sql = 'SELECT DataAcesso, Leitor, Nome, ID, Persid, Cardno ,Empresa, TipoAcesso, CPF, UnidadedaPessoa from ('
+
+--construção do select intermediário
+set @sql = @sql + 'SELECT 
 LogEvent.ID,
 DataAcesso = convert(varchar, eventCreationtime, 103) + '' '' +   convert(varchar, eventCreationtime, 108), 
 Leitor = AddressTag,
@@ -38,33 +75,67 @@ inner join LogAddress on LogAddress.ID = LogEvent.AddressID '
 
 set @where = @where + ' LogEventType.ID = 1 and LogState.stateNumber in (' + @accesstype + ') '
 
+
 if (not @devices is null)
 	set @where = @where + ' and AddressTag in (' + @devices + ')'
-	
+
+	--construção do select interno dentro da string do "where"
 set @where = @where + ' and LogEvent.ID in (select LogEvent.Id from LogEventValueType
  inner join LogEventValue on LogEventValue.eventTypeId = LogEventValueType.Id
  inner join LogEvent2Value on LogEvent2Value.valueId = LogEventValue.Id
  inner join LogEvent on LogEvent.Id = LogEvent2Value.eventId '
  
- set @where = @where + ' where eventCreationTime >= ''' + convert(varchar, @startdate) + ''' and eventCreationTime <= ''' + convert(varchar, @enddate) + ''''
+set @where = @where + ' where eventCreationTime >= ''' + convert(varchar, @startdate) + ''' and eventCreationTime <= ''' + convert(varchar, @enddate) + ''''
  
- if (not @clientid is null and @devices is null and @devices != 'Common')
-	set @where = @where + ' and LogEventValueType.eventValueName = ''ORTSPFAD'' and stringValue like ''%' + @clientid + '%'''
- 
-/* se há pessoas selecionadas, prioridade na pesquisa */
-if (not @persid is null)
-	set @where = @where + ' and eventValueName = ''PERSID'' and stringValue = ''' + @persid + ''''
 
-/*
- * Se empresa for preenchida e os devices + unidades não,
- * pesquisa apenas pela empresa ou
- * se empresa e unidades forem preenchidos, pesquisa pelos empresa pois
- * o primeiro select pesquisa a unidade */
-else if (not @company is null and @devices is null and @clientid is null)
-	set @where = @where + ' and eventValueName = ''COMPANY'' and stringValue collate SQL_Latin1_General_CP1_CI_AS in (' + @company + ')'
+--utiliza apenas um filtro dentro do select interno, avaliado por ordem de prioridade, por isso são avaliados com elseif
+--filtro de pessoa
+if(@filtro_Persid = 1)
+	set @where = @where + ' and eventValueName = ''PERSID'' and stringValue = ''' + @persid + ''''
+--filtro de UnidadePessoa (Client) 
+else if (@filtro_UnidadedaPessoa = 1)
+ 	set @where = @where + ' and LogEventValueType.eventValueName = ''ORTSPFAD'' and stringValue like ''%' + @clientid + '%'''
+--filtro de Empresa
+ else if (@filtro_Empresa = 1)
+ 	set @where = @where + ' and eventValueName = ''COMPANY'' and stringValue collate SQL_Latin1_General_CP1_CI_AS in (''' + @company + ''')'
 
 set @where = @where + ')'
 
-set @where = @where + ' group by LogEvent.ID, AddressTag, eventCreationtime order by eventCreationtime'
+set @where = @where + ' group by LogEvent.ID, AddressTag, eventCreationtime' 
 
+--se não houver mais filtros fecha a string com order by, caso contrário coloca os filtros restantes e o order by no select externo
+if(@num_filtros <=1)
+	set @where = @where + ' order by eventCreationtime'
+else
+begin
+	--fechamento do select externo e inicio dos filtros externos
+	set @where = @where +  ') x 
+	where'
+
+	--flag para controlar a adiçaõ do "and" se houver mais de um filtro por fora
+	declare @flag_and BIT = 0
+
+	--filtro de UnidadePessoa (Client) 
+	if (@filtro_UnidadedaPessoa = 1)
+	begin
+		if (@flag_and = 1)
+			set @where = @where + ' and'
+		set @where = @where + ' UnidadedaPessoa like ''%' + @clientid + '%'''
+		--marca que já teve um filtro, os proximos deverão adicionar "and" na frente
+		set @flag_and = 1
+	end
+	--filtro de Empresa
+	if (@filtro_Empresa = 1)
+	 begin
+		if (@flag_and = 1)
+			set @where = @where + ' and'
+		set @where = @where + ' Empresa collate SQL_Latin1_General_CP1_CI_AS in (''' + @company + ''')'
+		--marca que já teve um filtro, os proximos deverão adicionar "and" na frente
+		set @flag_and = 1
+	end
+
+	--acrescenta o order by
+	set @where = @where + ' order by DataAcesso'
+
+end
 exec (@sql + @where)
