@@ -37,7 +37,7 @@ begin
 end
 
 --avalia filtro de UnidadePEssoa (client)
- if (not @clientid is null and not (@devices is null and @clientid = 'Common'))
+if (not @clientid is null and @devices is null and @devices != 'Common')
 begin
 	set @filtro_UnidadedaPessoa = 1
 	set @num_filtros = @num_filtros+1
