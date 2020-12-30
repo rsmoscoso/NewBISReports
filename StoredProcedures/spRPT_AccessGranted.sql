@@ -94,11 +94,16 @@ if(@filtro_Persid = 1)
 	set @where = @where + ' and eventValueName = ''PERSID'' and stringValue = ''' + @persid + ''''
 --filtro de UnidadePessoa (Client) 
 else if (@filtro_UnidadedaPessoa = 1)
- 	set @where = @where + ' and LogEventValueType.eventValueName = ''ORTSPFAD'' and stringValue like ''%' + @clientid + '%'''
+begin
+	set @where = @where + ' and LogEventValueType.eventValueName = ''ORTSPFAD'' and stringValue like ''%' + @clientid + '%'''
+	set @filtro_UnidadedaPessoa = 0
+end
 --filtro de Empresa
- else if (@filtro_Empresa = 1)
- 	set @where = @where + ' and eventValueName = ''COMPANY'' and stringValue collate SQL_Latin1_General_CP1_CI_AS in (''' + @company + ''')'
-
+else if (@filtro_Empresa = 1)
+begin
+	set @where = @where + ' and eventValueName = ''COMPANY'' and stringValue collate SQL_Latin1_General_CP1_CI_AS in (' + @company + ')'
+	set @filtro_Empresa = 0
+end
 set @where = @where + ')'
 
 set @where = @where + ' group by LogEvent.ID, AddressTag, eventCreationtime' 
@@ -129,7 +134,7 @@ begin
 	 begin
 		if (@flag_and = 1)
 			set @where = @where + ' and'
-		set @where = @where + ' Empresa collate SQL_Latin1_General_CP1_CI_AS in (''' + @company + ''')'
+		set @where = @where + ' Empresa collate SQL_Latin1_General_CP1_CI_AS in (' + @company + ')'
 		--marca que já teve um filtro, os proximos deverão adicionar "and" na frente
 		set @flag_and = 1
 	end
