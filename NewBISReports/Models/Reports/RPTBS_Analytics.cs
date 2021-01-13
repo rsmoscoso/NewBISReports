@@ -102,7 +102,7 @@ namespace NewBISReports.Models.Reports
 
                 if (String.IsNullOrEmpty(persclass))
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
+                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted1  {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
                         String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", start, end,
                         String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
                         String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
