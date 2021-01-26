@@ -54,6 +54,10 @@ namespace NewBISReports.Models
         #region outras propriedades de configuração
         public bool UseLogin { get; set; }
         public bool Meal { get; set; }
+        
+        //customização do nome das Sp's, facilita em ambientes de teste.
+        public string SpAccessGranted {get; set;}
+        public string SpPersClassAccessGranted {get; set;}
 
         //Customização de nome de "pessoas", solicitado pela FortKnox
         public string PersonsLabel { get; set; }
@@ -113,6 +117,10 @@ namespace NewBISReports.Models
                     FormatoDataHora = "pt-BR";
                     break;
             }
+
+            //Nome das SP's
+            SpAccessGranted = _configuration.GetSection(nomeCliente)["SpAccessGranted"];
+            SpPersClassAccessGranted = _configuration.GetSection(nomeCliente)["SpPersClassAccessGranted"];
 
             //começa pelo Login - avalia apenas se useLogin for verdadeiro
             if (UseLogin)

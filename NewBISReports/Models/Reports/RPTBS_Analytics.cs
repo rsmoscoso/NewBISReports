@@ -1,4 +1,5 @@
 ﻿using NewBISReports.Models.Classes;
+using NewBISReports.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,6 +15,12 @@ namespace NewBISReports.Models.Reports
     /// </summary>
     public class RPTBS_Analytics
     {
+        private readonly ArvoreOpcoes _arvoreOpcoes;
+
+        public RPTBS_Analytics(ArvoreOpcoes arvoreOpcoes)
+        {
+            _arvoreOpcoes = arvoreOpcoes;
+        }
         #region Analytics
         /// <summary>
         /// Retorna os eventos, de acordo com o estado, da tabela LogEvent.
@@ -33,7 +40,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="meal">Verifica os eventos de refeição.</param>
         /// <param name="server">Servidor da instância BIS_ACE.</param>
         /// <returns></returns>
-        public static DataTable GetEventsBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, string start, string end, LOGEVENT_STATE state, LOGEVENT_VALUETYPE type, string clientexternalid,
+        public DataTable GetEventsBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, string start, string end, LOGEVENT_STATE state, LOGEVENT_VALUETYPE type, string clientexternalid,
             string description, string[] company, string[] deviceid, string[] addresstag, string[] persclassid, string stringvalue, bool meal, HomeModel reports, string tagbisserver,
             string addresstagprefix, string addresstagsufix, ACCESSTYPE accesstype)
         {
@@ -102,7 +109,7 @@ namespace NewBISReports.Models.Reports
 
                 if (String.IsNullOrEmpty(persclass))
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_AccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
+                    sql = String.Format("set dateformat 'dmy' exec BISEventLog.."+ _arvoreOpcoes.SpAccessGranted+" {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
                         String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", start, end,
                         String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
                         String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
@@ -111,7 +118,7 @@ namespace NewBISReports.Models.Reports
                 }
                 else
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog..spRPT_PersClassAccessGranted  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
+                    sql = String.Format("set dateformat 'dmy' exec BISEventLog.."+ _arvoreOpcoes.SpAccessGranted+"  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
                     String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", 
                     start,
                     end,
@@ -152,7 +159,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="startdate">Data inicial da pesquisa.</param>
         /// <param name="enddate">Data Final da pesquisa.</param>
         /// <returns>Retorna a Datatable com os dados.</returns>
-        public static DataTable GetCountBath(DatabaseContext dbcontext)
+        public DataTable GetCountBath(DatabaseContext dbcontext)
         {
             try
             {
@@ -184,7 +191,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="end">Data final do relatório.</param>
         /// <param name="clientid">ID do cliente.</param>
         /// <returns></returns>
-        public static DataTable LoadTotalMeal(DatabaseContext dbcontext, string start, string end, string clientid)
+        public  DataTable LoadTotalMeal(DatabaseContext dbcontext, string start, string end, string clientid)
         {
             try
             {
@@ -206,7 +213,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="enddate">Fim da pesquisa.</param>
         /// <param name="clientid">ID do cliente para pesquisa.</param>
         /// <returns>Retorna a tabela com as refeições.</returns>
-        public static DataTable GetMealBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, MEALTYPE type, string startdate, string enddate, string tagbisserver, string clientid)
+        public DataTable GetMealBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, MEALTYPE type, string startdate, string enddate, string tagbisserver, string clientid)
         {
             try
             {

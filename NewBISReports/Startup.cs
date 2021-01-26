@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using NewBISReports.Models.Autorizacao;
 using NewBISReports.Models;
+using NewBISReports.Models.Reports;
 
 namespace NewBISReports
 {
@@ -181,6 +182,8 @@ namespace NewBISReports
             services.AddSingleton<ArvoreOpcoes>();
             //serviço de conversão de data no frontend
             services.AddScoped<DateTimeConverter>();
+            //classe de greção de relatórios
+            services.AddTransient<RPTBS_Analytics>();
 
             services.AddLogging();
             services.AddCors();
