@@ -118,7 +118,7 @@ namespace NewBISReports.Models.Reports
                 }
                 else
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog.."+ _arvoreOpcoes.SpAccessGranted+"  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
+                    sql = String.Format("set dateformat 'dmy' exec BISEventLog.."+ _arvoreOpcoes.SpPersClassAccessGranted+"  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
                     String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", 
                     start,
                     end,
@@ -240,6 +240,11 @@ namespace NewBISReports.Models.Reports
                             break;
                     }
                 }
+
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }

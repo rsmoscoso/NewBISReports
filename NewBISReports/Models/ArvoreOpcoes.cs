@@ -110,7 +110,7 @@ namespace NewBISReports.Models
             {
                 case "pt-BR":
                     break;
-                case "en-US":
+                case "en":
                     break;
                 default:
                     //força pt-BR
