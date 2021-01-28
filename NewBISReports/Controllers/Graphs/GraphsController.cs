@@ -41,6 +41,13 @@ namespace NewBISReports.Controllers.Graphs
         private BSConfig config { get; set; }
         #endregion
 
+        #region injeções de dependencia
+        /// <summary>
+        /// classe RPTBS_Analytics
+        /// </summary>
+        private readonly RPTBS_Analytics _rptsAnalytics;
+        #endregion
+
         #region Functions
         /// <summary>
         /// Mantem a conexão com o banco de dados.
@@ -89,7 +96,7 @@ namespace NewBISReports.Controllers.Graphs
                 if (reports.Type == REPORTTYPE.RPT_TOTALMEALGRAPH)
                 {
                     List<TotalMeal> meals = new List<TotalMeal>();
-                    using (DataTable table = RPTBS_Analytics.LoadTotalMeal(this.contextBIS, reports.StartDate, reports.EndDate,
+                    using (DataTable table = _rptsAnalytics.LoadTotalMeal(this.contextBIS, reports.StartDate, reports.EndDate,
                         reports.CLIENTID))
                     {
                         if (table != null)
@@ -126,10 +133,12 @@ namespace NewBISReports.Controllers.Graphs
             return View();
         }
 
-        public GraphsController(IConfiguration configuration)
+        public GraphsController(IConfiguration configuration,
+                                RPTBS_Analytics rptsAnalytics)
         {
             try
             {
+                _rptsAnalytics = rptsAnalytics;
                 this.contextBIS = new DatabaseContext(configuration.GetConnectionString("BIS"));
                 this.contextACE = new DatabaseContext(configuration.GetConnectionString("BIS_ACE"));
                 string defaultsettings = configuration.GetSection("Default")["Name"];

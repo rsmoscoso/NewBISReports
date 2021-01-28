@@ -81,6 +81,10 @@ namespace NewBISReports.Controllers
         #region Injecao de dependencia
         private readonly ArvoreOpcoes _arvoreopcoes;
         private readonly DateTimeConverter _dateTimeConverter;
+        /// <summary>
+        /// classe RPTBS_Analytics
+        /// </summary>
+        private readonly RPTBS_Analytics _rptsAnalytics;
 
         #endregion
 
@@ -346,7 +350,7 @@ namespace NewBISReports.Controllers
         {
             try
             {
-                return RPTBS_Analytics.GetCountBath(this.contextBIS);
+                return _rptsAnalytics.GetCountBath(this.contextBIS);
 
             }
             catch (Exception ex)
@@ -380,9 +384,8 @@ namespace NewBISReports.Controllers
                     addresstagprefix = "ControleAcesso.Devices.";
                 if (String.IsNullOrEmpty(addresstagsufix))
                     addresstagprefix = ".Evento";
-                //Diogo - A data agora já vem formatada do frontend com hora minuto
-                //return RPTBS_Analytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
-                return RPTBS_Analytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + ":00", reports.EndDate + ":59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
+                //Diogo - A data agora já vem formatada do frontend com hora minuto                
+                return _rptsAnalytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + ":00", reports.EndDate + ":59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
                     evtType, "", cli.Name, reports.CompanyNO, reports.DEVICEID, devices, reports.PERSCLASSID,
                     String.IsNullOrEmpty(reports.LISTPERSONS) ? (reports.SearchPersonsType == SEARCHPERSONS.SEARCHPERSONS_CARD ? reports.NAMESEARCH : reports.PERSNO) : reports.LISTPERSONS, meal, reports,
                     this.config.TagBISServer, addresstagprefix, addresstagsufix, reports.AccessType);
@@ -414,7 +417,7 @@ namespace NewBISReports.Controllers
                 if (reports.Type == REPORTTYPE.RPT_TOTALMEAL)
                 {
                     List<TotalMeal> meals = new List<TotalMeal>();
-                    using (DataTable table = RPTBS_Analytics.LoadTotalMeal(this.contextBIS, reports.StartDate, reports.EndDate,
+                    using (DataTable table = _rptsAnalytics.LoadTotalMeal(this.contextBIS, reports.StartDate, reports.EndDate,
                         reports.CLIENTID))
                     {
                         if (table != null)
@@ -535,7 +538,7 @@ namespace NewBISReports.Controllers
                 {
                     string divisao = Clients.GetClientDescription(this.contextACE, reports.CLIENTID);
                     //Diogo - único relatório em que se passa apenas data                  
-                    using (DataTable table = RPTBS_Analytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, divisao))
+                    using (DataTable table = _rptsAnalytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, divisao))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal", _dateTimeConverter)) != null)
                         {
@@ -639,7 +642,7 @@ namespace NewBISReports.Controllers
                 else if (reports.Type == REPORTTYPE.RPT_TOTALMEAL)
                 {
                     List<TotalMeal> meals = new List<TotalMeal>();
-                    using (DataTable table = RPTBS_Analytics.LoadTotalMeal(this.contextBIS, reports.StartDate, reports.EndDate,
+                    using (DataTable table = _rptsAnalytics.LoadTotalMeal(this.contextBIS, reports.StartDate, reports.EndDate,
                         reports.CLIENTID))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reporttotalmeal.xlsx", "Orion", "Crachas", _dateTimeConverter)) != null)
@@ -777,12 +780,14 @@ namespace NewBISReports.Controllers
 
         public HomeController(IConfiguration configuration,
                                 ArvoreOpcoes arvoreOpcoes,
-                                DateTimeConverter dateTimeConverter)
+                                DateTimeConverter dateTimeConverter,
+                                RPTBS_Analytics rptsAnalytics)
         {
             //Classe que contempla opções do appssetings
             //TODO: mover as configurações dentro do Try abaixo para dentro del
             _arvoreopcoes = arvoreOpcoes;
             _dateTimeConverter = dateTimeConverter;
+            _rptsAnalytics = rptsAnalytics;
             try
             {
                 this.contextBIS = new DatabaseContext(configuration.GetConnectionString("BIS"));

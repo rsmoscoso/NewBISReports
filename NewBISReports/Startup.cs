@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using NewBISReports.Models.Autorizacao;
 using NewBISReports.Models;
+using NewBISReports.Models.Reports;
 
 namespace NewBISReports
 {
@@ -146,10 +147,14 @@ namespace NewBISReports
                 options.AddPolicy("CriarNovaSenha", pB => pB.RequireAssertion(c => (c.User.HasClaim(x => x.Type == Claims.Admin) || c.User.HasClaim(x => x.Type == Claims.Usuario)) && c.User.HasClaim(x => x.Type == "MustChangePassword")));
             });
 
+             //Verifica se o módulo de login estará habilitado
+            var appName = Configuration[nomeCliente + ":appName"];
+
             //Antigirgey para chamadas Ajax:
             services.AddAntiforgery(options =>
             {
                 options.HeaderName = "RequestVerificationToken";
+                options.Cookie.Name = appName;
             });
 
 
@@ -181,6 +186,8 @@ namespace NewBISReports
             services.AddSingleton<ArvoreOpcoes>();
             //serviço de conversão de data no frontend
             services.AddScoped<DateTimeConverter>();
+            //classe de greção de relatórios
+            services.AddTransient<RPTBS_Analytics>();
 
             services.AddLogging();
             services.AddCors();
