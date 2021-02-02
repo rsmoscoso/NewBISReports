@@ -37,8 +37,8 @@
     if (ViewBag.Type != null)
     {
         type = (REPORTTYPE)ViewBag.Type;
-        //Diogo - retirar minutos do relatório de meall
-        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS)
+        //Diogo - retirar minutos do relatório de meal
+        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS || type ==REPORTTYPE.RPT_CREDITS)
         {
             dateFormatStringRazor = dateFormatStringRazor.Substring(0, 10);
             dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
@@ -122,13 +122,16 @@
                                                 asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="input-group date form_datetime">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate"
-                                                class="form-control" placeholder="Data Final" required>
+                                    @*Alguns relatórios só possuem data de início*@
+                                    if(type != REPORTTYPE.RPT_CREDITS){
+                                        <div class="form-group">
+                                            <div class="input-group date form_datetime">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate"
+                                                    class="form-control" placeholder="Data Final" required>
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
                                 }
                                 else
                                 {
@@ -137,11 +140,14 @@
                                         <input type="text" id="StartDate" name="StartDate" asp-for="StartDate"
                                             class="form-control" placeholder="Data Inicial" required>
                                     </div>
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control"
-                                            placeholder="Data Final" required>
-                                    </div>
+                                    @*Alguns relatórios só possuem data de início*@
+                                    if(type != REPORTTYPE.RPT_CREDITS){
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control"
+                                                placeholder="Data Final" required>
+                                        </div>
+                                    }
                                 }
 
                                 if (showAccessGrantOption)
@@ -163,7 +169,8 @@
                                 }
                             }
 
-                            @if (type == REPORTTYPE.RPT_PERSONSAREA)
+                            @*Mudança no layout das áreas
+                            @if (type == REPORTTYPE.RPT_PERSONSAREA )
                             {
                                 <!-- INICIO AREAS-->
                                 <fieldset>
@@ -180,8 +187,8 @@
                                         </div>
                                     </div>
                                 </fieldset>
-                                <!-- FIM AREAS-->
-                            }
+                            }*@
+                             <!-- FIM AREAS-->
 
                             @if (type == REPORTTYPE.RPT_BADGENOUSE)
                             {
@@ -211,11 +218,50 @@
                     </div>
                 </div>
             </div>
+            <!-- remake area -->
+            @if (type == REPORTTYPE.RPT_PERSONSAREA || type == REPORTTYPE.RPT_CREDITS )
+            {
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="widget widget-table">
+                            <div class="widget-header">
+                                <h3><i class="fa fa-home"></i>Áreas</h3>
+                                <button type="button" class="btn btn-link" data-toggle="tooltip" data-placement="top"
+                                    title="Áreas delimitadas por leitoras"><i
+                                        class="fa fa-question-circle"></i></button>
+                            </div>
+                            <div class="widget-content">
+                                <div class="row">
+                                    <fieldset>
+                                        <div class="col-sm-12">
+                                            <label>Áreas</label>
+                                            <select multiple="multiple" asp-for="AREAID" class="select2 select2-multiple"
+                                                name="AREAID"
+                                                asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))">
+                                            </select>
+                                            <!--checkbox todos dentro da unidade - Não está sendo usado para nada no back-end-->
+                                            @*@if (type == REPORTTYPE.RPT_PERSONSAREA)
+                                            {
+                                                <div class="custom-control custom-checkbox mb-3">
+                                                    <input class="custom-control-input" id="grant" type="checkbox"
+                                                        asp-for="ALLINSIDE" value="true">
+                                                    <label class="custom-control-label" for="grant">Todos dentro da unidade</label>
+                                                </div>
+                                            } *@                                                      
+                                        </div>
+                                    </fieldset>                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- fim area -->
+            }
             <!-- FIM PERÍODO -->
             <!-- INÍCIO DO CARD PESSOAS E UNIDADE -->
             <div class="row">
                 @if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS || type == REPORTTYPE.RPT_PERSONGENERAL || type ==
-                REPORTTYPE.RPT_LOGQRCODE)
+                REPORTTYPE.RPT_LOGQRCODE || type == REPORTTYPE.RPT_CREDITS)
             {
                 // @Html.Partial("IndexPessoas")
                 <div class="col-sm-6">
@@ -228,7 +274,7 @@
                         </div>
                         <div class="widget-content">
                             <div class="row">
-                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                @if (type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_CREDITS)
                                 {
                                     <!-- INICIO TIPO PESSOA -->
                                     <fieldset>
@@ -262,7 +308,8 @@
                                     <fieldset id="searchTypeFieldSet">
                                         <div class="input-group">
                                             <label class="control-inline">
-                                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                                @*Assumindo que para bilhetagem e QRCODE só se aplica a visitantes*@
+                                                @if (type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_CREDITS)
                                                 {
                                                     <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
                                                         checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
@@ -272,7 +319,7 @@
                                                 <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
                                                     value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
                                                 <span>Visitante</span>
-                                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
+                                                @if (type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_CREDITS)
                                                 {
                                                     <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
                                                         value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
@@ -324,7 +371,7 @@
 
                 @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE &&
                 @*type != REPORTTYPE.RPT_PERSONGENERAL && *@
-                type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA)
+                type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA && type != REPORTTYPE.RPT_CREDITS)
             {
                 <div class="col-sm-6">
                     <div class="widget widget-table">

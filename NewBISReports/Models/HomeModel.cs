@@ -49,7 +49,8 @@ namespace NewBISReports.Models
         RPT_COUNTBATH = 20,
         RPT_PERSONSPROFILES = 21,
         RPT_PERSONSAREA = 22,
-        RPT_PERSONSINSIDEAREA = 23
+        RPT_PERSONSINSIDEAREA = 23,
+        RPT_CREDITS = 24
 
     }
 
@@ -267,6 +268,9 @@ namespace NewBISReports.Models
                 case "23":
                     retval = REPORTTYPE.RPT_PERSONSINSIDEAREA;
                     break;
+                case "24":
+                    retval = REPORTTYPE.RPT_CREDITS;
+                    break;
                 //Diogo - adicionando uma landing page
                 case "99":
                     retval = REPORTTYPE.RPT_LANDINGPAGE;
@@ -359,6 +363,10 @@ namespace NewBISReports.Models
                 case REPORTTYPE.RPT_PERSONSINSIDEAREA:
                     retval = "Pessoas dentro da Unidade";
                     break;
+                case REPORTTYPE.RPT_CREDITS:
+                    retval = "Créditos dos Visitantes";
+                    break;
+                    
             }
             return retval;
         }
@@ -445,6 +453,9 @@ namespace NewBISReports.Models
                     break;
                 case REPORTTYPE.RPT_PERSONSINSIDEAREA:
                     retval = "relatório das pessoas dentro da unidade";
+                    break;
+                case REPORTTYPE.RPT_CREDITS:
+                    retval = "Relatório de créditos restantes das pessoas";
                     break;
             }
             return retval;

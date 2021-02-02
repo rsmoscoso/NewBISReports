@@ -48,6 +48,8 @@ namespace NewBISReports.Models
         public bool VisitantesRaiz { get; set; }
         public bool QrCodeDosVisitantes { get; set; }
         public bool ImportarVisitantes { get; set; }
+        public bool CreditosVisitantes { get; set; } 
+
 
         #endregion
 
@@ -58,6 +60,8 @@ namespace NewBISReports.Models
         //customização do nome das Sp's, facilita em ambientes de teste.
         public string SpAccessGranted {get; set;}
         public string SpPersClassAccessGranted {get; set;}
+        public string SpCreditosPessoa {get; set;}
+        
 
         //Customização de nome de "pessoas", solicitado pela FortKnox
         public string PersonsLabel { get; set; }
@@ -185,6 +189,7 @@ namespace NewBISReports.Models
             //menu visitantes
             QrCodeDosVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:visitantesRaiz:qrCodeDosVisitantes"]);
             ImportarVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:visitantesRaiz:importarVisitantes"]);
+            CreditosVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:visitantesRaiz:creditosVisitantes"]);            
             VisitantesRaiz = (QrCodeDosVisitantes || ImportarVisitantes);
 
 

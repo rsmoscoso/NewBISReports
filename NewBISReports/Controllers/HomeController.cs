@@ -563,6 +563,7 @@ namespace NewBISReports.Controllers
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reportphoto.xlsx");
                     }
                 }
+                //TODO: diogo - parei aqui escrever o post da consulta do RPT_CREDITOS
                 else if (reports.Type == REPORTTYPE.RPT_LOGQRCODE)
                 {
                     string visitorname = Visitors.GetVisitorName(this.contextACE, reports.PERSNO);
@@ -694,6 +695,7 @@ namespace NewBISReports.Controllers
                     if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                         this.searchAuthorizations(reports);
                 }
+                //TODO diogo -> limitar as áreas pela tabela extra se o relatório for do tipo CREDITS
 
                 return View("Index", reports);
                 //return RedirectToAction(nameof(Index), new{type=reports.Type});
