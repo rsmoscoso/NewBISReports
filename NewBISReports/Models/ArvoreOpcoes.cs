@@ -180,7 +180,7 @@ namespace NewBISReports.Models
             PessoasBloqueadas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:pessoasBloqueadas"]);
             TodosOsVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:todosOsVisitantes"]);
             AdministrativosRaiz = (Pessoas || PerfilDasPessoas || AutorizacoesDasPessoas || LeitoresPorAutorizacoes || PessoasBloqueadas || TodosOsVisitantes);
-            //PessoasPorArea = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:pessoasporArea"]);
+            PessoasPorArea = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:pessoasporArea"]);
 
             //menu visitantes
             QrCodeDosVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:visitantesRaiz:qrCodeDosVisitantes"]);
