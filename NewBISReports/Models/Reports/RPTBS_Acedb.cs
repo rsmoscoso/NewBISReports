@@ -79,6 +79,37 @@ namespace NewBISReports.Models.Reports
             }
         }
 
+        /// <summary>
+        /// Retorna os Créditos do visitante
+        /// </summary>
+        /// <param name="dbcontext">Conexão com o banco de dados.</param>
+        /// <param name="cmpPersID">Documento do Visitante.</param>
+        /// <param name="cmpAreas">Nome do Visitante.</param>
+        /// <param name="cmpDataInicio">ultima visita a partir da desta data</param>
+        /// <returns></returns>
+        public static DataTable LoadPersonCredits(DatabaseContext dbcontext, string cmpPersID, string[] cmpAREAID, string DataInicio)
+        {
+            try
+            {
+                //chamad á Sp de consultar créditos
+                string sql = String.Format("set dateformat 'dmy' exec hzFortKnox..spREL_CreditosPessoaMultiArea {0}, {1}, {2}, {3}",
+                        //areas
+                        (cmpAREAID == null || cmpAREAID.Length == 0 ||(cmpAREAID.Length == 1 && String.IsNullOrEmpty(cmpAREAID[0]))) ? "null" : "'"+BreakStringArray(cmpAREAID, "sp")+"'", 
+                        //numero de créditos: não usaremos este filtro
+                        "null",
+                        //data inicio
+                        String.IsNullOrEmpty(DataInicio) ? "null":"'" + DataInicio + "'", 
+                        //PERSID
+                        String.IsNullOrEmpty(cmpPersID) ? "null":"'" + cmpPersID + "'");
+
+                return dbcontext.LoadDatatable(dbcontext, sql);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
         /// <summary>
         /// Retorna as autorizações das pessoas.
@@ -209,17 +240,19 @@ namespace NewBISReports.Models.Reports
         /// <param name="areaid">ID da área.</param>
         /// <param name="areaexterna">Nome referente à área externa.</param>
         /// <returns></returns>
-        public static DataTable LoadPersonsArea(DatabaseContext dbcontext, string areaid, string areaexterna)
+        public static DataTable LoadPersonsArea(DatabaseContext dbcontext, string[] areaid, string areaexterna)
         {
             try
             {
                 string sql = "select Matricula = persno, nome = isnull(firstname, '') + ' ' + isnull(lastname, ''), Local = are.Name from bsuser.persons per " +
                     "inner join bsuser.CURRENTACCESSSTATE cur on cur.PERSID = per.PERSID inner join bsuser.AREAS are on are.AREAID = cur.AREAID ";
 
-                if (String.IsNullOrEmpty(areaid) && !String.IsNullOrEmpty(areaexterna))
+                if ((areaid == null || areaid.Length == 0 || (areaid.Length == 1 && String.IsNullOrEmpty(areaid[0]))) && !String.IsNullOrEmpty(areaexterna))
                     sql += String.Format(" where are.name != '{0}'", areaexterna);
                 else
-                    sql += String.Format(" where are.areaid = '{0}'", areaid);
+                //suporte a multiplas áreas
+                    //sql += String.Format(" where are.areaid = '{0}'", areaid);
+                    sql += "where are.areaid in ("+ RPTBS_Acedb.BreakStringArray(areaid, "select")+ ")";
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -465,6 +498,38 @@ namespace NewBISReports.Models.Reports
                 w = null;
                 fs = null;
             }
+        }
+        /// <summary>
+        /// TRansforma um array de strings em uam string separada por virgulas, para clausulas "in" nas consultas sql
+        /// </summary>
+        /// <param name="inputArray">Array de string de entrada</param>
+        /// <param name="modo"> preapra para consulta normal ou para sp</param>
+        /// <returns>Retorna um array de bytes com o arquivo.</returns>
+        public static string BreakStringArray(string[] inputArray, string modo)
+        {
+            if (inputArray != null && inputArray.Length > 0)
+            {
+                string where = "";
+                string cmpno = "";
+                foreach (string no in inputArray)
+                    switch (modo){
+                    case "select":
+                        where += "'" + no + "', ";
+                        break;
+                    case "sp":
+                    where += "''" + no + "'', ";
+                        break;
+                    default:
+                        where += "'" + no + "', ";
+                        break;
+                    }
+                                    
+                cmpno += where.Substring(0, where.Length - 2);
+
+                return cmpno;
+            }
+
+            return null;
         }
         #endregion
     }

@@ -564,6 +564,15 @@ namespace NewBISReports.Controllers
                     }
                 }
                 //TODO: diogo - parei aqui escrever o post da consulta do RPT_CREDITOS
+                 else if (reports.Type == REPORTTYPE.RPT_CREDITS)
+                {
+                
+                    using (DataTable table = RPTBS_Acedb.LoadPersonCredits(this.contextACE, reports.PERSNO, reports.AREAID, reports.StartDate))
+                    {
+                        // if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\visqrcode.xlsx", "Orion", "QRCode", _dateTimeConverter)) != null)
+                        //     return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\visqrcode.xlsx");
+                    }
+                }
                 else if (reports.Type == REPORTTYPE.RPT_LOGQRCODE)
                 {
                     string visitorname = Visitors.GetVisitorName(this.contextACE, reports.PERSNO);
@@ -729,8 +738,10 @@ namespace NewBISReports.Controllers
 
             try
             {
-                //Diogo - Removi as inicializações, pois o persistTempData já controla a integridade das inicializações
+                //Inicializa todos os campos necessários
                 this.persisTempData();
+
+                //TODO: reduzir as áreas quando o relatório for de créditos, pela TblAutoArea do banco DbContextExtras
 
                 //diogo - adicionando uma Landing Page
                 if (type == REPORTTYPE.RPT_LANDINGPAGE)
@@ -794,6 +805,7 @@ namespace NewBISReports.Controllers
             {
                 this.contextBIS = new DatabaseContext(configuration.GetConnectionString("BIS"));
                 this.contextACE = new DatabaseContext(configuration.GetConnectionString("BIS_ACE"));
+                
 
                 if (configuration.GetSection("Report").GetChildren() != null)
                 {

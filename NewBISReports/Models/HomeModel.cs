@@ -178,7 +178,7 @@ namespace NewBISReports.Models
         /// <summary>
         /// ID da área.
         /// </summary>
-        public string AREAID { get; set; }
+        public string[] AREAID { get; set; }
         /// <summary>
         /// Flag para o relatórios de todos dentro da área.
         /// </summary>

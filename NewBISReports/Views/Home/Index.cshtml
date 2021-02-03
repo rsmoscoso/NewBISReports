@@ -325,7 +325,7 @@
                                                         value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
                                                     <span>Matrícula/CPF</span>
                                                 }
-                                                @if (_arvoreOpcoes.ShowDocumentSearch)
+                                                @if (_arvoreOpcoes.ShowDocumentSearch && type != REPORTTYPE.RPT_CREDITS)
                                                 {
                                                     <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
                                                         value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">

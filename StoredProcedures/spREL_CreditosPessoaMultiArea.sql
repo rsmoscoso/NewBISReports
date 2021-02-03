@@ -10,16 +10,17 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-ALTER PROCEDURE [dbo].[spCreditosPessoa] 
-	@cmpAREAID as varchar(16), 
+CREATE PROCEDURE [dbo].[spREL_CreditosPessoaMultiArea] 
+	@cmpAREAID as varchar(2000), 
 	@cmpCredito as int, 
 	@DataInicio as date,
 	@cmpPERSID as nchar(16)
+with encryption
 AS
 BEGIN
 	declare
-	@Sql as varchar(2000),
-	@Filtro as varchar(2000)
+	@Sql as varchar(4000),
+	@Filtro as varchar(4000)
 
 	set @Sql='SELECT        hzFortknox.dbo.Creditos.cmpIDCreditos, hzFortknox.dbo.Creditos.cmpPersID, hzFortknox.dbo.Creditos.cmpAREAID, 
 	hzFortknox.dbo.Creditos.cmpCredito, hzFortknox.dbo.Creditos.cmpUltimoAcesso, [acedb].[bsuser].AREAS.NAME, 
@@ -31,7 +32,7 @@ FROM            hzFortknox.dbo.Creditos INNER JOIN
 SET @Filtro=''	
 
 IF @cmpAREAID IS NOT NULL 
-SET @Filtro=' hzFortknox.dbo.Creditos.cmpAREAID=''' + @cmpAREAID + ''''
+SET @Filtro=' hzFortknox.dbo.Creditos.cmpAREAID in (' + @cmpAREAID + ')' 
 
 
 IF @cmpCredito IS NOT NULL
