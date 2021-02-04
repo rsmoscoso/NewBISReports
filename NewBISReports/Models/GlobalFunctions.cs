@@ -220,6 +220,11 @@ namespace NewBISReports.Models
                 {
                     nomeColunaData = "Data";
                 }
+                //contexto da data no relatório da bilhetagem
+                if (table.Columns.Contains("Último Acesso"))
+                {
+                    nomeColunaData = "Último Acesso";
+                }
                 //Diogo - converte a coluna de "Data" para o formato de data especificado
                 if (table.Columns.Contains(nomeColunaData))
                 {

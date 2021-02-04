@@ -21,13 +21,16 @@ BEGIN
 	declare
 	@Sql as varchar(4000),
 	@Filtro as varchar(4000)
-
-	set @Sql='SELECT        hzFortknox.dbo.Creditos.cmpIDCreditos, hzFortknox.dbo.Creditos.cmpPersID, hzFortknox.dbo.Creditos.cmpAREAID, 
-	hzFortknox.dbo.Creditos.cmpCredito, hzFortknox.dbo.Creditos.cmpUltimoAcesso, [acedb].[bsuser].AREAS.NAME, 
-                         [acedb].[bsuser].PERSONS.PERSNO, [acedb].[bsuser].PERSONS.FIRSTNAME,[acedb].[bsuser].PERSONS.LASTNAME
-FROM            hzFortknox.dbo.Creditos INNER JOIN
-                         [acedb].[bsuser].AREAS ON hzFortknox.dbo.Creditos.cmpAREAID = [acedb].[bsuser].AREAS.AREAID INNER JOIN
-                         [acedb].[bsuser].PERSONS ON hzFortknox.dbo.Creditos.cmpPersID = [acedb].[bsuser].PERSONS.PERSID  '
+set @Sql='SELECT  
+	case when persclass <> ''V'' then [acedb].[bsuser].PERSONS.PERSNO else passportno collate SQL_Latin1_General_CP1_CI_AS end as ''CPF'',      
+	[acedb].[bsuser].PERSONS.FIRSTNAME + '' ''+ [acedb].[bsuser].PERSONS.LASTNAME as ''Nome'', 
+	hzFortknox.dbo.Creditos.cmpCredito as "Créditos",  
+	[acedb].[bsuser].AREAS.NAME as ''Área'', 
+	hzFortknox.dbo.Creditos.cmpUltimoAcesso as ''Último Acesso''					 
+FROM            hzFortknox.dbo.Creditos 
+						 INNER JOIN [acedb].[bsuser].AREAS ON hzFortknox.dbo.Creditos.cmpAREAID = [acedb].[bsuser].AREAS.AREAID 
+						 INNER JOIN [acedb].[bsuser].PERSONS ON hzFortknox.dbo.Creditos.cmpPersID = [acedb].[bsuser].PERSONS.PERSID  
+						 left outer join [acedb].[bsuser].visitors vis on vis.persid = [acedb].[bsuser].PERSONS.PERSID  '
 
 SET @Filtro=''	
 
@@ -43,7 +46,7 @@ BEGIN
 	end
 	SET @Filtro = @Filtro + ' hzFortknox.dbo.Creditos.cmpCredito=' + CAST(@cmpCredito As varchar(20))
 END
-select @Filtro as filtro
+
 IF @DataInicio IS NOT NULL
 BEGIN
 	IF @Filtro <> '' SET @Filtro =@Filtro + ' AND '

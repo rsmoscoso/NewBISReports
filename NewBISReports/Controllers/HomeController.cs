@@ -569,8 +569,8 @@ namespace NewBISReports.Controllers
                 
                     using (DataTable table = RPTBS_Acedb.LoadPersonCredits(this.contextACE, reports.PERSNO, reports.AREAID, reports.StartDate))
                     {
-                        // if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\visqrcode.xlsx", "Orion", "QRCode", _dateTimeConverter)) != null)
-                        //     return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\visqrcode.xlsx");
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\viscreditos.xlsx", "Orion", "Creditos", _dateTimeConverter)) != null)
+                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\viscreditos.xlsx");
                     }
                 }
                 else if (reports.Type == REPORTTYPE.RPT_LOGQRCODE)
