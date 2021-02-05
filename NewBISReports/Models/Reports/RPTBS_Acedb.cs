@@ -148,6 +148,10 @@ namespace NewBISReports.Models.Reports
                     sql += and;
                 }
                 sql += " order by cli.Name, Nome";
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -177,6 +181,10 @@ namespace NewBISReports.Models.Reports
                     sql += String.Format(" and cli.clientid = '{0}'", clientid);
 
                 sql += " order by cli.Name, Nome";
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -206,6 +214,10 @@ namespace NewBISReports.Models.Reports
                     sql += String.Format(" and cli.clientid = '{0}'", clientid);
 
                 sql += " order by Nome, cli.Name";
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -233,6 +245,11 @@ namespace NewBISReports.Models.Reports
                     sql += String.Format(" and cli.clientid = '{0}'", clientid);
 
                 sql += " order by Nome, cli.Name";
+
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -265,6 +282,10 @@ namespace NewBISReports.Models.Reports
                     //sql += String.Format(" where are.areaid = '{0}'", areaid);
                     sql += "where are.areaid in ("+ BreakStringArray(areaid, "select")+ ")";
 
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
@@ -388,6 +409,11 @@ namespace NewBISReports.Models.Reports
 
                 sql += " order by Nome";
 
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
+
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
@@ -414,6 +440,11 @@ namespace NewBISReports.Models.Reports
                     sql += " and p.clientid = '" + clientid + "'";
                 sql += " order by description";
 
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
+
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
@@ -433,6 +464,11 @@ namespace NewBISReports.Models.Reports
             try
             {
                 string sql = String.Format("set dateformat 'dmy' exec spREL_RetornaDiasSemUso {0}", qtd);
+
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -458,6 +494,10 @@ namespace NewBISReports.Models.Reports
                 if (!String.IsNullOrEmpty(clientid))
                     sql += " and p.clientid = '" + clientid + "'";
                 sql += " order by description";
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
