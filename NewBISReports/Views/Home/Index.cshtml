@@ -640,7 +640,7 @@
         //recupera o array de tipos de pessoas
         let PersClassArray = [];
         let SelectedPerClass = $('#selectPersonType').val();
-        if (SelectedPerClass !== null) {
+        if (SelectedPerClass !== null && typeof SelectedPerClass !== 'undefined') {
             PersClassArray = SelectedPerClass;
         }
 
