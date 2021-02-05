@@ -186,8 +186,9 @@ namespace NewBISReports
             services.AddSingleton<ArvoreOpcoes>();
             //serviço de conversão de data no frontend
             services.AddScoped<DateTimeConverter>();
-            //classe de greção de relatórios
+            //classes de greção de relatórios
             services.AddTransient<RPTBS_Analytics>();
+            services.AddTransient<RPTBS_Acedb>();
 
             services.AddLogging();
             services.AddCors();

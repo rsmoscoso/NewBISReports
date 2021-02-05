@@ -50,7 +50,7 @@ END
 IF @DataInicio IS NOT NULL
 BEGIN
 	IF @Filtro <> '' SET @Filtro =@Filtro + ' AND '
-	SET @Filtro = @Filtro + ' hzFortknox.dbo.Creditos.cmpUltimoAcesso >=''' + CAST(@DataInicio AS VARCHAR(10)) + ''''
+	SET @Filtro = @Filtro + ' hzFortknox.dbo.Creditos.cmpUltimoAcesso >=''' + convert(varchar, @DataInicio, 103) + ''''
 END
 IF @cmpPERSID IS NOT NULL
 BEGIN

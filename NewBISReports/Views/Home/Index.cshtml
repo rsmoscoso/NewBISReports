@@ -274,7 +274,7 @@
                         </div>
                         <div class="widget-content">
                             <div class="row">
-                                @if (type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_CREDITS)
+                                @if (type != REPORTTYPE.RPT_LOGQRCODE )
                                 {
                                     <!-- INICIO TIPO PESSOA -->
                                     <fieldset>
@@ -309,7 +309,7 @@
                                         <div class="input-group">
                                             <label class="control-inline">
                                                 @*Assumindo que para bilhetagem e QRCODE só se aplica a visitantes*@
-                                                @if (type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_CREDITS)
+                                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
                                                 {
                                                     <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
                                                         checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
@@ -319,13 +319,13 @@
                                                 <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
                                                     value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
                                                 <span>Visitante</span>
-                                                @if (type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_CREDITS)
+                                                @if (type != REPORTTYPE.RPT_LOGQRCODE)
                                                 {
                                                     <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
                                                         value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
                                                     <span>Matrícula/CPF</span>
                                                 }
-                                                @if (_arvoreOpcoes.ShowDocumentSearch && type != REPORTTYPE.RPT_CREDITS)
+                                                @if (_arvoreOpcoes.ShowDocumentSearch)
                                                 {
                                                     <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
                                                         value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
