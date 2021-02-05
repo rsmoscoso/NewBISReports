@@ -10,6 +10,7 @@
     var showHourMinute = true;
     var showMeridian = false;
     var showAccessGrantOption = false;
+    var startDateText = "Data Inicial";
     switch (_arvoreOpcoes.FormatoDataHora)
     {
         case "pt-BR":
@@ -50,6 +51,10 @@
     if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
     {
         showAccessGrantOption = true;
+    }
+        //muda o texto do campo de data ocnforme o contexto
+    if (type == REPORTTYPE.RPT_CREDITS){
+        startDateText = "Último Acesso";
     }
     var title = NewBISReports.Models.HomeModel.GetTypeDescription(type);
     var titlecomment = NewBISReports.Models.HomeModel.GetTypeComments(type);
@@ -119,7 +124,7 @@
                                         <div class="input-group date form_datetime">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             <input class="form-control" size="16" type="text" name="StartDate"
-                                                asp-for="StartDate" class="form-control" placeholder="Data Inicial" required>
+                                                asp-for="StartDate" class="form-control" placeholder="@startDateText" required>
                                         </div>
                                     </div>
                                     @*Alguns relatórios só possuem data de início*@
@@ -138,7 +143,7 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         <input type="text" id="StartDate" name="StartDate" asp-for="StartDate"
-                                            class="form-control" placeholder="Data Inicial" required>
+                                            class="form-control" placeholder="@startDateText" required>
                                     </div>
                                     @*Alguns relatórios só possuem data de início*@
                                     if(type != REPORTTYPE.RPT_CREDITS){
@@ -274,7 +279,7 @@
                         </div>
                         <div class="widget-content">
                             <div class="row">
-                                @if (type != REPORTTYPE.RPT_LOGQRCODE )
+                                @if (type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_CREDITS )
                                 {
                                     <!-- INICIO TIPO PESSOA -->
                                     <fieldset>

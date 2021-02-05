@@ -364,7 +364,7 @@ namespace NewBISReports.Models
                     retval = "Pessoas dentro da Unidade";
                     break;
                 case REPORTTYPE.RPT_CREDITS:
-                    retval = "Créditos dos Visitantes";
+                    retval = "Créditos Disponíveis";
                     break;
                     
             }
