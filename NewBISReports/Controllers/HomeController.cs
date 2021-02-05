@@ -85,6 +85,10 @@ namespace NewBISReports.Controllers
         /// classe RPTBS_Analytics
         /// </summary>
         private readonly RPTBS_Analytics _rptsAnalytics;
+        /// <summary>
+        /// classe _rptsAcedb
+        /// </summary>
+        private readonly RPTBS_Acedb _rptsAcedb;
 
         #endregion
 
@@ -548,19 +552,29 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_PHOTOS)
                 {
-                    using (DataTable table = RPTBS_Acedb.LoadPhotos(this.contextACE, reports.CLIENTID))
+                    using (DataTable table = _rptsAcedb.LoadPhotos(this.contextACE, reports.CLIENTID))
                     {
-                        filebytes = RPTBS_Acedb.SaveFile(table, this.config.BisPath);
+                        filebytes = _rptsAcedb.SaveFile(table, this.config.BisPath);
 
                         return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reportphoto.txt");
                     }
                 }
                 else if (reports.Type == REPORTTYPE.RPT_BADGES)
                 {
-                    using (DataTable table = RPTBS_Acedb.LoadNoBadge(this.contextACE, reports.CLIENTID))
+                    using (DataTable table = _rptsAcedb.LoadNoBadge(this.contextACE, reports.CLIENTID))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reportphoto.xlsx", "Orion", "Crachas", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reportphoto.xlsx");
+                    }
+                }
+                //TODO: diogo - parei aqui escrever o post da consulta do RPT_CREDITOS
+                 else if (reports.Type == REPORTTYPE.RPT_CREDITS)
+                {
+                
+                    using (DataTable table = _rptsAcedb.LoadPersonCredits(this.contextACE, reports.PERSNO, reports.AREAID, reports.StartDate))
+                    {
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\viscreditos.xlsx", "Orion", "Creditos", _dateTimeConverter)) != null)
+                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\viscreditos.xlsx");
                     }
                 }
                 else if (reports.Type == REPORTTYPE.RPT_LOGQRCODE)
@@ -569,7 +583,7 @@ namespace NewBISReports.Controllers
 
                     //DatabaseContext ctext = new DatabaseContext("Data Source=(local); UID=sa; Password=S$iG3L9a@n; Database=hzFortknox;Connection Timeout=300; MultipleActiveResultSets='true'");
 
-                    using (DataTable table = RPTBS_Acedb.LoadVisitorQRCode(this.contextACE, visitorname))
+                    using (DataTable table = _rptsAcedb.LoadVisitorQRCode(this.contextACE, visitorname))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\visqrcode.xlsx", "Orion", "QRCode", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\visqrcode.xlsx");
@@ -577,7 +591,7 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_READERAUTHORIZATION)
                 {
-                    using (DataTable table = RPTBS_Acedb.LoadReaderAuthorization(this.contextACE, reports.CLIENTID, reports.AUTHID))
+                    using (DataTable table = _rptsAcedb.LoadReaderAuthorization(this.contextACE, reports.CLIENTID, reports.AUTHID))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\ReaderAuth.xlsx", "Orion", "ReaderAuth", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\ReaderAuth.xlsx");
@@ -585,7 +599,7 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_BADGENOUSE)
                 {
-                    using (System.Data.DataTable table = RPTBS_Acedb.LoadBadgeNoUse(this.contextACE, reports.NDays))
+                    using (System.Data.DataTable table = _rptsAcedb.LoadBadgeNoUse(this.contextACE, reports.NDays))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reportbadgesnouse.xlsx", "Orion", "Crachas", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reportbadges.xlsx");
@@ -593,7 +607,7 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_PERSONSPROFILES)
                 {
-                    using (System.Data.DataTable table = RPTBS_Acedb.LoadPersonProfiles(this.contextACE, reports.CLIENTID, reports.AUTHID))
+                    using (System.Data.DataTable table = _rptsAcedb.LoadPersonProfiles(this.contextACE, reports.CLIENTID, reports.AUTHID))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\personprofile.xlsx", "Orion", "Profiles", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\personprofile.xlsx");
@@ -601,7 +615,7 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                 {
-                    using (System.Data.DataTable table = RPTBS_Acedb.LoadPersonAuths(this.contextACE, reports.CLIENTID, reports.AUTHID))
+                    using (System.Data.DataTable table = _rptsAcedb.LoadPersonAuths(this.contextACE, reports.CLIENTID, reports.AUTHID))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\personauth.xlsx", "Orion", "Crachas", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\personauth.xlsx");
@@ -609,7 +623,7 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_ALLLOCKOUT)
                 {
-                    using (System.Data.DataTable table = RPTBS_Acedb.LoadAllLocked(this.contextACE, reports.CLIENTID))
+                    using (System.Data.DataTable table = _rptsAcedb.LoadAllLocked(this.contextACE, reports.CLIENTID))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\peoplelockout.xlsx", "Orion", "Locked", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\peoplelockout.xlsx");
@@ -617,7 +631,7 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_ALLVISITORS)
                 {
-                    using (System.Data.DataTable table = RPTBS_Acedb.LoadAllVisitors(this.contextACE, reports.CLIENTID))
+                    using (System.Data.DataTable table = _rptsAcedb.LoadAllVisitors(this.contextACE, reports.CLIENTID))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\visitors.xlsx", "Orion", "Visitors", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\visitors.xlsx");
@@ -625,7 +639,7 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_PERSONSAREA)
                 {
-                    using (System.Data.DataTable table = RPTBS_Acedb.LoadPersonsArea(this.contextACE, reports.AREAID, this.AreaExterna))
+                    using (System.Data.DataTable table = _rptsAcedb.LoadPersonsArea(this.contextACE, reports.AREAID, this.AreaExterna))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\area.xlsx", "Orion", "Area", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\area.xlsx");
@@ -633,7 +647,7 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_PERSONGENERAL)
                 {
-                    using (System.Data.DataTable table = RPTBS_Acedb.LoadAllPerson(this.contextACE, this.ReportFields, this.CustomFields, reports.PERSNO, reports.PERSCLASSID, reports.CLIENTID, reports.CompanyNO))
+                    using (System.Data.DataTable table = _rptsAcedb.LoadAllPerson(this.contextACE, this.ReportFields, this.CustomFields, reports.PERSNO, reports.PERSCLASSID, reports.CLIENTID, reports.CompanyNO))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\people.xlsx", "Orion", "PEOPLE", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\people.xlsx");
@@ -694,6 +708,7 @@ namespace NewBISReports.Controllers
                     if (reports.Type == REPORTTYPE.RPT_PERSONSAUTHORIZATIONS)
                         this.searchAuthorizations(reports);
                 }
+                //TODO diogo -> limitar as áreas pela tabela extra se o relatório for do tipo CREDITS
 
                 return View("Index", reports);
                 //return RedirectToAction(nameof(Index), new{type=reports.Type});
@@ -727,8 +742,10 @@ namespace NewBISReports.Controllers
 
             try
             {
-                //Diogo - Removi as inicializações, pois o persistTempData já controla a integridade das inicializações
+                //Inicializa todos os campos necessários
                 this.persisTempData();
+
+                //TODO: reduzir as áreas quando o relatório for de créditos, pela TblAutoArea do banco DbContextExtras
 
                 //diogo - adicionando uma Landing Page
                 if (type == REPORTTYPE.RPT_LANDINGPAGE)
@@ -781,17 +798,20 @@ namespace NewBISReports.Controllers
         public HomeController(IConfiguration configuration,
                                 ArvoreOpcoes arvoreOpcoes,
                                 DateTimeConverter dateTimeConverter,
-                                RPTBS_Analytics rptsAnalytics)
+                                RPTBS_Analytics rptsAnalytics,
+                                RPTBS_Acedb rptsAcedb)
         {
             //Classe que contempla opções do appssetings
             //TODO: mover as configurações dentro do Try abaixo para dentro del
             _arvoreopcoes = arvoreOpcoes;
             _dateTimeConverter = dateTimeConverter;
             _rptsAnalytics = rptsAnalytics;
+            _rptsAcedb = rptsAcedb;
             try
             {
                 this.contextBIS = new DatabaseContext(configuration.GetConnectionString("BIS"));
                 this.contextACE = new DatabaseContext(configuration.GetConnectionString("BIS_ACE"));
+                
 
                 if (configuration.GetSection("Report").GetChildren() != null)
                 {

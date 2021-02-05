@@ -44,10 +44,13 @@ namespace NewBISReports.Models
         public bool PessoasBloqueadas { get; set; }
         public bool TodosOsVisitantes { get; set; }
         public bool PessoasPorArea { get; set; }
+        public bool CreditosPessoas { get; set; } 
         //Menu Raiz
         public bool VisitantesRaiz { get; set; }
         public bool QrCodeDosVisitantes { get; set; }
         public bool ImportarVisitantes { get; set; }
+
+
 
         #endregion
 
@@ -58,6 +61,8 @@ namespace NewBISReports.Models
         //customização do nome das Sp's, facilita em ambientes de teste.
         public string SpAccessGranted {get; set;}
         public string SpPersClassAccessGranted {get; set;}
+        public string SpCreditosPessoa {get; set;}
+        
 
         //Customização de nome de "pessoas", solicitado pela FortKnox
         public string PersonsLabel { get; set; }
@@ -121,6 +126,8 @@ namespace NewBISReports.Models
             //Nome das SP's
             SpAccessGranted = _configuration.GetSection(nomeCliente)["SpAccessGranted"];
             SpPersClassAccessGranted = _configuration.GetSection(nomeCliente)["SpPersClassAccessGranted"];
+            SpCreditosPessoa = _configuration.GetSection(nomeCliente)["SpCreditosPessoa"];
+
 
             //começa pelo Login - avalia apenas se useLogin for verdadeiro
             if (UseLogin)
@@ -179,12 +186,14 @@ namespace NewBISReports.Models
             LeitoresPorAutorizacoes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:leitoresPorAutorizacoes"]);
             PessoasBloqueadas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:pessoasBloqueadas"]);
             TodosOsVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:todosOsVisitantes"]);
-            AdministrativosRaiz = (Pessoas || PerfilDasPessoas || AutorizacoesDasPessoas || LeitoresPorAutorizacoes || PessoasBloqueadas || TodosOsVisitantes);
             PessoasPorArea = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:pessoasporArea"]);
+            CreditosPessoas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:creditosPessoas"]); 
+            AdministrativosRaiz = (Pessoas || PerfilDasPessoas || AutorizacoesDasPessoas || LeitoresPorAutorizacoes || PessoasBloqueadas || TodosOsVisitantes || CreditosPessoas);
+
 
             //menu visitantes
             QrCodeDosVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:visitantesRaiz:qrCodeDosVisitantes"]);
-            ImportarVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:visitantesRaiz:importarVisitantes"]);
+            ImportarVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:visitantesRaiz:importarVisitantes"]);                       
             VisitantesRaiz = (QrCodeDosVisitantes || ImportarVisitantes);
 
 

@@ -225,6 +225,10 @@
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PERSONSAREA"><span class="text">Pessoas por Área</span></a></li>
 
                                     }
+                                    @if (_arvoreOpcoes.CreditosPessoas)
+                                    {
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_CREDITS"><span class="text">Créditos</span></a></li>
+                                    }                               
                                 </ul>
                             </li>
                             <!-- Condicional para mostrar eventos de Visitantes -->
@@ -241,7 +245,7 @@
                                      }
                                       @if (_arvoreOpcoes.ImportarVisitantes){
                                         <li><a asp-controller="ImportVisitor" asp-action="Index"  ><span class="text">Importar Visitantes</span></a></li>
-                                      }
+                                      }                                    
                                 </ul>
                             </li>
 

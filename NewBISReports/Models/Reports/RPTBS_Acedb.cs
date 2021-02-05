@@ -10,6 +10,12 @@ namespace NewBISReports.Models.Reports
 {
     public class RPTBS_Acedb
     {
+         private readonly ArvoreOpcoes _arvoreOpcoes;
+
+        public RPTBS_Acedb(ArvoreOpcoes arvoreOpcoes)
+        {
+            _arvoreOpcoes = arvoreOpcoes;
+        }
         #region SOLAR
         #endregion
 
@@ -21,7 +27,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="cmpDocumento">Documento do Visitante.</param>
         /// <param name="cmpNoVisitante">Nome do Visitante.</param>
         /// <returns></returns>
-        public static DataTable LoadReaderAuthorization(DatabaseContext dbcontext, string clientid, string[] authid)
+        public DataTable LoadReaderAuthorization(DatabaseContext dbcontext, string clientid, string[] authid)
         {
             try
             {
@@ -59,7 +65,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="cmpDocumento">Documento do Visitante.</param>
         /// <param name="cmpNoVisitante">Nome do Visitante.</param>
         /// <returns></returns>
-        public static DataTable LoadVisitorQRCode(DatabaseContext dbcontext, string cmpNoVisitante)
+        public DataTable LoadVisitorQRCode(DatabaseContext dbcontext, string cmpNoVisitante)
         {
             try
             {
@@ -79,6 +85,42 @@ namespace NewBISReports.Models.Reports
             }
         }
 
+        /// <summary>
+        /// Retorna os Créditos do visitante
+        /// </summary>
+        /// <param name="dbcontext">Conexão com o banco de dados.</param>
+        /// <param name="cmpPersID">Documento do Visitante.</param>
+        /// <param name="cmpAreas">Nome do Visitante.</param>
+        /// <param name="cmpDataInicio">ultima visita a partir da desta data</param>
+        /// <returns></returns>
+        public DataTable LoadPersonCredits(DatabaseContext dbcontext, string cmpPersID, string[] cmpAREAID, string DataInicio)
+        {
+            try
+            {
+                //chamad á Sp de consultar créditos
+                string sql = String.Format("set dateformat 'dmy' exec hzFortKnox.."+ _arvoreOpcoes.SpCreditosPessoa+" {0}, {1}, {2}, {3}",
+                        //areas
+                        (cmpAREAID == null || cmpAREAID.Length == 0 ||(cmpAREAID.Length == 1 && String.IsNullOrEmpty(cmpAREAID[0]))) ? "null" : "'"+BreakStringArray(cmpAREAID, "sp")+"'", 
+                        //numero de créditos: não usaremos este filtro
+                        "null",
+                        //data inicio
+                        String.IsNullOrEmpty(DataInicio) ? "null":"'" + DataInicio + "'", 
+                        //PERSID
+                        String.IsNullOrEmpty(cmpPersID) ? "null":"'" + cmpPersID + "'");
+
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;
+
+                return dbcontext.LoadDatatable(dbcontext, sql);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
 
         /// <summary>
         /// Retorna as autorizações das pessoas.
@@ -86,7 +128,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="clientid">ID do cliente.</param>
         /// <returns></returns>
-        public static DataTable LoadPersonAuths(DatabaseContext dbcontext, string clientid, string[] authid)
+        public DataTable LoadPersonAuths(DatabaseContext dbcontext, string clientid, string[] authid)
         {
             try
             {
@@ -106,6 +148,10 @@ namespace NewBISReports.Models.Reports
                     sql += and;
                 }
                 sql += " order by cli.Name, Nome";
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -121,7 +167,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="clientid">ID do cliente.</param>
         /// <returns></returns>
-        public static DataTable LoadPersonProfiles(DatabaseContext dbcontext, string clientid, string[] authid)
+        public DataTable LoadPersonProfiles(DatabaseContext dbcontext, string clientid, string[] authid)
         {
             try
             {
@@ -135,6 +181,10 @@ namespace NewBISReports.Models.Reports
                     sql += String.Format(" and cli.clientid = '{0}'", clientid);
 
                 sql += " order by cli.Name, Nome";
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -150,7 +200,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="clientid">ID do cliente.</param>
         /// <returns></returns>
-        public static DataTable LoadAllLocked(DatabaseContext dbcontext, string clientid)
+        public DataTable LoadAllLocked(DatabaseContext dbcontext, string clientid)
         {
             try
             {
@@ -164,6 +214,10 @@ namespace NewBISReports.Models.Reports
                     sql += String.Format(" and cli.clientid = '{0}'", clientid);
 
                 sql += " order by Nome, cli.Name";
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -179,7 +233,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="clientid">ID do cliente.</param>
         /// <returns></returns>
-        public static DataTable LoadAllVisitors(DatabaseContext dbcontext, string clientid)
+        public DataTable LoadAllVisitors(DatabaseContext dbcontext, string clientid)
         {
             try
             {
@@ -191,6 +245,11 @@ namespace NewBISReports.Models.Reports
                     sql += String.Format(" and cli.clientid = '{0}'", clientid);
 
                 sql += " order by Nome, cli.Name";
+
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -209,18 +268,24 @@ namespace NewBISReports.Models.Reports
         /// <param name="areaid">ID da área.</param>
         /// <param name="areaexterna">Nome referente à área externa.</param>
         /// <returns></returns>
-        public static DataTable LoadPersonsArea(DatabaseContext dbcontext, string areaid, string areaexterna)
+        public DataTable LoadPersonsArea(DatabaseContext dbcontext, string[] areaid, string areaexterna)
         {
             try
             {
                 string sql = "select Matricula = persno, nome = isnull(firstname, '') + ' ' + isnull(lastname, ''), Local = are.Name from bsuser.persons per " +
                     "inner join bsuser.CURRENTACCESSSTATE cur on cur.PERSID = per.PERSID inner join bsuser.AREAS are on are.AREAID = cur.AREAID ";
 
-                if (String.IsNullOrEmpty(areaid) && !String.IsNullOrEmpty(areaexterna))
+                if ((areaid == null || areaid.Length == 0 || (areaid.Length == 1 && String.IsNullOrEmpty(areaid[0]))) && !String.IsNullOrEmpty(areaexterna))
                     sql += String.Format(" where are.name != '{0}'", areaexterna);
                 else
-                    sql += String.Format(" where are.areaid = '{0}'", areaid);
+                //suporte a multiplas áreas
+                    //sql += String.Format(" where are.areaid = '{0}'", areaid);
+                    sql += "where are.areaid in ("+ BreakStringArray(areaid, "select")+ ")";
 
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
@@ -235,7 +300,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="company">Nome da empresa.</param>
         /// <returns></returns>
-        public static DataTable LoadAllPerson(DatabaseContext dbcontext, BSRPTFields reportfields, List<BSRPTCustomFields> customfields, string persno, string[] persclassid, string clientid, string[] company)
+        public DataTable LoadAllPerson(DatabaseContext dbcontext, BSRPTFields reportfields, List<BSRPTCustomFields> customfields, string persno, string[] persclassid, string clientid, string[] company)
         {
             try
             {
@@ -344,6 +409,11 @@ namespace NewBISReports.Models.Reports
 
                 sql += " order by Nome";
 
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
+
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
@@ -359,7 +429,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="clientid">ID do cliente.</param>
         /// <returns></returns>
-        public static DataTable LoadNoBadge(DatabaseContext dbcontext, string clientid)
+        public DataTable LoadNoBadge(DatabaseContext dbcontext, string clientid)
         {
             try
             {
@@ -369,6 +439,11 @@ namespace NewBISReports.Models.Reports
                 if (!String.IsNullOrEmpty(clientid))
                     sql += " and p.clientid = '" + clientid + "'";
                 sql += " order by description";
+
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -384,11 +459,16 @@ namespace NewBISReports.Models.Reports
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="qtd">N. de dias sem uso de crachás. </param>
         /// <returns></returns>
-        public static DataTable LoadBadgeNoUse(DatabaseContext dbcontext, string qtd)
+        public DataTable LoadBadgeNoUse(DatabaseContext dbcontext, string qtd)
         {
             try
             {
                 string sql = String.Format("set dateformat 'dmy' exec spREL_RetornaDiasSemUso {0}", qtd);
+
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -405,7 +485,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="clientid">ID do cliente.</param>
         /// <returns></returns>
-        public static DataTable LoadPhotos(DatabaseContext dbcontext, string clientid)
+        public DataTable LoadPhotos(DatabaseContext dbcontext, string clientid)
         {
             try
             {
@@ -414,6 +494,10 @@ namespace NewBISReports.Models.Reports
                 if (!String.IsNullOrEmpty(clientid))
                     sql += " and p.clientid = '" + clientid + "'";
                 sql += " order by description";
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -429,7 +513,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="table">Tabela com as pessoas sem foto.</param>
         /// <param name="bispath">Caminho do BIS.</param>
         /// <returns>Retorna um array de bytes com o arquivo.</returns>
-        public static byte[] SaveFile(DataTable table, string bispath)
+        public byte[] SaveFile(DataTable table, string bispath)
         {
             MemoryStream fs = new MemoryStream();
             TextWriter w = new StreamWriter(fs);
@@ -465,6 +549,38 @@ namespace NewBISReports.Models.Reports
                 w = null;
                 fs = null;
             }
+        }
+        /// <summary>
+        /// TRansforma um array de strings em uam string separada por virgulas, para clausulas "in" nas consultas sql
+        /// </summary>
+        /// <param name="inputArray">Array de string de entrada</param>
+        /// <param name="modo"> preapra para consulta normal ou para sp</param>
+        /// <returns>Retorna um array de bytes com o arquivo.</returns>
+        public string BreakStringArray(string[] inputArray, string modo)
+        {
+            if (inputArray != null && inputArray.Length > 0)
+            {
+                string where = "";
+                string cmpno = "";
+                foreach (string no in inputArray)
+                    switch (modo){
+                    case "select":
+                        where += "'" + no + "', ";
+                        break;
+                    case "sp":
+                    where += "''" + no + "'', ";
+                        break;
+                    default:
+                        where += "'" + no + "', ";
+                        break;
+                    }
+                                    
+                cmpno += where.Substring(0, where.Length - 2);
+
+                return cmpno;
+            }
+
+            return null;
         }
         #endregion
     }
