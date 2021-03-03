@@ -663,6 +663,19 @@ namespace NewBISReports.Controllers
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reporttotalmeal.xlsx");
                     }
                 }
+                else if (reports.Type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
+                {
+                    using (System.Data.DataTable table = _rptsAcedb.LoadWFMBIS(this.contextACE, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO))
+                    {
+                        reports.WFM = GlobalFunctions.ConvertDataTable<IntegracaoWFMBIS>(table);
+                        if (reports.WFM != null && reports.WFM.Count > 0)
+                        {
+                            this.persisTempData();
+                            ViewBag.Type = reports.Type;
+                            return View("Index", reports);
+                        }
+                    }
+                }
 
                 reports.Acessos = acessos;
                 this.persisTempData();

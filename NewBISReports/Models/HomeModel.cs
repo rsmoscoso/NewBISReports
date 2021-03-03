@@ -50,7 +50,8 @@ namespace NewBISReports.Models
         RPT_PERSONSPROFILES = 21,
         RPT_PERSONSAREA = 22,
         RPT_PERSONSINSIDEAREA = 23,
-        RPT_CREDITS = 24
+        RPT_CREDITS = 24,
+        RPT_INTEGRACAOWFMBIS = 25
 
     }
 
@@ -163,6 +164,7 @@ namespace NewBISReports.Models
         /// </summary>
         public List<TotalMeal> Meals { get; set; }
 
+        public List<IntegracaoWFMBIS> WFM { get; set; }
         /// <summary>
         /// Tipo do relatório.
         /// </summary>
@@ -271,6 +273,9 @@ namespace NewBISReports.Models
                 case "24":
                     retval = REPORTTYPE.RPT_CREDITS;
                     break;
+                case "25":
+                    retval = REPORTTYPE.RPT_INTEGRACAOWFMBIS;
+                    break;
                 //Diogo - adicionando uma landing page
                 case "99":
                     retval = REPORTTYPE.RPT_LANDINGPAGE;
@@ -366,7 +371,10 @@ namespace NewBISReports.Models
                 case REPORTTYPE.RPT_CREDITS:
                     retval = "Créditos Disponíveis";
                     break;
-                    
+                case REPORTTYPE.RPT_INTEGRACAOWFMBIS:
+                    retval = "Integração WFM x BIS";
+                    break;
+
             }
             return retval;
         }
@@ -456,6 +464,9 @@ namespace NewBISReports.Models
                     break;
                 case REPORTTYPE.RPT_CREDITS:
                     retval = "Relatório de créditos restantes das pessoas";
+                    break;
+                case REPORTTYPE.RPT_INTEGRACAOWFMBIS:
+                    retval = "Relatório da integração WFM x BIS";
                     break;
             }
             return retval;

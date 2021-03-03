@@ -1,0 +1,46 @@
+﻿@model NewBISReports.Models.HomeModel
+
+@{
+}
+
+<div class="widget widget-table">
+    <div class="widget-header">
+        <h3 style="color: black"><i class="fa fa-table"></i>Relatório</h3>
+    </div>
+    <div class="widget-content">
+        <table id="tb" border="1" width="100%">
+            <tr>
+                <td align="center" width="100%" colspan="3"><b>Site</b></td>
+            </tr>
+            <tr>
+                <td align="center" width="100%" colspan="3">@Model.WFM[0].Site</td>
+            </tr>
+            <tr>
+                <td align="center" width="20%"><b>RE</b></td>
+                <td align="center" width="80%" colspan="2"><b>Nome</b></td>
+            </tr>
+            <tr>
+                <td align="center" width="20%">@Model.WFM[0].RE</td>
+                <td align="center" width="80%" colspan="2">@Model.WFM[0].Nome</td>
+            </tr>
+            <tr>
+                <td align="center" width="20%"><b>Situação</b></td>
+                <td align="center" width="80%" colspan="2"><b>Descrição</b></td>
+            </tr>
+            <tr>
+                <td align="center" width="20%">@Model.WFM[0].Situacao</td>
+                <td align="center" width="80%" colspan="2">@Model.WFM[0].Descricao</td>
+            </tr>
+            <tr>
+                <td align="center" width="33%"><b>Entrada WFM</b></td>
+                <td align="center" width="33%"><b>Entrada BIS</b></td>
+                <td align="center" width="33%"><b>Saída BIS</b></td>
+            </tr>
+            <tr>
+                <td align="center" width="33%">@Model.WFM[0].Entrada</td>
+                <td align="center" width="33%">@Model.WFM[0].EntradaBIS</td>
+                <td align="center" width="33%">@Model.WFM[0].SaidaBIS</td>
+            </tr>
+        </table>
+    </div>
+</div>

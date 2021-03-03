@@ -129,10 +129,10 @@ namespace NewBISReports.Models.Reports
                    ((int)accesstype).ToString());                 
                 }
 
-                StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(sql);
-                w.Close();
-                w = null;
+                //StreamWriter w = new StreamWriter("erro.txt", true);
+                //w.WriteLine(sql);
+                //w.Close();
+                //w = null;
 
                 return GlobalFunctions.RemoveTrash(dbcontext.LoadDatatable(dbcontext, sql), null);
             }

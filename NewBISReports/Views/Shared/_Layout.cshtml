@@ -170,20 +170,30 @@
                                     <i class="toggle-icon fa fa-angle-left"></i>
                                 </a>
                                 <ul class="sub-menu ">
-                                    @if (_arvoreOpcoes.Excessao){
-                                        <li><a asp-controller="Excecao" asp-action="Index"><span class="text">Exceção</span></a></li>                                    
+                                    @if (_arvoreOpcoes.Excessao)
+                                    {
+                                        <li><a asp-controller="Excecao" asp-action="Index"><span class="text">Exceção</span></a></li>
+
                                     }
-                                    @if (_arvoreOpcoes.Banheiro){
+                                    @if (_arvoreOpcoes.Banheiro)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_COUNTBATH"><span class="text">Banheiro</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.PessoasSemFotografia){
+                                    @if (_arvoreOpcoes.PessoasSemFotografia)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PHOTOS"><span class="text">Pessoas sem Fotografia</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.PessoasSemCracha){
+                                    @if (_arvoreOpcoes.PessoasSemCracha)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_BADGES"><span class="text">Pessoas sem Crachá</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.TempoSemUsoDoCracha){
+                                    @if (_arvoreOpcoes.TempoSemUsoDoCracha)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_BADGENOUSE"><span class="text">Tempo Sem Uso do Crachá</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.IntegracaoWFMBIS)
+                                    {
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_INTEGRACAOWFMBIS"><span class="text">Integração WFM x BIS</span></a></li>
                                     }
                                 </ul>
                             </li>     

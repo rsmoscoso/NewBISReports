@@ -35,6 +35,7 @@ namespace NewBISReports.Models
         public bool PessoasSemFotografia { get; set; }
         public bool PessoasSemCracha { get; set; }
         public bool TempoSemUsoDoCracha { get; set; }
+        public bool IntegracaoWFMBIS { get; set; }
         //Menu Raiz
         public bool AdministrativosRaiz { get; set; }
         public bool Pessoas { get; set; }
@@ -176,6 +177,7 @@ namespace NewBISReports.Models
             PessoasSemFotografia = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:pessoasSemFotografia"]);
             PessoasSemCracha = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:pessoasSemCracha"]);
             TempoSemUsoDoCracha = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:tempoSemUsoDoCracha"]);
+            IntegracaoWFMBIS = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:integracaoWFMBIS"]);
             //avalia se adiciona a raiz
             OperacionaisRaiz = (Excessao || Banheiro || PessoasSemFotografia || PessoasSemCracha || TempoSemUsoDoCracha);
 
