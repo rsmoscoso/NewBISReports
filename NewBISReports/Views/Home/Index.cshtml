@@ -38,8 +38,8 @@
     if (ViewBag.Type != null)
     {
         type = (REPORTTYPE)ViewBag.Type;
-        //Diogo - retirar minutos do relatório de meal
-        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS || type ==REPORTTYPE.RPT_CREDITS)
+        //Diogo - retirar minutos do relatório de meal e outros que não faz sentido ter hora e minuto
+        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS || type ==REPORTTYPE.RPT_CREDITS || type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
         {
             dateFormatStringRazor = dateFormatStringRazor.Substring(0, 10);
             dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
@@ -129,7 +129,7 @@
                                         </div>
                                     </div>
                                     @*Alguns relatórios só possuem data de início*@
-                                    if(type != REPORTTYPE.RPT_CREDITS && type != REPORTTYPE.RPT_INTEGRACAOWFMBIS){
+                                    if(type != REPORTTYPE.RPT_CREDITS ){
                                         <div class="form-group">
                                             <div class="input-group date form_datetime">
                                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -147,7 +147,7 @@
                                             class="form-control" placeholder="@startDateText" required>
                                     </div>
                                     @*Alguns relatórios só possuem data de início*@
-                                    if(type != REPORTTYPE.RPT_CREDITS){
+                                    if(type != REPORTTYPE.RPT_CREDITS && type != REPORTTYPE.RPT_INTEGRACAOWFMBIS){
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control"

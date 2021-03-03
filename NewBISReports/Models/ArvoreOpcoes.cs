@@ -118,6 +118,9 @@ namespace NewBISReports.Models
                     break;
                 case "en":
                     break;
+                case "en-US":
+                    FormatoDataHora = "en";
+                    break;
                 default:
                     //força pt-BR
                     FormatoDataHora = "pt-BR";
