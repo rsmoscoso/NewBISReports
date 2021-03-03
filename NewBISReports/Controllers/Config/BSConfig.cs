@@ -83,6 +83,10 @@ namespace NewBISReports.Controllers.Config
         /// Nome da área externa para o relatório de pessoas por área.
         /// </summary>
         public string OutSideArea { get; set; }
+        /// <summary>
+        /// Servidor WFM.
+        /// </summary>
+        public string WFMServer { get; set; }
         #endregion
 
         #region Events
@@ -105,8 +109,9 @@ namespace NewBISReports.Controllers.Config
         /// <param name="restserver">IP do servidor RESTApi.</param>
         /// <param name="restport">Porta do servidor RESTApi.</param>
         /// <param name="outsidearea">Nome da área externa para o relatório das pessoas por área.</param>
+        /// <param name="wfmserver">Servidor do WFM.</param>
         public BSConfig(string defaultname, string backcolor, string forecolor, string fontweight, string imagepath, string meal, string bispath, string systemtype, string addresstagprefix,
-            string addresstagsufix, string tagbisserver, string restserver, string restport, string outsidearea)
+            string addresstagsufix, string tagbisserver, string restserver, string restport, string outsidearea, string wfmserver)
         {
             this.DefaultName = defaultname;
             this.BackColor = !String.IsNullOrEmpty(backcolor) ? backcolor : "black";
@@ -122,6 +127,7 @@ namespace NewBISReports.Controllers.Config
             this.RestServer = !String.IsNullOrEmpty(restserver) ? restserver : "localhost";
             this.RestPort = !String.IsNullOrEmpty(restport) ? restport : "9090";
             this.OutSideArea = !String.IsNullOrEmpty(outsidearea) ? outsidearea : "outside";
+            this.WFMServer = !String.IsNullOrEmpty(wfmserver) ? wfmserver : "";
         }
         #endregion
     }

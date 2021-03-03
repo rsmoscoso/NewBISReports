@@ -39,7 +39,7 @@
     {
         type = (REPORTTYPE)ViewBag.Type;
         //Diogo - retirar minutos do relatório de meal e outros que não faz sentido ter hora e minuto
-        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS || type ==REPORTTYPE.RPT_CREDITS || type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
+        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS || type == REPORTTYPE.RPT_CREDITS || type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
         {
             dateFormatStringRazor = dateFormatStringRazor.Substring(0, 10);
             dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
@@ -170,6 +170,13 @@
                                             <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
                                                 value="4112">
                                             <label class="custom-control-label" for="grant">Não Permitido</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+                                                value="4119">
+                                            <label class="custom-control-label" for="grant">Não Válido</label>
                                         </div>
                                     </div>
                                 }
