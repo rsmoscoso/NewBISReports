@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-     <Version>2.2.7</Version>
+     <Version>2.3.0</Version>
     <Company>Grupo Orion</Company>
     <Product>BisReports</Product>
     <Authors>Ronaldo Moscoso, Diogo Andrade</Authors>
-    <AssemblyVersion>2.2.7.0</AssemblyVersion>
-    <FileVersion>2.2.7.0</FileVersion>
+    <AssemblyVersion>2.3.0.0</AssemblyVersion>
+    <FileVersion>2.3.0.0</FileVersion>
     <LangVersion>Latest</LangVersion>
   </PropertyGroup>
 
