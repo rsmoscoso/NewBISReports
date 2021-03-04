@@ -279,24 +279,6 @@
 
                         }
 
-                        <!-- Ronaldo - apresentação de tela única para pesquisa da integração do WFM. A ser utilizada pelo vigia na portaria. -->
-                        @if (_arvoreOpcoes.IntegracaoWFMBIS && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded))
-                        {
-                            <li>
-                                <a href="#" class="js-sub-menu-toggle">
-                                    <i class="fa fa-navicon"></i><span class="text">Operacionais</span>
-                                    <i class="toggle-icon fa fa-angle-left"></i>
-                                </a>
-                                <ul class="sub-menu ">
-                                    @if (_arvoreOpcoes.IntegracaoWFMBIS)
-                                    {
-                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_INTEGRACAOWFMBIS"><span class="text">Integração WFM x BIS</span></a></li>
-                                    }
-                                </ul>
-                            </li>
-
-                        }
-
                     </ul>
                 </nav>
                 <!-- /main-nav -->

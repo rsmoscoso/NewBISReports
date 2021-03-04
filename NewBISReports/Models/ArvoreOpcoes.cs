@@ -149,6 +149,7 @@ namespace NewBISReports.Models
                 RemoverUsurios = false;
             }
             //avalia se deve adicionar a raiz
+            //Se pelo menos um dos sub-menus for habilitado, a raiz também será habilitada
             AdministracaoRaiz = (AdicionarUsuarios || AlterarSenhas || RemoverUsurios);
 
             //menu Eventos de acesso
@@ -172,6 +173,7 @@ namespace NewBISReports.Models
                 ExportarRefeicoes = false;
             }
             //avalia se adiciona a raiz
+            //Se pelo menos um dos sub-menus for habilitado, a raiz também será habilitada
             EventosDeAcessoRaiz = (EventosDeAcesso || AcessosAnaliticosGeral || TabelaRefeicoes || DashboardTotalRefeicoes || TotalDeRefeicoes || ExportarRefeicoes);
 
             //menu Operacionais
@@ -182,7 +184,8 @@ namespace NewBISReports.Models
             TempoSemUsoDoCracha = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:tempoSemUsoDoCracha"]);
             IntegracaoWFMBIS = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:integracaoWFMBIS"]);
             //avalia se adiciona a raiz
-            OperacionaisRaiz = (Excessao || Banheiro || PessoasSemFotografia || PessoasSemCracha || TempoSemUsoDoCracha);
+            //Se pelo menos um dos sub-menus for habilitado, a raiz também será habilitada
+            OperacionaisRaiz = (Excessao || Banheiro || PessoasSemFotografia || PessoasSemCracha || TempoSemUsoDoCracha || IntegracaoWFMBIS);
 
             //menu Administrativos
             Pessoas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:Pessoas"]);
