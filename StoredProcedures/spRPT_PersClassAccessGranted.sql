@@ -40,7 +40,8 @@ begin
 end
 
 --avalia filtro de UnidadePEssoa (client)
-if (not @clientid is null and @devices is null and @devices != 'Common')
+--filtro de client e device agora é dissociado
+if (not @clientid is null) --and @devices is null and @devices != 'Common')
 begin
 	set @filtro_UnidadedaPessoa = 1
 	set @num_filtros = @num_filtros+1
