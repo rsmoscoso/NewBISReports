@@ -35,6 +35,7 @@ namespace NewBISReports.Models
         public bool PessoasSemFotografia { get; set; }
         public bool PessoasSemCracha { get; set; }
         public bool TempoSemUsoDoCracha { get; set; }
+        public bool IntegracaoWFMBIS { get; set; }
         //Menu Raiz
         public bool AdministrativosRaiz { get; set; }
         public bool Pessoas { get; set; }
@@ -117,6 +118,9 @@ namespace NewBISReports.Models
                     break;
                 case "en":
                     break;
+                case "en-US":
+                    FormatoDataHora = "en";
+                    break;
                 default:
                     //força pt-BR
                     FormatoDataHora = "pt-BR";
@@ -145,6 +149,7 @@ namespace NewBISReports.Models
                 RemoverUsurios = false;
             }
             //avalia se deve adicionar a raiz
+            //Se pelo menos um dos sub-menus for habilitado, a raiz também será habilitada
             AdministracaoRaiz = (AdicionarUsuarios || AlterarSenhas || RemoverUsurios);
 
             //menu Eventos de acesso
@@ -168,6 +173,7 @@ namespace NewBISReports.Models
                 ExportarRefeicoes = false;
             }
             //avalia se adiciona a raiz
+            //Se pelo menos um dos sub-menus for habilitado, a raiz também será habilitada
             EventosDeAcessoRaiz = (EventosDeAcesso || AcessosAnaliticosGeral || TabelaRefeicoes || DashboardTotalRefeicoes || TotalDeRefeicoes || ExportarRefeicoes);
 
             //menu Operacionais
@@ -176,8 +182,10 @@ namespace NewBISReports.Models
             PessoasSemFotografia = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:pessoasSemFotografia"]);
             PessoasSemCracha = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:pessoasSemCracha"]);
             TempoSemUsoDoCracha = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:tempoSemUsoDoCracha"]);
+            IntegracaoWFMBIS = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:integracaoWFMBIS"]);
             //avalia se adiciona a raiz
-            OperacionaisRaiz = (Excessao || Banheiro || PessoasSemFotografia || PessoasSemCracha || TempoSemUsoDoCracha);
+            //Se pelo menos um dos sub-menus for habilitado, a raiz também será habilitada
+            OperacionaisRaiz = (Excessao || Banheiro || PessoasSemFotografia || PessoasSemCracha || TempoSemUsoDoCracha || IntegracaoWFMBIS);
 
             //menu Administrativos
             Pessoas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:Pessoas"]);

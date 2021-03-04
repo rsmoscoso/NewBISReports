@@ -663,6 +663,19 @@ namespace NewBISReports.Controllers
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reporttotalmeal.xlsx");
                     }
                 }
+                else if (reports.Type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
+                {
+                    using (System.Data.DataTable table = _rptsAcedb.LoadWFMBIS(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO))
+                    {
+                        reports.WFM = GlobalFunctions.ConvertDataTable<IntegracaoWFMBIS>(table);
+                        if (reports.WFM != null && reports.WFM.Count > 0)
+                        {
+                            this.persisTempData();
+                            ViewBag.Type = reports.Type;
+                            return View("Index", reports);
+                        }
+                    }
+                }
 
                 reports.Acessos = acessos;
                 this.persisTempData();
@@ -695,11 +708,6 @@ namespace NewBISReports.Controllers
         {
             try
             {
-                StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine("Index...");
-                w.Close();
-                w = null;
-
                 if (Request.Form["CLIENTID"].Count == 1)
                 {
                     this.searchDevices(reports);
@@ -760,7 +768,12 @@ namespace NewBISReports.Controllers
                         ViewBag.MensagemErro = mensagemErro;
                     }
                     ViewBag.Type = type;
-                    return View();
+
+                    //Ronaldo - iniciando o textbox da data com o dia de hoje.
+                    if (type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
+                        return View(new HomeModel() { StartDate = DateTime.Now.ToShortDateString() });
+                    else
+                        return View();
                 }
 
             }
@@ -829,7 +842,8 @@ namespace NewBISReports.Controllers
                     configuration.GetSection(defaultsettings)["FontWeight"], configuration.GetSection(defaultsettings)["ImagePath"],
                     configuration.GetSection(defaultsettings)["Meal"], configuration.GetSection(defaultsettings)["BisPath"], configuration.GetSection(defaultsettings)["SystemType"],
                     configuration.GetSection(defaultsettings)["AddressTagPrefix"], configuration.GetSection(defaultsettings)["AddressTagSufix"], configuration.GetSection(defaultsettings)["TagBISServer"],
-                    configuration.GetSection(defaultsettings)["RestServer"], configuration.GetSection(defaultsettings)["RestPort"], configuration.GetSection(defaultsettings)["OutSideArea"]);
+                    configuration.GetSection(defaultsettings)["RestServer"], configuration.GetSection(defaultsettings)["RestPort"], configuration.GetSection(defaultsettings)["OutSideArea"],
+                    configuration.GetSection(defaultsettings)["WFMServer"]);
                 this.AreaExterna = configuration.GetSection(defaultsettings)["OutSideArea"];
             }
             catch (Exception ex)

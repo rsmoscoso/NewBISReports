@@ -108,11 +108,6 @@ namespace NewBISReports.Models.Reports
                         //PERSID
                         String.IsNullOrEmpty(cmpPersID) ? "null":"'" + cmpPersID + "'");
 
-                StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(sql);
-                w.Close();
-                w = null;
-
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
@@ -149,9 +144,6 @@ namespace NewBISReports.Models.Reports
                 }
                 sql += " order by cli.Name, Nome";
                 StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(sql);
-                w.Close();
-                w = null;
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -181,11 +173,7 @@ namespace NewBISReports.Models.Reports
                     sql += String.Format(" and cli.clientid = '{0}'", clientid);
 
                 sql += " order by cli.Name, Nome";
-                StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(sql);
-                w.Close();
-                w = null;                
-
+        
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
@@ -214,10 +202,6 @@ namespace NewBISReports.Models.Reports
                     sql += String.Format(" and cli.clientid = '{0}'", clientid);
 
                 sql += " order by Nome, cli.Name";
-                StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(sql);
-                w.Close();
-                w = null;                
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -282,10 +266,37 @@ namespace NewBISReports.Models.Reports
                     //sql += String.Format(" where are.areaid = '{0}'", areaid);
                     sql += "where are.areaid in ("+ BreakStringArray(areaid, "select")+ ")";
 
-                StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(sql);
-                w.Close();
-                w = null;
+                return dbcontext.LoadDatatable(dbcontext, sql);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retorna as informações da integração WFMxBIS.
+        /// </summary>
+        /// <param name="dbcontext">Conexão com o banco de dados.</param>
+        /// <param name="wfmserver">Servidor do WFM.</param>
+        /// <param name="data">Data da pesquisa (MM/dd/yyyy).</param>
+        /// <param name="persno">Matrícula do colaborador</param>
+        /// <returns></returns>
+        public DataTable LoadWFMBIS(DatabaseContext dbcontext, string wfmserver, string data, string persno)
+        {
+            try
+            {
+                string sql = String.Format("select Data = format(data, 'dd/MM/yyyy'), RE = convert(varchar, dSit.RE), dSit.Nome, Situacao = convert(varchar, dSit.cod_situacao), dSit.status, " +
+                    "Entrada = format(convert(datetime, horario_ent), 'dd/MM/yyyy HH:mm'), Site, Descricao = descricao_situacao,  " +
+                    "EntradaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHFROM), 'dd/MM/yyyy HH:mm'), SaidaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHUNTIL), 'dd/MM/yyyy HH:mm'), " +
+                    "Found = case when per.clientid = tol.clientid then 1 else 0 end " +
+                    "from [{0}].sisqualwfm.[dbo].[BOSCH_EmpregadosSituacao] dSit " +
+                    "inner join [{0}].sisqualwfm.dbo.BOSCH_Empregados be on be.re = dSit.re " +
+                    "inner join  [{0}].sisqualwfm.dbo.BOSCH_TIPOS_SITUACAO bs on dsit.COD_SITUACAO = bs.cod_situacao " +
+                    "left outer join bsuser.persons per on per.persno = convert(varchar, dSit.re) inner join bsuser.acpersons acpe on acpe.persid = per.persid " +
+                    "left outer join Horizon..tblTolerancia tol on tol.CLIENTID = per.clientid " +
+                    "where dSit.re = '{1}' and data = '{2}'", wfmserver, persno, data);
+
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)

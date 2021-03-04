@@ -16,7 +16,7 @@ declare @where varchar(5000)  = ' where '
 	Como não é possível usar o "LogEventValueType.eventValueName" para filtrar mais de um parâmetro,
 	do segundo em diante deve-se filtrar em um select por fora.
 
-	Assim, o passo a oasso de gerar a string de consulta é:
+	Assim, o passo a passo de gerar a string de consulta é:
 	1-Determina-se o numero de filtros que dependem de "LogEventValueType.eventValueName", ou seja mutuamente exclusivos
 	2-Escolhe-se o filtro interno, ou seja que será executado no Select mais central
 	3- Se houver mais filtros além do usado no passo 2, constrói-se o select por fora com os filtros extra
@@ -36,8 +36,9 @@ begin
 	set @num_filtros = @num_filtros + 1
 end
 
---avalia filtro de UnidadePEssoa (client)
-if (not @clientid is null and @devices is null and @devices != 'Common')
+--avalia filtro de UnidadePEssoa (client) 
+--filtro de client e device agora é dissociado
+if (not @clientid is null) --and @devices is null and @devices != 'Common')
 begin
 	set @filtro_UnidadedaPessoa = 1
 	set @num_filtros = @num_filtros+1
@@ -50,7 +51,7 @@ begin
 	set @num_filtros = @num_filtros+1
 end
 
---se houver mais de um filtro, já construir o SELECT mais externo. As colunas devem estar com os msmos nomes das do select intermediário
+--se houver mais de um filtro, já construir o SELECT mais externo. As colunas devem estar com os mesmos nomes das do select intermediário
 if(@num_filtros > 1)
 	set @sql = 'SELECT DataAcesso, Leitor, Nome, ID, Persid, Cardno ,Empresa, TipoAcesso, CPF, UnidadedaPessoa from ('
 

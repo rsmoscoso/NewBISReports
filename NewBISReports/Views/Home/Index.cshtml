@@ -38,8 +38,8 @@
     if (ViewBag.Type != null)
     {
         type = (REPORTTYPE)ViewBag.Type;
-        //Diogo - retirar minutos do relatório de meal
-        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS || type ==REPORTTYPE.RPT_CREDITS)
+        //Diogo - retirar minutos do relatório de meal e outros que não faz sentido ter hora e minuto
+        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS || type == REPORTTYPE.RPT_CREDITS || type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
         {
             dateFormatStringRazor = dateFormatStringRazor.Substring(0, 10);
             dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
@@ -52,7 +52,7 @@
     {
         showAccessGrantOption = true;
     }
-        //muda o texto do campo de data ocnforme o contexto
+    //muda o texto do campo de data ocnforme o contexto
     if (type == REPORTTYPE.RPT_CREDITS){
         startDateText = "Último Acesso";
     }
@@ -78,6 +78,7 @@
     {
         ViewBag.Devices = new List<Devices>();
     }
+
 }
 
 <form method="post" asp-action="Index" data-parsley-validate novalidate>
@@ -128,7 +129,7 @@
                                         </div>
                                     </div>
                                     @*Alguns relatórios só possuem data de início*@
-                                    if(type != REPORTTYPE.RPT_CREDITS){
+                                    if(type != REPORTTYPE.RPT_CREDITS ){
                                         <div class="form-group">
                                             <div class="input-group date form_datetime">
                                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -146,7 +147,7 @@
                                             class="form-control" placeholder="@startDateText" required>
                                     </div>
                                     @*Alguns relatórios só possuem data de início*@
-                                    if(type != REPORTTYPE.RPT_CREDITS){
+                                    if(type != REPORTTYPE.RPT_CREDITS && type != REPORTTYPE.RPT_INTEGRACAOWFMBIS){
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control"
@@ -169,6 +170,13 @@
                                             <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
                                                 value="4112">
                                             <label class="custom-control-label" for="grant">Não Permitido</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+                                                value="4119">
+                                            <label class="custom-control-label" for="grant">Não Válido</label>
                                         </div>
                                     </div>
                                 }
@@ -201,6 +209,12 @@
                                     placeholder="N. de Dias sem Uso do Crachá" value="30" required>
                             }
 
+                            @if (type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
+                            {
+                                <input type="text" id="PERSNO" name="PERSNO" asp-for="PERSNO" class="form-control"
+                                    placeholder="RE do colaborador" required>
+                            }
+
                             @if (type == REPORTTYPE.RPT_TOTALMEAL || type == REPORTTYPE.RPT_EXPORTMEAL || type ==
                                 REPORTTYPE.RPT_COUNTBATH)
                             {
@@ -209,13 +223,22 @@
                                     class="btn">Executar</button>
                             }
                                 @if (type != REPORTTYPE.RPT_EXPORTMEAL && type != REPORTTYPE.RPT_COUNTBATH)
-                            {
-                                if (type == REPORTTYPE.RPT_PHOTOS)
                                 {
-                                    buttonname = "Gerar";
-                                }
-                                <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
-                                    style="background-color: Green; color: White;">@buttonname</button>
+                                    if (type == REPORTTYPE.RPT_PHOTOS)
+                                    {
+                                        buttonname = "Gerar";
+                                    }
+
+                                    if (type != REPORTTYPE.RPT_INTEGRACAOWFMBIS)
+                                    {
+                                        <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
+                                            style="background-color: Green; color: White;">@buttonname</button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
+                                            style="background-color: Green; color: White;">Pesquisar</button>
+                                    }
                             }
                             </div>
 
@@ -376,7 +399,8 @@
 
                 @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE &&
                 @*type != REPORTTYPE.RPT_PERSONGENERAL && *@
-                type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA && type != REPORTTYPE.RPT_CREDITS)
+                type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA && type != REPORTTYPE.RPT_CREDITS &&
+                type != REPORTTYPE.RPT_INTEGRACAOWFMBIS)
             {
                 <div class="col-sm-6">
                     <div class="widget widget-table">
@@ -454,9 +478,14 @@
         @Html.Partial("IndexPivot");
     }
 
-        @if (type == REPORTTYPE.RPT_COUNTBATH && @Model != null && @Model.Acessos != null)
+    @if (type == REPORTTYPE.RPT_COUNTBATH && @Model != null && @Model.Acessos != null)
     {
         @Html.Partial("IndexCount");
+    }
+
+    @if (@Model != null && Model.WFM != null)
+    {
+        @Html.Partial("IndexIntegracao");
     }
     </form>
 
