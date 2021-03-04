@@ -1,6 +1,7 @@
 ﻿@model NewBISReports.Models.HomeModel
 
 @{
+    var color = @Model.WFM[0].Situacao == "1" ? "black" : "red";
 }
 
 <div class="widget widget-table">
@@ -29,7 +30,7 @@
             </tr>
             <tr>
                 <td align="center" width="20%">@Model.WFM[0].Situacao</td>
-                <td align="center" width="80%" colspan="2">@Model.WFM[0].Descricao</td>
+                <td align="center" width="80%" colspan="2" style="color: @color" >@Model.WFM[0].Descricao</td>
             </tr>
             <tr>
                 <td align="center" width="33%"><b>Entrada WFM</b></td>
@@ -38,8 +39,8 @@
             </tr>
             <tr>
                 <td align="center" width="33%">@Model.WFM[0].Entrada</td>
-                <td align="center" width="33%">@Model.WFM[0].EntradaBIS</td>
-                <td align="center" width="33%">@Model.WFM[0].SaidaBIS</td>
+                <td align="center" width="33%">@(Model.WFM[0].Found == 1 ?  Model.WFM[0].EntradaBIS : "Não Encontrado!")</td>
+                <td align="center" width="33%">@(Model.WFM[0].Found == 1 ?  Model.WFM[0].SaidaBIS : "Não Encontrado!")</td>
             </tr>
         </table>
     </div>

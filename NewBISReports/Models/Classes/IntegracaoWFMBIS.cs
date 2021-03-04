@@ -17,6 +17,7 @@ namespace NewBISReports.Models.Classes
         public string Descricao { get; set; }
         public string EntradaBIS { get; set; }
         public string SaidaBIS { get; set; }
+        public int Found { get; set; }
 
     }
 }

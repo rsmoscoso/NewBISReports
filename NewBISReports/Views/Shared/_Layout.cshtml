@@ -101,14 +101,16 @@
                 <nav class="main-nav">
                     <ul class="main-menu">
                         <!-- Condicional para mostrar eventos de acesso -->
-                        @if (_arvoreOpcoes.UseLogin && _arvoreOpcoes.AdministracaoRaiz &&(await AuthorizationService.AuthorizeAsync(User, "AcessoAdmin")).Succeeded){
+                        @if (_arvoreOpcoes.UseLogin && _arvoreOpcoes.AdministracaoRaiz && (await AuthorizationService.AuthorizeAsync(User, "AcessoAdmin")).Succeeded)
+                        {
                             <li>
                                 <a href="#" class="js-sub-menu-toggle">
                                     <i class="fa fa-cog fa-fw"></i><span class="text" style="opacity: 1;">Administração</span>
                                     <i class="toggle-icon fa fa-angle-left"></i>
                                 </a>
                                 <ul class="sub-menu ">
-                                    @if(_arvoreOpcoes.AdicionarUsuarios){
+                                    @if (_arvoreOpcoes.AdicionarUsuarios)
+                                    {
                                         <li>
                                             <a asp-controller="Administracao" asp-action="CreateUser">
                                                 <i class="fa fa-user-plus fa-fw"></i>
@@ -116,55 +118,66 @@
                                             </a>
                                         </li>
                                     }
-                                     @if(_arvoreOpcoes.AlterarSenhas){  
+                                    @if (_arvoreOpcoes.AlterarSenhas)
+                                    {
                                         <li>
                                             <a asp-controller="Administracao" asp-action="ResetUserPassword">
                                                 <i class="fa fa-user fa-fw"></i>
                                                 <span class="text" style="opacity: 1;">Alterar Senhas</span>
                                             </a>
                                         </li>
-                                     }
-                                      @if(_arvoreOpcoes.RemoverUsurios){
+                                    }
+                                    @if (_arvoreOpcoes.RemoverUsurios)
+                                    {
                                         <li>
                                             <a asp-controller="Administracao" asp-action="DeleteUser">
                                                 <i class="fa fa-trash fa-fw"></i>
                                                 <span class="text" style="opacity: 1;">Remover Usuários</span>
                                             </a>
                                         </li>
-                                      }
+                                    }
                                 </ul>
                             </li>
                         }
-                        @if (_arvoreOpcoes.EventosDeAcessoRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)){
+                        @if (_arvoreOpcoes.EventosDeAcessoRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded))
+                        {
                             <li>
                                 <a href="#" class="js-sub-menu-toggle">
                                     <i class="fa fa-dashboard fa-fw"></i><span class="text">Eventos de Acesso</span>
                                     <i class="toggle-icon fa fa-angle-down"></i>
                                 </a>
                                 <ul class="sub-menu open">
-                                     @if(_arvoreOpcoes.EventosDeAcesso){
+                                    @if (_arvoreOpcoes.EventosDeAcesso)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICGRANTEDBIS"><span class="text">Eventos de Acesso</span></a></li>
-                                     }
-                                    @if (_arvoreOpcoes.AcessosAnaliticosGeral){
+                                    }
+                                    @if (_arvoreOpcoes.AcessosAnaliticosGeral)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICSGENERAL"><span class="text">Acessos Analíticos - Geral</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.TabelaRefeicoes){
+                                    @if (_arvoreOpcoes.TabelaRefeicoes)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICSMEALBIS"><span class="text">Tabela Refeições</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.DashboardTotalRefeicoes){
+                                    @if (_arvoreOpcoes.DashboardTotalRefeicoes)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_TOTALMEALGRAPH"><span class="text">Dashboard Total Refeições</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.TotalDeRefeicoes){
+                                    @if (_arvoreOpcoes.TotalDeRefeicoes)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_TOTALMEAL"><span class="text">Total de Refeições</span></a></li>
                                     }
-                                    @if (_arvoreOpcoes.ExportarRefeicoes){
+                                    @if (_arvoreOpcoes.ExportarRefeicoes)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_EXPORTMEAL"><span class="text">Exportar Refeições</span></a></li>
                                     }
                                 </ul>
                             </li>
                         }
-                        @if (_arvoreOpcoes.OperacionaisRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)){
-                             <li>
+
+                        @if (_arvoreOpcoes.OperacionaisRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded))
+                        {
+                            <li>
                                 <a href="#" class="js-sub-menu-toggle">
                                     <i class="fa fa-navicon"></i><span class="text">Operacionais</span>
                                     <i class="toggle-icon fa fa-angle-left"></i>
@@ -196,9 +209,11 @@
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_INTEGRACAOWFMBIS"><span class="text">Integração WFM x BIS</span></a></li>
                                     }
                                 </ul>
-                            </li>     
+                            </li>
+
                         }
-                        @if (_arvoreOpcoes.AdministrativosRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)){                                              
+                        @if (_arvoreOpcoes.AdministrativosRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded))
+                        {
                             <li>
                                 <a href="#" class="js-sub-menu-toggle">
                                     <i class="fa fa-columns"></i><span class="text">Administrativos</span>
@@ -238,28 +253,50 @@
                                     @if (_arvoreOpcoes.CreditosPessoas)
                                     {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_CREDITS"><span class="text">Créditos</span></a></li>
-                                    }                               
+                                    }
                                 </ul>
                             </li>
                             <!-- Condicional para mostrar eventos de Visitantes -->
                         }
-                        @if (_arvoreOpcoes.VisitantesRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded)){    
+                        @if (_arvoreOpcoes.VisitantesRaiz && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded))
+                        {
                             <li>
                                 <a href="#" class="js-sub-menu-toggle">
                                     <i class="fa fa-camera"></i><span class="text">Visitantes</span>
                                     <i class="toggle-icon fa fa-angle-left"></i>
                                 </a>
                                 <ul class="sub-menu">
-                                     @if (_arvoreOpcoes.QrCodeDosVisitantes){
+                                    @if (_arvoreOpcoes.QrCodeDosVisitantes)
+                                    {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_LOGQRCODE"><span class="text">QR Code dos Visitantes</span></a></li>
-                                     }
-                                      @if (_arvoreOpcoes.ImportarVisitantes){
-                                        <li><a asp-controller="ImportVisitor" asp-action="Index"  ><span class="text">Importar Visitantes</span></a></li>
-                                      }                                    
+                                    }
+                                    @if (_arvoreOpcoes.ImportarVisitantes)
+                                    {
+                                        <li><a asp-controller="ImportVisitor" asp-action="Index"><span class="text">Importar Visitantes</span></a></li>
+                                    }
                                 </ul>
                             </li>
 
-                        }                        
+                        }
+
+                        <!-- Ronaldo - apresentação de tela única para pesquisa da integração do WFM. A ser utilizada pelo vigia na portaria. -->
+                        @if (_arvoreOpcoes.IntegracaoWFMBIS && (!_arvoreOpcoes.UseLogin || (await AuthorizationService.AuthorizeAsync(User, "AcessoUsuario")).Succeeded))
+                        {
+                            <li>
+                                <a href="#" class="js-sub-menu-toggle">
+                                    <i class="fa fa-navicon"></i><span class="text">Operacionais</span>
+                                    <i class="toggle-icon fa fa-angle-left"></i>
+                                </a>
+                                <ul class="sub-menu ">
+                                    @if (_arvoreOpcoes.IntegracaoWFMBIS)
+                                    {
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_INTEGRACAOWFMBIS"><span class="text">Integração WFM x BIS</span></a></li>
+                                    }
+                                </ul>
+                            </li>
+
+                        }
+
                     </ul>
                 </nav>
                 <!-- /main-nav -->

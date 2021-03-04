@@ -288,11 +288,13 @@ namespace NewBISReports.Models.Reports
             {
                 string sql = String.Format("select Data = format(data, 'dd/MM/yyyy'), RE = convert(varchar, dSit.RE), dSit.Nome, Situacao = convert(varchar, dSit.cod_situacao), dSit.status, " +
                     "Entrada = format(convert(datetime, horario_ent), 'dd/MM/yyyy HH:mm'), Site, Descricao = descricao_situacao,  " +
-                    "EntradaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHFROM), 'dd/MM/yyyy HH:mm'), SaidaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHUNTIL), 'dd/MM/yyyy HH:mm') " +
+                    "EntradaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHFROM), 'dd/MM/yyyy HH:mm'), SaidaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHUNTIL), 'dd/MM/yyyy HH:mm'), " +
+                    "Found = case when per.clientid = tol.clientid then 1 else 0 end " +
                     "from [{0}].sisqualwfm.[dbo].[BOSCH_EmpregadosSituacao] dSit " +
                     "inner join [{0}].sisqualwfm.dbo.BOSCH_Empregados be on be.re = dSit.re " +
                     "inner join  [{0}].sisqualwfm.dbo.BOSCH_TIPOS_SITUACAO bs on dsit.COD_SITUACAO = bs.cod_situacao " +
                     "left outer join bsuser.persons per on per.persno = convert(varchar, dSit.re) inner join bsuser.acpersons acpe on acpe.persid = per.persid " +
+                    "left outer join Horizon..tblTolerancia tol on tol.CLIENTID = per.clientid " +
                     "where dSit.re = '{1}' and data = '{2}'", wfmserver, persno, data);
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
