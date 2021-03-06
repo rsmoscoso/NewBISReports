@@ -18,6 +18,7 @@ namespace NewBISReports.Models.Classes
         public string EntradaBIS { get; set; }
         public string SaidaBIS { get; set; }
         public int Found { get; set; }
-
+        public string Divisao { get; set; }
+        public string Empresa { get; set; }
     }
 }

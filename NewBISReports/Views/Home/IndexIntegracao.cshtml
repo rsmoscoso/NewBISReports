@@ -11,18 +11,22 @@
     <div class="widget-content">
         <table id="tb" border="1" width="100%">
             <tr>
-                <td align="center" width="100%" colspan="3"><b>Site</b></td>
+                <td align="center" width="20%"><b>Área WFM</b></td>
+                <td align="center" width="80%" colspan="2"><b>Divisão BIS</b></td>
             </tr>
             <tr>
-                <td align="center" width="100%" colspan="3">@Model.WFM[0].Site</td>
+                <td align="center" width="20%">@Model.WFM[0].Site</td>
+                <td align="center" width="80%" colspan="2">@Model.WFM[0].Divisao</td>
             </tr>
             <tr>
                 <td align="center" width="20%"><b>RE</b></td>
-                <td align="center" width="80%" colspan="2"><b>Nome</b></td>
+                <td align="center" width="50%"><b>Nome</b></td>
+                <td align="center" width="30%"><b>Empresa</b></td>
             </tr>
             <tr>
                 <td align="center" width="20%">@Model.WFM[0].RE</td>
-                <td align="center" width="80%" colspan="2">@Model.WFM[0].Nome</td>
+                <td align="center" width="50%">@Model.WFM[0].Nome</td>
+                <td align="center" width="30%">@Model.WFM[0].Empresa</td>
             </tr>
             <tr>
                 <td align="center" width="20%"><b>Situação</b></td>
@@ -30,7 +34,7 @@
             </tr>
             <tr>
                 <td align="center" width="20%">@Model.WFM[0].Situacao</td>
-                <td align="center" width="80%" colspan="2" style="color: @color" >@Model.WFM[0].Descricao</td>
+                <td align="center" width="80%" colspan="2" style="color: @color">@Model.WFM[0].Descricao</td>
             </tr>
             <tr>
                 <td align="center" width="33%"><b>Entrada WFM</b></td>
@@ -39,8 +43,8 @@
             </tr>
             <tr>
                 <td align="center" width="33%">@Model.WFM[0].Entrada</td>
-                <td align="center" width="33%">@(Model.WFM[0].Found == 1 ?  Model.WFM[0].EntradaBIS : "Não Encontrado!")</td>
-                <td align="center" width="33%">@(Model.WFM[0].Found == 1 ?  Model.WFM[0].SaidaBIS : "Não Encontrado!")</td>
+                <td align="center" width="33%">@Model.WFM[0].EntradaBIS</td>
+                <td align="center" width="33%">@Model.WFM[0].SaidaBIS</td>
             </tr>
         </table>
     </div>

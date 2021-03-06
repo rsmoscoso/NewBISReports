@@ -665,9 +665,41 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
                 {
-                    using (System.Data.DataTable table = _rptsAcedb.LoadWFMBIS(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO))
+                    using (System.Data.DataTable table = _rptsAcedb.LoadWFM(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO))
                     {
                         reports.WFM = GlobalFunctions.ConvertDataTable<IntegracaoWFMBIS>(table);
+                        DataTable tableWFM = _rptsAcedb.LoadWFMSit(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO);
+                        if (reports.WFM != null && reports.WFM.Count > 0)
+                        {
+                            if (tableWFM != null && tableWFM.Rows.Count > 0)
+                            {
+                                reports.WFM[0].Data = tableWFM.Rows[0]["Data"].ToString();
+                                reports.WFM[0].status = tableWFM.Rows[0]["status"].ToString();
+                                reports.WFM[0].Situacao = tableWFM.Rows[0]["Situacao"].ToString();
+                                reports.WFM[0].Descricao = tableWFM.Rows[0]["Descricao"].ToString();
+                                reports.WFM[0].Entrada = tableWFM.Rows[0]["Entrada"].ToString();
+                            }
+                            else
+                            {
+                                reports.WFM[0].Data = DateTime.Parse(reports.StartDate).ToString("dd/MM/yyyy");
+                                reports.WFM[0].status = "Não há status!";
+                                reports.WFM[0].Situacao = "Não há situação!";
+                                reports.WFM[0].Descricao = "Não há descrição da situação!";
+                                reports.WFM[0].Entrada = "Não há acesso para essa data!";
+                            }
+                        }
+
+                        DataTable tableBIS = _rptsAcedb.LoadBIS(this.contextACE, reports.PERSNO);
+                        if (reports.WFM != null && reports.WFM.Count > 0)
+                        {
+                            if (tableBIS != null && tableBIS.Rows.Count > 0)
+                            {
+                                reports.WFM[0].Divisao = tableBIS.Rows[0]["Divisao"].ToString();
+                                reports.WFM[0].Empresa = tableBIS.Rows[0]["Empresa"].ToString();
+                                reports.WFM[0].EntradaBIS = tableBIS.Rows[0]["EntradaBIS"].ToString();
+                                reports.WFM[0].SaidaBIS = tableBIS.Rows[0]["SaidaBIS"].ToString();
+                            }
+                        }
                         if (reports.WFM != null && reports.WFM.Count > 0)
                         {
                             this.persisTempData();
