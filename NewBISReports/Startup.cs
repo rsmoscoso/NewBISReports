@@ -20,6 +20,8 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using NewBISReports.Models.Autorizacao;
 using NewBISReports.Models;
 using NewBISReports.Models.Reports;
+using NewBISReports.Models.Classes;
+using NewBISReports.Services;
 
 namespace NewBISReports
 {
@@ -182,6 +184,8 @@ namespace NewBISReports
                 //options.KnownProxies.Add(IPAddress.Parse("10.20.30.115"));
             });
 
+            services.AddBisRestApiAccess(Configuration);
+
             //cria o Singleton de criação de menu lateral do site, e outras opções
             services.AddSingleton<ArvoreOpcoes>();
             //serviço de conversão de data no frontend
@@ -189,6 +193,7 @@ namespace NewBISReports
             //classes de greção de relatórios
             services.AddTransient<RPTBS_Analytics>();
             services.AddTransient<RPTBS_Acedb>();
+            services.AddTransient<PersonUtils>();
 
             services.AddLogging();
             services.AddCors();
@@ -221,7 +226,7 @@ namespace NewBISReports
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=BSPersons}/{action=Index}/{id?}");
             });
         }
     }

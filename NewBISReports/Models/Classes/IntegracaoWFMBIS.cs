@@ -20,5 +20,6 @@ namespace NewBISReports.Models.Classes
         public int Found { get; set; }
         public string Divisao { get; set; }
         public string Empresa { get; set; }
+        public string cardno { get; set; }
     }
 }

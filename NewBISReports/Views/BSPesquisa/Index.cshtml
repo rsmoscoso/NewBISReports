@@ -1,0 +1,106 @@
+﻿@model NewBISReports.Models.BSPesquisa.BSPesquisaModel
+
+@{
+    ViewData["Title"] = "Pesquisa de Pessoas";
+}
+
+<!-- MAIN CONTENT WRAPPER -->
+<div id="main-content-wrapper" class="content-wrapper ">
+    <!-- top general alert -->
+    <!-- end top general alert -->
+    <div class="row">
+        <div class="col-lg-4 ">
+            <ul class="breadcrumb">
+                <li><i class="fa fa-home"></i><a href="#">Home</a></li>
+                <li><a href="/Pesquisa/Pesquisa">Pesquisa</a></li>
+            </ul>
+        </div>
+        <div class="col-lg-8 ">
+            <div class="top-content">
+                <ul class="list-inline quick-access"></ul>
+            </div>
+        </div>
+    </div>
+    <!-- main -->
+    <div class="content">
+        <form asp-controller="BSPesquisa" asp-action="eventPesquisa" class="form-horizontal" role="form" id="form">
+            <div class="main-header">
+                <h2>Pesquisa das Pessoas</h2>
+                @*<em><strong>pesquisa das pessoas</strong></em>*@
+            </div>
+            <div class="main-content">
+                <div class="search-results">
+                    <div class="input-group">
+                            <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                    checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
+                            <!-- customização - nomenclatura para pessoa-->
+                            <span>Nome</span>
+                            @*<input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                    value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR">
+                            <span>Visitante</span>*@
+                            <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                    value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PERSNO">
+                            <span>Matrícula/CPF</span>
+                            @*@if (_arvoreOpcoes.ShowDocumentSearch)
+                            {
+                                <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
+                                        value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO">
+                                <span>Documento</span>
+                            }*@
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="search-tab">
+                            <div class="input-group input-group-lg">
+                                <input type="text" id="nome" asp-for="Nome" class="form-control input-lg" placeholder="digite nome ou documento" value="" required data-parsley-range="[3,20]" />
+                                <span class="input-group-btn">
+                                    <button asp-action="eventPesquisa" asp-controller="BSPesquisa" class="btn btn-primary btn-lg" id="pesquisa"><i class="fa fa-search"></i> Pesquisar</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content">
+                <div class="main-content">
+                    <!-- SHOW HIDE COLUMNS DATA TABLE -->
+                    <div class="widget widget-table">
+                        <div class="widget-header">
+                            <h3><i class="fa fa-edit"></i> </h3> <em>Resultado da Pesquisa </em>
+                            <div class="btn-group widget-header-toolbar">
+                                <a asp-controller="CadPers" asp-action="Novo">
+                                    <input type="button" class="btn btn-primary  btn-sm" value="Novo Funcionário" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="widget-content">
+                            <table id="datatable-column-interactive" class="table table-sorting table-hover table-bordered dataTable">
+                                <thead>
+                                    <tr>
+                                        <th>Selecionar</th>
+                                        <th>Nome</th>
+                                        <th>Documento</th>
+                                    </tr>
+                                </thead>
+                                @if (Model.lstPessoa != null)
+                                {
+                                    @foreach (var person in Model.lstPessoa)
+                                    {
+                                        <tr>
+                                            <td>@Html.ActionLink("Selecionar", "Index", "BSPersons", new { persid = person.Persid })</td>
+                                            <td>@person.Nome</td>
+                                            <td>@person.Documento</td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+                    </div>
+                    <!-- END SHOW HIDE COLUMNS DATA TABLE -->
+                </div>
+            </div>
+            <!-- /main -->
+        </form>
+    </div>
+    <!-- main -->
+</div>

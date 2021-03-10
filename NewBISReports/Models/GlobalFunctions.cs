@@ -172,28 +172,43 @@ namespace NewBISReports.Models
             T obj = Activator.CreateInstance<T>();
             object objvalue = "";
 
-            foreach (DataColumn column in row.Table.Columns)
+            try
             {
-                foreach (PropertyInfo pro in temp.GetProperties())
+                foreach (DataColumn column in row.Table.Columns)
                 {
-                    if (pro.Name.ToLower() == column.ColumnName.ToLower())
+                    foreach (PropertyInfo pro in temp.GetProperties())
                     {
-                        if (row[column.ColumnName] is System.DBNull)
+                        if (pro.Name.ToLower() == column.ColumnName.ToLower())
                         {
-                            if (column.DataType == Type.GetType("System.String"))
-                                objvalue = "";
+                            if (row[column.ColumnName] is System.DBNull)
+                            {
+                                if (pro.PropertyType == Type.GetType("System.String"))
+                                    objvalue = "";
+                                else
+                                    objvalue = null;
+                            }
                             else
-                                objvalue = 0;
+                            {
+                                objvalue = row[column.ColumnName];
+                                if (pro.PropertyType == Type.GetType("System.DateTime"))
+                                {
+                                    string v = objvalue.ToString();
+                                    if (column.ColumnName == "DATEOFBIRTH")
+                                        objvalue = DateTime.Parse(String.Format("{0}/{1}/{2}", v.Substring(6, 2), v.Substring(4, 2), v.Substring(0, 4)));
+                                }
+                            }
+                            pro.SetValue(obj, objvalue, null);
                         }
                         else
-                            objvalue = row[column.ColumnName];
-                        pro.SetValue(obj, objvalue, null);
+                            continue;
                     }
-                    else
-                        continue;
                 }
+                return obj;
             }
-            return obj;
+            catch (Exception ex)
+            {
+                return obj;
+            }
         }
         #endregion
 

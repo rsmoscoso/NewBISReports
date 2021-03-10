@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HzBISCommands;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NewBISReports.Models.Classes
 {
-    public class Company
+    public class Company : BSCompaniesInfo
     {
         #region Variables
         /// <summary>
@@ -30,18 +31,18 @@ namespace NewBISReports.Models.Classes
         /// </summary>
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <returns></returns>
-        public static List<Company> GetCompanies(DatabaseContext dbcontext)
+        public static List<BSCompaniesInfo> GetCompanies(DatabaseContext dbcontext)
         {
-            List<Company> persons = new List<Company>();
+            List<BSCompaniesInfo> retval = new List<BSCompaniesInfo>();
             try
             {
                 string sql = "select CompanyID, CompanyNO, Name from bsuser.companies order by Name";
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
                     if (table != null)
-                        persons = GlobalFunctions.ConvertDataTable<Company>(table);
+                        retval = GlobalFunctions.ConvertDataTable<BSCompaniesInfo>(table);
                 }
-                return persons;
+                return retval;
             }
             catch
             {
@@ -68,6 +69,32 @@ namespace NewBISReports.Models.Classes
                         companies = GlobalFunctions.ConvertDataTable<Company>(table);
                 }
                 return companies;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Retorna a empresa da pessoa.
+        /// </summary>
+        /// <param name="dbcontext">Conexão com o banco de dados.</param>
+        /// <param name="persid">ID da pessoa.</param>
+        /// <returns></returns>
+        public static BSCompaniesInfo GetCompaniesPERSID(DatabaseContext dbcontext, string persid)
+        {
+            BSCompaniesInfo retval = new BSCompaniesInfo();
+            try
+            {
+                string sql = string.Format("select COMPANYID, COMPANYNO, NAME from bsuser.Companies where persid = '{0}'",
+                    persid);
+                using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
+                {
+                    if (table != null)
+                        retval = GlobalFunctions.ConvertDataTable<BSCompaniesInfo>(table)[0];
+                }
+                return retval;
             }
             catch
             {

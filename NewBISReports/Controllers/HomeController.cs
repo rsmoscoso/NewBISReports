@@ -698,6 +698,7 @@ namespace NewBISReports.Controllers
                                 reports.WFM[0].Empresa = tableBIS.Rows[0]["Empresa"].ToString();
                                 reports.WFM[0].EntradaBIS = tableBIS.Rows[0]["EntradaBIS"].ToString();
                                 reports.WFM[0].SaidaBIS = tableBIS.Rows[0]["SaidaBIS"].ToString();
+                                reports.WFM[0].cardno = tableBIS.Rows[0]["cardno"].ToString();
                             }
                         }
                         if (reports.WFM != null && reports.WFM.Count > 0)

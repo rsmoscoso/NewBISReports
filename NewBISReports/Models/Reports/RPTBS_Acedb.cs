@@ -287,9 +287,10 @@ namespace NewBISReports.Models.Reports
             try
             {
                 string sql = String.Format("select EntradaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHFROM), 'dd/MM/yyyy HH:mm'),  " +
-                    "SaidaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHUNTIL), 'dd/MM/yyyy HH:mm'),  Divisao = cli.NAME, Empresa = cmp.COMPANYNO " +
+                    "SaidaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHUNTIL), 'dd/MM/yyyy HH:mm'),  Divisao = cli.NAME, Empresa = cmp.COMPANYNO, cardno " +
                     "from bsuser.persons per inner join bsuser.clients cli on cli.clientid = per.clientid " +
                     "inner join bsuser.acpersons acpe on acpe.persid = per.persid left outer join bsuser.COMPANIES cmp on cmp.COMPANYID = per.COMPANYID " +
+                    "left outer join bsuser.cards cd on cd.persid = per.persid " +
                     "where persno = '{0}'", persno);
 
                 return dbcontext.LoadDatatable(dbcontext, sql);

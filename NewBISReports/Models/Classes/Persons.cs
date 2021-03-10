@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HzBISCommands;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -41,6 +42,14 @@ namespace NewBISReports.Models.Classes
         /// Documento da pessoa.
         /// </summary>
         public string Documento { get; set; }
+        /// <summary>
+        /// CPF da pessoa.
+        /// </summary>
+        public string CPF { get; set; }
+        /// <summary>
+        /// Data de aniversário.
+        /// </summary>
+        public string DataofBirth { get; set; }
         #endregion
 
         #region Functions
@@ -50,16 +59,22 @@ namespace NewBISReports.Models.Classes
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="persid">ID da pessoa.</param>
         /// <returns></returns>
-        public static List<Persons> GetPersonsPERSID(DatabaseContext dbcontext, string persid)
+        public static BSPersonsInfo GetPersonsPERSID(DatabaseContext dbcontext, string persid)
         {
-            List<Persons> persons = new List<Persons>();
+            BSPersonsInfo persons = new BSPersonsInfo();
             try
             {
-                string sql = String.Format("select Persid, Nome = firstname + ' ' + lastname from bsuser.persons where persid = '{0}'", persid);
+                string sql = String.Format("select * from bsuser.persons where persid = '{0}'", persid);
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
+                    
                     if (table != null)
-                        persons = GlobalFunctions.ConvertDataTable<Persons>(table);
+                    {
+                        persons = GlobalFunctions.ConvertDataTable<BSPersonsInfo>(table)[0];
+                        persons.NOME = String.Format("{0} {1}", persons.FIRSTNAME.Trim(), persons.LASTNAME.Trim());
+                        persons.CARDS = Cards.GetCards(dbcontext, persid);
+                        persons.AUTHORIZATIONS = Authorizations.GetAuthorizationsPERSID(dbcontext, persid);
+                    }
                 }
                 return persons;
             }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HzBISCommands;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace NewBISReports.Models.Classes
 {
-    public class Authorizations
+    public class Authorizations : BSAuthorizationInfo
     {
         #region Variables
         /// <summary>
@@ -70,6 +71,33 @@ namespace NewBISReports.Models.Classes
                         companies = GlobalFunctions.ConvertDataTable<Authorizations>(table);
                 }
                 return companies;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Retorna as autorizações das pessoa.
+        /// </summary>
+        /// <param name="dbcontext">Conexão com o banco de dados.</param>
+        /// <param name="persid">ID da pessoa.</param>
+        /// <returns></returns>
+        public static List<BSAuthorizationInfo> GetAuthorizationsPERSID(DatabaseContext dbcontext, string persid)
+        {
+            List<BSAuthorizationInfo> retval = new List<BSAuthorizationInfo>();
+            try
+            {
+                string sql = String.Format("select aper.AUTHID, SHORTNAME, VALIDFROM = CONVERT(DATE, VALIDFROM, 103), VALIDUNTIL = CONVERT(DATE, VALIDUNTIL, 103) from bsuser.persons per inner join bsuser.authperperson aper on aper.persid = per.persid " +
+                    "inner join bsuser.authorizations auth on auth.authid = aper.authid where per.persid = '{0}'", persid);
+
+                using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
+                {
+                    if (table != null)
+                        retval = GlobalFunctions.ConvertDataTable<BSAuthorizationInfo>(table);
+                }
+                return retval;
             }
             catch
             {

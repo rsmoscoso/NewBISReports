@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HzBISCommands;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace NewBISReports.Models.Classes
     /// <summary>
     /// Classe que gerencia a tabela Clients.
     /// </summary>
-    public class Clients
+    public class Clients : BSClientsInfo
     {
         #region Variables
         /// <summary>
@@ -134,6 +135,31 @@ namespace NewBISReports.Models.Classes
                 return null;
             }
         }
+
+        /// <summary>
+        /// Retorna os clientes..
+        /// </summary>
+        /// <param name="dbcontext">Conexão com o banco de dados.</param>
+        /// <returns></returns>
+        public static List<BSClientsInfo> GetAllClients(DatabaseContext dbcontext)
+        {
+            List<BSClientsInfo> retval = new List<BSClientsInfo>();
+            try
+            {
+                string sql = String.Format("select CLIENTID, DESCRIPTION, NAME from bsuser.clients order by description");
+                using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
+                {
+                    if (table != null)
+                        retval = GlobalFunctions.ConvertDataTable<BSClientsInfo>(table);
+                }
+                return retval;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// Retorna os dados do cliente.

@@ -1,0 +1,527 @@
+﻿@using NewBISReports.Models.BSPersons;
+@model NewBISReports.Models.BSPersons.BSPersonsModel
+
+@{
+    ViewData["Title"] = "Cadastro";
+
+    
+}
+
+
+<!--LINK PARA STYLESHEET DA PÁGINA-->
+<link rel="stylesheet" href="~/css/StyleSheet/StyleSheet.css" />
+
+
+<!-- MAIN CONTENT WRAPPER -->
+<div id="main-content-wrapper" class="content-wrapper ">
+
+    <!-- NavBar icons de navegação buttons-->
+    <div class="row">
+        <div class="col-md-4 ">
+            <ul class="breadcrumb">
+                <li><i class="fa fa-home"></i><a href="#">Home</a></li>
+                <li><i class="fa fa-search"></i><a asp-controller="Pesquisa" asp-action="Pesquisa">Pesquisa</a></li>
+                <li class="active">Cadastro</li>
+            </ul>
+        </div>
+    </div>
+    <!-- end t -->
+    <!-- main -->
+    <div class="content">
+        <div class="main-content">
+
+            <!--FORMULARIOS DE CADASTRO-->
+            <div class="widget">
+
+                <div class="widget-header ">
+                    <h3><i class="fa fa-edit"></i> Cadastro do Funcionário</h3>
+                </div>
+
+                <!--CAMPO DE CADASTROS-->
+                <div class="widget-content">
+                    <form asp-controller="CadPers" asp-action="Salvar" class="form-horizontal" role="form" method="post" id="advanced-form">
+                        @*<div class="row">
+                                <div class="col-sm-12">
+                                    <label>ID:</label>
+                                    <input asp-for="Pessoa.PERSID" type="text" class="form-control">
+                                </div>
+                            </div>*@
+
+                        <div class="row">
+                            <!--INICIO-CAMPO-MATRICULA-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> Matricula/RE</label>
+                                <input asp-for="Pessoa.PERSNO" type="text" id="RE" class="form-control" placeholder="Matricula/RE" maxlength="16" required="required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite a Matricula/RE Válida')">
+                            </div>
+                            <!--FIM-CAMPO-MATRICULA-->
+                            <!--INICIO CAMPO NOME-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> Nome</label>
+                                <input asp-for="Pessoa.NOME" type="text" placeholder="Nome Completo" id="NAME" class="form-control" required="required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Preencher o Nome/Sobrenome')">
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!--INICIO CAMPO GÊNERO-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> Gênero</label>
+                                <select id="selectGender" class="select2" asp-for="Pessoa.SEX" required="required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Selecione o sexo!')">
+                                    <option value=""></option>
+                                    <option value="0">Masculino</option>
+                                    <option value="1">Feminino</option>
+                                </select>
+                            </div>
+                            <!--FIM CAMPO GÊNERO-->
+                            <!--INICIO CAMPO CPF-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> CPF</label>
+                                <input asp-for="CPF" type="text" class="form-control" required="required" placeholder="CPF" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o CPF!')">
+                            </div>
+                            <!--FIM CAMPO CPF-->
+                        </div>
+
+                        <div class="row">
+                            <!--INICIO CAMPO DATA NASCIMENTO-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> Data de Nascimento</label>
+                                <input asp-for="Aniversario" type="text" id="datepicker" class="form-control" required="required" placeholder="dd/mm/aaaa" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite a data de aniversário')">
+                            </div>
+                            <!--FIM DATA NASCIMENTO-->
+                            <!--INICIO CAMPO CEP-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> CEP</label>
+                                <input id="inputCep" asp-for="Pessoa.ZIPCODE" type="number" class="form-control" required="required" placeholder="CEP" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o CEP!')" />
+                            </div>
+                            <!--FIM CAMPO CEP-->
+                        </div>
+
+                        <div class="row">
+                            <!--INICIO CAMPO ENDEREÇO-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> Endereço</label>
+                                <input asp-for="Pessoa.STREETHOUSENO" type="text" class="form-control" required="required" placeholder="Endereço" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o endereço!')" />
+                            </div>
+                            <!--FIM CAMPO ENDEREÇO-->
+                            <!--INICIO CAMPO PAÍS-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc"></span> País</label>
+                                <input asp-for="Pessoa.COUNTRY" type="text" class="form-control" placeholder="Pais" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o país!')" />
+                            </div>
+                            <!--FIM CAMPO PAÍS-->
+                        </div>
+
+                        <div class="row">
+                            <!--INICIO CAMPO ESTADO-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> UF</label>
+                                <select id="selectState" class="select2" asp-for="UF">
+                                    <option value=""></option>
+                                    <option value="AC">Acre</option>
+                                    <option value="AL">Alagoas</option>
+                                    <option value="AP">Amapá</option>
+                                    <option value="AM">Amazonas</option>
+                                    <option value="BA">Bahia</option>
+                                    <option value="CE">Ceará</option>
+                                    <option value="DF">Distrito Federal</option>
+                                    <option value="ES">Espírito Santo</option>
+                                    <option value="GO">Goiás</option>
+                                    <option value="MA">Maranhão</option>
+                                    <option value="MT">Mato Grosso</option>
+                                    <option value="MS">Mato Grosso do Sul</option>
+                                    <option value="MG">Minas Gerais</option>
+                                    <option value="PA">Pará</option>
+                                    <option value="PB">Paraíba</option>
+                                    <option value="PR">Paraná</option>
+                                    <option value="PE">Pernambuco</option>
+                                    <option value="PI">Piauí</option>
+                                    <option value="RJ">Rio de Janeiro</option>
+                                    <option value="RN">Rio Grande do Norte</option>
+                                    <option value="RS">Rio Grande do Sul</option>
+                                    <option value="RO">Rondônia</option>
+                                    <option value="RR">Roraima</option>
+                                    <option value="SC">Santa Catarina</option>
+                                    <option value="SP">São Paulo</option>
+                                    <option value="SE">Sergipe</option>
+                                    <option value="TO">Tocantins</option>
+                                    <option value="EX">Estrangeiro</option>
+                                </select>
+                            </div>
+                            <!--FIM CAMPO ESTADO-->
+                            <!--INICIO CAMPO CIDADE-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> Cidade</label>
+                                <input asp-for="Pessoa.CITY" type="text" class="form-control" required="required" placeholder="Cidade" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite a cidade!')" />
+                            </div>
+                            <!--FIM CAMPO CIDADE-->
+                        </div>
+
+                        <div class="row">
+                            <!--INICIO CAMPO TELEFONE-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> Telefone Celular</label>
+                                <input asp-for="Pessoa.PHONEMOBILE" type="text" class="form-control" required="required" placeholder="Telefone Celular" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o número do celular!')" />
+                            </div>
+                            <!--FIM CAMPO TELEFONE-->
+                            <!--INICIO CAMPO E-MAIL-->
+                            <div class="col-sm-6">
+                                <label class="control-label"><span class="red-required-asterisc">*</span>E-mail</label>
+                                <input asp-for="Pessoa.EMAIL" type="email" class="form-control" placeholder="E-mail" />
+                            </div>
+                            <!--FIM CAMPO E-MAIL-->
+                        </div>
+                        <div class="row">
+                            <!--INICIO CAMPO EMPRESA-->
+                            <div class="col-sm-6">
+                                <label class="control-label"> Empresa</label>
+                                <select id="selectInterprise" class="select2" asp-for="Pessoa.COMPANYNO">
+                                    <option></option>
+                                    @if (Model.Empresas != null)
+                                    {
+                                        @foreach (var Empresa in Model.Empresas)
+                                        {
+                                            var selected = Empresa.COMPANYID.Equals(Model.Pessoa.COMPANYID) ? "selected" : "";
+                                            @Html.Raw(String.Format("<option value=\"{0}\" {1}>{2}</option>", Empresa.COMPANYID, selected, Empresa.COMPANYNO))
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <!--FIM CAMPO EMPRESA-->
+                            <!--INICIO CAMPO DEPARTAMENTO-->
+                            <div class="col-sm-6">
+                                <label class="control-label"> Departamento</label>
+                                <input asp-for="Pessoa.DEPARTMENT" type="text" class="form-control" placeholder="Departamento" />
+                            </div>
+                            <!--FIM CAMPO DEPARTAMENTO-->
+                        </div>
+                        <div class="row">
+                            <!--INICIO-CAMPO-UNIDADE-->
+                            <div class="col-sm-6">
+                                <label class="control-label"> Unidade</label>
+                                <select id="selectUnity" class="select2" asp-for="Pessoa.CLIENTID">
+                                    @if (Model.Unidades != null)
+                                    {
+                                        @foreach (var Unidade in Model.Unidades)
+                                        {
+                                            <option value="@Unidade.CLIENTID">@Unidade.NAME</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <!--FIM-CAMPO-UNIDADE-->
+                            <!--INICIO CAMPO CARGO-->
+                            <div class="col-sm-6">
+                                <label class="control-label"> Cargo</label>
+                                <input asp-for="Pessoa.JOB" type="text" class="form-control" placeholder="Cargo">
+                            </div>
+                            <!--FIM CAMPO CAMPO CARGO-->
+                        </div>
+
+                        <!--<input asp-for="Valor" id="Valor" type="hidden" class="form-control" placeholder="" value="">-->
+                        <!--Diogo: campo exrta para passar o sitecode do cartão ao excluir-->
+                        <!--<input asp-for="ValorAuxiliar" id="ValorAuxiliar" type="hidden" class="form-control" placeholder="">-->
+                        <!-- Separando -->
+                        <div class="widget">
+
+                            <div class="widget-header">
+                                <h3><i class="fa fa-edit"></i> Cartões / Autorizações</h3>
+                            </div>
+
+                            <div class="widget-content">
+
+                                <!--INICIO CABEÇALHO CONTEUDO DINÂMICO CARTÕES/AUTORIZAÇÕES-->
+                                <ul class="nav nav-tabs nav-tabs-custom-colored" role="tablist">
+                                    <li class="active"><a href="#home" role="tab" data-toggle="tab">Cartões</a></li>
+                                    <li><a href="#profile" role="tab" data-toggle="tab">Autorizações</a></li>
+                                </ul>
+                                <!--FIM CABEÇALHO CONTEUDO DINÂMICO CARTÕES/AUTORIZAÇÕES-->
+                                <!--INICIO CONTEUDO DINÂMICO CARTÕES/AUTORIZAÇÕES-->
+                                <div class="tab-content">
+
+                                    <!--INICIO CONTEUDO DINÂMICO CARTÕES-->
+                                    <div class="tab-pane fade in active" id="home">
+
+                                        <div class="table-responsive">
+                                            <table id="tabelaCartao" class="table table-sorting table-hover table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Seleciona</th>
+                                                        <th>Site Code</th>
+                                                        <th>Card Number</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (Model.Pessoa.CARDS != null)
+                                                    {
+                                                        @foreach (var card in Model.Pessoa.CARDS)
+                                                        {
+                                                            <tr onclick="excluirCartao(this)">
+                                                                <td><a class="glyphicon glyphicon-trash"></a></td>
+                                                                <td>@card.CODEDATA</td>
+                                                                <td>@card.CARDNO</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div class="row" style="text-align: end; margin-top: 5px">
+                                            <div class="col-md-12">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mdCartao" @(Model.Operacao.ToString() == "Novo" ? "disabled='disabled'" : "")><i class="fa fa-plus-square"></i> Adicionar </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--INICIO CONTEUDO DINÂMICO CARTÕES-->
+                                    <!--INICIO CONTEUDO DINÂMICO AUTORIZAÇÕES-->
+                                    <div class="tab-pane fade" id="profile">
+                                        <div class="table-responsive">
+                                            <table id="tabelaAutorizacao" class="table table-sorting table-hover table-bordered datatable">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Excluir</th>
+                                                        <th>Autorizacao</th>
+                                                        <th>Data Inicio</th>
+                                                        <th>Data Fim</th>
+                                                    </tr>
+                                                </thead>
+                                                @if (Model.Pessoa.AUTHORIZATIONS != null)
+                                                {
+                                                    @foreach (var auto in Model.Pessoa.AUTHORIZATIONS)
+                                                    {
+                                                        <tr onclick="excluirAuto(this)">
+                                                            <td>
+                                                                <a class="glyphicon glyphicon-trash"></a>
+                                                            </td>
+                                                            <td>@auto.SHORTNAME</td>
+                                                            <td>@(auto.VALIDFROM.HasValue ? auto.VALIDFROM.Value.ToShortDateString() : null)</td>
+                                                            <td>@(auto.VALIDUNTIL.HasValue ? auto.VALIDUNTIL.Value.ToShortDateString() : null)</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </table>
+                                        </div>
+                                        <div class="row" style="text-align: end; margin-top: 5px">
+                                            <div class="col-md-12">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mdAutorizacao" @(Model.Operacao.ToString() == "Novo" ? "disabled='disabled'" : "")><i class="fa fa-check-square-o"></i>Autorizar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--INICIO CONTEUDO DINÂMICO CARTÕES-->
+
+                                </div>
+                                <!--FIM CONTEUDO DINÂMICO CARTÕES/AUTORIZAÇÕES-->
+                                <!--INICIO-BOTÕES-DE-ACTION-->
+                                <div style="text-align: end">
+                                    <button type="submit" class="btn btn-primary btn-sm" value="@BSPersonsModel._Operacao.Salvar" name="opcao" id="salva"><i class="fa fa-check"></i>Salvar</button>
+                                    <a asp-controller="CadPers" asp-action="Novo" class="btn btn-primary btn-sm"><i class="fa fa fa-file"></i>Novo</a>
+                                    <a asp-controller="Pesquisa" asp-action="Pesquisa" class="btn btn-primary btn-sm"><i class="fa fa-search"></i>Pesquisar</a>
+                                </div>
+                                <!--FIM-BOTÕES-DE-ACTION-->
+                            </div>
+                        </div>
+                        <!-- END WIDGET WIZARD -->
+                        <!--Modal de exclusão de autorizãção-->
+                        <div class="modal fade" id="mdExcluirAutorizacao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modal-sm" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">Confirmar a exclusão</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        Tem certeza que deseja excluir esta Autorização? <span class="description"></span>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                                        <button id="excluiCartao" type="submit" class="btn btn-danger" value="@BSPersonsModel._Operacao.ExcluirAutorizacao" name="opcao">Excluir</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--Modal de exclusão de cartão-->
+                        <div class="modal fade" id="mdExcluirCartao" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                            <div class="modal-dialog modal-sm" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">Confirmar a exclusão</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        Tem certeza que deseja excluir este Cartão? <span class="description"></span>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                                        <button type="submit" class="btn btn-danger" value="@BSPersonsModel._Operacao.ExcluirCartao" name="opcao" onclick="exlcuir">Excluir</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--modal de autorização-->
+                        <div class="modal fade" id="mdAutorizacao" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Adcionar uma Autorização</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="widget">
+                                            <div class="widget-content">
+                                                <div class="form-group">
+                                                    <label for="cmdPerfil">Perfil</label>
+                                                    <select class="select2" asp-for="Perfil.PROFILEID" id="cmdPerfil">
+                                                        <option value=""></option>
+                                                        @if (Model.Perfis != null)
+                                                        {
+                                                            @foreach (var Perf in Model.Perfis)
+                                                            {
+                                                                <option value="@Perf.PROFILEID">@Perf.SHORTNAME</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="autoPerfil">Autorizações</label>
+                                                    <select id="autoPerfil" class="select2" multiple="multiple" asp-for="SelectedAutorizacao"></select>
+
+
+                                                    @*<select id="autoPerfil" class="select2" multiple="multiple" asp-for="SelectedAutorizacao" asp-items="@Model.AutorizacaoPessoa"></select>*@
+                                                    @*<select class="select2" multiple="multiple" asp-for="Perfil.PROFILEID" id="cmdAutoPerfil">
+                                                            <option value=""></option>
+                                                            @foreach (var Autf in Model.autoPessoasLst)
+                                                            {
+                                                                <option value="@Autf.AUTHID">@Autf.SHORTNAME</option>
+                                                            }
+                                                        </select>*@
+                                                </div>
+                                                <div class="invoice-buttons">
+                                                    <button class="btn btn-custom-primary btn-sm" onclick="clearAllAutoPerfil()">Limpar</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="widget">
+                                            <div class="widget-header">
+                                                <label><h4>Validade do Cartão</h4></label>
+                                            </div>
+                                            <div class="widget-content">
+                                                <div class="row">
+                                                    <div class="form-group col-sm-6">
+                                                        <label for="text-input4">De </label>
+                                                        <div class="input-group date" id="datapickerFrom">
+                                                            <span class="input-group-addon">
+                                                                <span class="fa fa-calendar"></span>
+                                                            </span>
+                                                            <input asp-for="AutorizacaoNova.VALIDFROM" type="text" id="datepicker" class="form-control" placeholder="dd/mm/yyyy">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-sm-6">
+                                                        <label for="text-input4">Até </label>
+                                                        <div class="input-group date" id="datapickerTo">
+                                                            <span class="input-group-addon">
+                                                                <span class="fa fa-calendar"></span>
+                                                            </span>
+                                                            <input asp-for="AutorizacaoNova.VALIDUNTIL" type="text" id="datepicker" class="form-control" placeholder="dd/mm/yyyy">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary" name="opcao" value="@BSPersonsModel._Operacao.AddAutorizacao" id="addauto"><i class="fa fa-qrcode"></i>Salvar</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--modal de adiconar cartão-->
+                        <div class="modal fade" id="mdCartao" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <h4 class="modal-title">Adicionar um novo Cartão</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="widget">
+                                            <div class="widget-header">
+                                                <label><h4>Code e Número do Cartão</h4></label>
+                                            </div>
+                                            <div class="widget-content">
+                                                <div class="form-group">
+                                                    <div class="form-group">
+                                                        <label>Site Code</label>
+                                                        <input asp-for="CartaoNovo.CODEDATA" type="number" id="CardNumber" class="form-control">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>Número do Cartão</label>
+                                                        <input asp-for="CartaoNovo.CARDNO" type="number" id="SiteCode" class="form-control">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary" value="@BSPersonsModel._Operacao.AddCartao" name="opcao" id="addcard"><i class="fa fa-qrcode"></i>Salvar</button>
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript 1 -->
+    <script src="~/KingAdmin/assets/js/jquery/jquery-2.1.0.min.js"></script>
+    <script src="~/KingAdmin/assets/js/bootstrap/bootstrap.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/modernizr/modernizr.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <script src="~/KingAdmin/assets/js/king-common.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/stat/jquery.easypiechart.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/raphael/raphael-2.1.0.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.resize.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.time.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.pie.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/stat/flot/jquery.flot.tooltip.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/jquery-sparkline/jquery.sparkline.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/datatable/jquery.dataTables.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/datatable/dataTables.bootstrap.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/jquery-mapael/jquery.mapael.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/raphael/maps/usa_states.js"></script>
+    <script src="~/KingAdmin/assets/js/king-chart-stat.js"></script>
+    <script src="~/KingAdmin/assets/js/king-table.js"></script>
+    <script src="~/KingAdmin/assets/js/king-components.js"></script>
+
+    <!-- Javascript 2 -->
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-switch/bootstrap-switch.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/jquery-maskedinput/jquery.masked-input.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+    <script src="~/KingAdmin/assets/js/jquery-ui/jquery-ui-1.10.4.custom.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/jqallrangesliders/jQAllRangeSliders-min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-colorpicker/bootstrap-colorpicker.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/jquery-simplecolorpicker/jquery.simplecolorpicker.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/moment/moment.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-slider/bootstrap-slider.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
+    <script src="~/KingAdmin/assets/js/plugins/bootstrap-tagsinput/bootstrap-tagsinput.min.js"></script>
+    <script src="~/KingAdmin/assets/js/king-elements.js"></script>
+
+    <script src="~/Responsive-jQuery-Dual-Select-Boxes-For-Bootstrap-Bootstrap-Dual-Listbox/src/jquery.bootstrap-duallistbox.js"></script>
+
+    <!--JAVASCRIPT DA APLICAÇÃO-->
+    <script src="~/js/CadPers.js"></script>

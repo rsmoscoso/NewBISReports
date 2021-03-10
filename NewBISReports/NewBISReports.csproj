@@ -35,8 +35,11 @@
 
 
   <ItemGroup>
+    <Reference Include="HzBISACELib">
+      <HintPath>..\..\HzBISACELib\HzBISACELib\HzBISACELib\bin\Debug\HzBISACELib.dll</HintPath>
+    </Reference>
     <Reference Include="HzBISCommands">
-      <HintPath>..\HzBISCommands\HzBISCommands.dll</HintPath>
+      <HintPath>..\..\HzBISCommands\HzBISCommands\bin\Debug\HzBISCommands.dll</HintPath>
     </Reference>
   </ItemGroup>
 

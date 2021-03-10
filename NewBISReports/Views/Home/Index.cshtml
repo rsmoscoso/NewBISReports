@@ -338,6 +338,7 @@
                                             <label class="control-inline">
                                                 @*Assumindo que para bilhetagem e QRCODE só se aplica a visitantes*@
                                                 @if (type != REPORTTYPE.RPT_LOGQRCODE)
+
                                                 {
                                                     <input type="radio" asp-for="SearchPersonsType" name="SearchPersonsType"
                                                         checked value="@NewBISReports.Models.SEARCHPERSONS.SEARCHPERSONS_NAME">
