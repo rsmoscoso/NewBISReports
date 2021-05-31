@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static NewBISReports.Models.Classes.LogEvent;
+using HzBISCommands;
 
 namespace NewBISReports.Models.Reports
 {
@@ -82,7 +83,7 @@ namespace NewBISReports.Models.Reports
                     Clients cli = new Clients();
                     if (!String.IsNullOrEmpty(reports.CLIENTID) && reports.CLIENTID != "0")
                     {
-                        cli = Clients.GetClientsClass(dbcontextACE, reports.CLIENTID);
+                        cli = (Clients)Clients.GetClientsClass(dbcontextACE, reports.CLIENTID);
                         clientexternalid = cli.ExternID;
                     }
                 }

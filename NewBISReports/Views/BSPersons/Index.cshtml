@@ -39,7 +39,8 @@
 
                 <!--CAMPO DE CADASTROS-->
                 <div class="widget-content">
-                    <form asp-controller="CadPers" asp-action="Salvar" class="form-horizontal" role="form" method="post" id="advanced-form">
+                    <form asp-controller="BSPersons" asp-action="Salvar" class="form-horizontal" role="form" method="post" id="advanced-form">
+                        <input type="hidden" asp-for="Pessoa.PERSID" id="PERSID" />
                         @*<div class="row">
                                 <div class="col-sm-12">
                                     <label>ID:</label>
@@ -49,21 +50,28 @@
 
                         <div class="row">
                             <!--INICIO-CAMPO-MATRICULA-->
-                            <div class="col-sm-6">
+                            <div class="col-sm-3">
                                 <label class="control-label"><span class="red-required-asterisc">*</span> Matricula/RE</label>
                                 <input asp-for="Pessoa.PERSNO" type="text" id="RE" class="form-control" placeholder="Matricula/RE" maxlength="16" required="required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite a Matricula/RE Válida')">
                             </div>
                             <!--FIM-CAMPO-MATRICULA-->
+                            <!--INICIO CAMPO CPF-->
+                            <div class="col-sm-3">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> CPF</label>
+                                <input asp-for="CPF" type="text" class="form-control" required="required" placeholder="CPF" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o CPF!')">
+                            </div>
+                            <!--FIM CAMPO CPF-->
                             <!--INICIO CAMPO NOME-->
                             <div class="col-sm-6">
                                 <label class="control-label"><span class="red-required-asterisc">*</span> Nome</label>
                                 <input asp-for="Pessoa.NOME" type="text" placeholder="Nome Completo" id="NAME" class="form-control" required="required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Preencher o Nome/Sobrenome')">
                             </div>
-                        </div>
+                            <!-- FIM CAMPO NOME-->
+                         </div>
 
                         <div class="row">
                             <!--INICIO CAMPO GÊNERO-->
-                            <div class="col-sm-6">
+                            <div class="col-sm-3">
                                 <label class="control-label"><span class="red-required-asterisc">*</span> Gênero</label>
                                 <select id="selectGender" class="select2" asp-for="Pessoa.SEX" required="required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Selecione o sexo!')">
                                     <option value=""></option>
@@ -72,38 +80,78 @@
                                 </select>
                             </div>
                             <!--FIM CAMPO GÊNERO-->
-                            <!--INICIO CAMPO CPF-->
-                            <div class="col-sm-6">
-                                <label class="control-label"><span class="red-required-asterisc">*</span> CPF</label>
-                                <input asp-for="CPF" type="text" class="form-control" required="required" placeholder="CPF" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o CPF!')">
+                            <!--INICIO-CAMPO-TIPO PESSOA-->
+                            <div class="col-sm-3">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> Tipo</label>
+                                <select id="selectPersClasses" class="select2" asp-for="Pessoa.PERSCLASSID">
+                                    <option></option>
+                                    @if (Model.PersClasses != null)
+                                    {
+                                        @foreach (var persclass in Model.PersClasses)
+                                        {
+                                            var selected = persclass.PERSCLASSID.Equals(Model.Pessoa.PERSCLASSID) ? "selected" : "";
+                                            @Html.Raw(String.Format("<option value=\"{0}\" {1}>{2}</option>", persclass.PERSCLASSID, selected, persclass.DISPLAYTEXTCUSTOMER))
+                                        }
+                                    }
+                                </select>
                             </div>
-                            <!--FIM CAMPO CPF-->
-                        </div>
-
-                        <div class="row">
+                            <!--FIM-CAMPO-TIPO PESSOA-->
                             <!--INICIO CAMPO DATA NASCIMENTO-->
-                            <div class="col-sm-6">
+                            <div class="col-sm-3">
                                 <label class="control-label"><span class="red-required-asterisc">*</span> Data de Nascimento</label>
                                 <input asp-for="Aniversario" type="text" id="datepicker" class="form-control" required="required" placeholder="dd/mm/aaaa" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite a data de aniversário')">
                             </div>
                             <!--FIM DATA NASCIMENTO-->
-                            <!--INICIO CAMPO CEP-->
-                            <div class="col-sm-6">
-                                <label class="control-label"><span class="red-required-asterisc">*</span> CEP</label>
-                                <input id="inputCep" asp-for="Pessoa.ZIPCODE" type="number" class="form-control" required="required" placeholder="CEP" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o CEP!')" />
-                            </div>
-                            <!--FIM CAMPO CEP-->
                         </div>
 
                         <div class="row">
-                            <!--INICIO CAMPO ENDEREÇO-->
+                            <!--INICIO CAMPO EMPRESA-->
                             <div class="col-sm-6">
+                                <label class="control-label"> Empresa</label>
+                                <select id="selectInterprise" class="select2" asp-for="Pessoa.COMPANYNO">
+                                    <option></option>
+                                    @if (Model.Empresas != null)
+                                    {
+                                        @foreach (var Empresa in Model.Empresas)
+                                        {
+                                            var selected = Empresa.COMPANYID.Equals(Model.Pessoa.COMPANYID) ? "selected" : "";
+                                            @Html.Raw(String.Format("<option value=\"{0}\" {1}>{2}</option>", Empresa.COMPANYID, selected, Empresa.COMPANYNO))
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <!--FIM CAMPO EMPRESA-->
+                            <!--INICIO-CAMPO-UNIDADE-->
+                            <div class="col-sm-6">
+                                <label class="control-label"> Unidade</label>
+                                <select id="selectUnity" class="select2" asp-for="Pessoa.CLIENTID">
+                                    @if (Model.Unidades != null)
+                                    {
+                                        @foreach (var Unidade in Model.Unidades)
+                                        {
+                                            <option value="@Unidade.CLIENTID">@Unidade.NAME</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <!--FIM-CAMPO-UNIDADE-->
+                        </div>
+
+                        <div class="row">
+                            <!--INICIO CAMPO CEP-->
+                            <div class="col-sm-4">
+                                <label class="control-label"><span class="red-required-asterisc">*</span> CEP</label>
+                                <input asp-for="Pessoa.ZIPCODE" type="text" placeholder="CEP" id="NAME" class="form-control" required="required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Preencher o CEP')">
+                            </div>
+                            <!--FIM CAMPO CEP-->
+                            <!--INICIO CAMPO ENDEREÇO-->
+                            <div class="col-sm-4">
                                 <label class="control-label"><span class="red-required-asterisc">*</span> Endereço</label>
                                 <input asp-for="Pessoa.STREETHOUSENO" type="text" class="form-control" required="required" placeholder="Endereço" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o endereço!')" />
                             </div>
                             <!--FIM CAMPO ENDEREÇO-->
                             <!--INICIO CAMPO PAÍS-->
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <label class="control-label"><span class="red-required-asterisc"></span> País</label>
                                 <input asp-for="Pessoa.COUNTRY" type="text" class="form-control" placeholder="Pais" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite o país!')" />
                             </div>
@@ -170,44 +218,12 @@
                             <!--FIM CAMPO E-MAIL-->
                         </div>
                         <div class="row">
-                            <!--INICIO CAMPO EMPRESA-->
-                            <div class="col-sm-6">
-                                <label class="control-label"> Empresa</label>
-                                <select id="selectInterprise" class="select2" asp-for="Pessoa.COMPANYNO">
-                                    <option></option>
-                                    @if (Model.Empresas != null)
-                                    {
-                                        @foreach (var Empresa in Model.Empresas)
-                                        {
-                                            var selected = Empresa.COMPANYID.Equals(Model.Pessoa.COMPANYID) ? "selected" : "";
-                                            @Html.Raw(String.Format("<option value=\"{0}\" {1}>{2}</option>", Empresa.COMPANYID, selected, Empresa.COMPANYNO))
-                                        }
-                                    }
-                                </select>
-                            </div>
-                            <!--FIM CAMPO EMPRESA-->
                             <!--INICIO CAMPO DEPARTAMENTO-->
                             <div class="col-sm-6">
                                 <label class="control-label"> Departamento</label>
                                 <input asp-for="Pessoa.DEPARTMENT" type="text" class="form-control" placeholder="Departamento" />
                             </div>
                             <!--FIM CAMPO DEPARTAMENTO-->
-                        </div>
-                        <div class="row">
-                            <!--INICIO-CAMPO-UNIDADE-->
-                            <div class="col-sm-6">
-                                <label class="control-label"> Unidade</label>
-                                <select id="selectUnity" class="select2" asp-for="Pessoa.CLIENTID">
-                                    @if (Model.Unidades != null)
-                                    {
-                                        @foreach (var Unidade in Model.Unidades)
-                                        {
-                                            <option value="@Unidade.CLIENTID">@Unidade.NAME</option>
-                                        }
-                                    }
-                                </select>
-                            </div>
-                            <!--FIM-CAMPO-UNIDADE-->
                             <!--INICIO CAMPO CARGO-->
                             <div class="col-sm-6">
                                 <label class="control-label"> Cargo</label>
@@ -312,8 +328,8 @@
                                 <!--INICIO-BOTÕES-DE-ACTION-->
                                 <div style="text-align: end">
                                     <button type="submit" class="btn btn-primary btn-sm" value="@BSPersonsModel._Operacao.Salvar" name="opcao" id="salva"><i class="fa fa-check"></i>Salvar</button>
-                                    <a asp-controller="CadPers" asp-action="Novo" class="btn btn-primary btn-sm"><i class="fa fa fa-file"></i>Novo</a>
-                                    <a asp-controller="Pesquisa" asp-action="Pesquisa" class="btn btn-primary btn-sm"><i class="fa fa-search"></i>Pesquisar</a>
+                                    <a asp-controller="BSPersons" asp-action="Novo" class="btn btn-primary btn-sm"><i class="fa fa fa-file"></i>Novo</a>
+                                    <a asp-controller="BSPesquisa" asp-action="Pesquisa" class="btn btn-primary btn-sm"><i class="fa fa-search"></i>Pesquisar</a>
                                 </div>
                                 <!--FIM-BOTÕES-DE-ACTION-->
                             </div>

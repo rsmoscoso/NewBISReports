@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace NewBISReports.Services
 {
@@ -123,8 +124,17 @@ namespace NewBISReports.Services
         //Métodos POST
         public async Task<string> SavePerson(BSPersonsInfo person)
         {
+            //string response;
+            //using (var client = new HttpClient())
+            //{
+            //    //client.BaseAddress = new Uri("http://172.16.0.99:9090/");
+            //    client.BaseAddress = new Uri("http://localhost:11315/");
+            //    HttpResponseMessage responsePost = await client.PostAsync("/api/BSPersons/SavePersons/", new StringContent(JsonConvert.SerializeObject(person), Encoding.UTF8, "application/json"));
+            //    response = await responsePost.Content.ReadAsStringAsync();
+            //}
+
             //Salva um pessoa no BIS (Nova ou existente fazendo atualização dos dados)
-            var retorno = await _apiClientBase.PostAsync<BSPersonsInfo>(_client, "/api/BSPersons/SavePersons/",null,person);
+            var retorno = await _apiClientBase.PostAsync<BSPersonsInfo>(_client, "/api/BSPersons/SavePersons/", null, person);
             return retorno;
         }
         public async Task<string> AddPersonsCard(BSPersonsCard card)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,6 +37,10 @@ namespace NewBISReports.Models.Excecao
         /// Tipo da pesquisa das pessoas.
         /// </summary>
         public SEARCHPERSONS SearchPersonsType { get; set; }
+        /// <summary>
+        /// Nome do arquivo com a formatação para importação.
+        /// </summary>
+        public string FileName { get; set; }
         #endregion
     }
 }

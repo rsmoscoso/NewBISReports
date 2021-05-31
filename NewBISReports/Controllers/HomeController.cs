@@ -17,6 +17,7 @@ using static NewBISReports.Models.Classes.LogEvent;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.AspNetCore.Authorization;
+using HzBISCommands;
 
 namespace NewBISReports.Controllers
 {
@@ -50,7 +51,7 @@ namespace NewBISReports.Controllers
         /// <summary>
         /// Coleção das empresas.
         /// </summary>
-        public List<Company> companies { get; set; }
+        public List<BSCompaniesInfo> companies { get; set; }
         /// <summary>
         /// Coleção das autorizações.
         /// </summary>
@@ -107,7 +108,7 @@ namespace NewBISReports.Controllers
                 {
                     //deve-se montar a opção todos toda vez
                     var _clients = Clients.GetClients(this.contextACE);
-                    _clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
+                    _clients.Insert(0, new Clients { CLIENTID = "", DESCRIPTION = "TODOS" });
                     ViewBag.Clients = _clients;
                 }
 
@@ -126,16 +127,16 @@ namespace NewBISReports.Controllers
                 else
                     ViewBag.Authorizations = Authorizations.GetAuthorizations(this.contextACE, null);
 
-                if (TempData["Company"] != null)
-                    ViewBag.Company = JsonConvert.DeserializeObject(TempData["Company"].ToString());
-                else
-                    ViewBag.Company = Company.GetCompanies(this.contextACE);
+                //if (TempData["Company"] != null)
+                //    ViewBag.Company = JsonConvert.DeserializeObject(TempData["Company"].ToString());
+                //else
+                //    ViewBag.Company = Company.GetCompanies(this.contextACE);
 
                 if (TempData["Persons"] != null)
                     ViewBag.Persons = JsonConvert.DeserializeObject(TempData["Persons"].ToString());
 
-                if (TempData["Company"] != null)
-                    ViewBag.Company = JsonConvert.DeserializeObject(TempData["Company"].ToString());
+                //if (TempData["Company"] != null)
+                //    ViewBag.Company = JsonConvert.DeserializeObject(TempData["Company"].ToString());
 
                 if (TempData["Persclassid"] != null)
                     ViewBag.Persclassid = JsonConvert.DeserializeObject(TempData["Persclassid"].ToString());
@@ -203,16 +204,12 @@ namespace NewBISReports.Controllers
         {
             try
             {
-                var companies = new List<Company>();
+                var companies = new List<BSCompaniesInfo>();
 
                 if (model.COMPANYNOSEARCH != null)
-                    companies = Company.GetCompanies(this.contextACE, model.COMPANYNOSEARCH);
+                    model.Companies = Company.GetCompanies(this.contextACE, model.COMPANYNOSEARCH);
 
                 ModelState["COMPANYNOSEARCH"].RawValue = "";
-
-                ViewBag.Companies = companies;
-                TempData["Company"] = JsonConvert.SerializeObject(ViewBag.Companies);
-                TempData.Keep();
 
                 this.persisTempData();
                 //diogo se não colocar o type, ele sempre vai pular para o relatorio padrão
@@ -221,12 +218,6 @@ namespace NewBISReports.Controllers
             }
             catch (Exception ex)
             {
-                StreamWriter w = new StreamWriter("erro.txt", true);
-                w.WriteLine(ex.Message + " --> searchcompanies");
-                w.Close();
-                w = null;
-
-                // return View("Index");
                 return RedirectToAction(nameof(Index), new { type = model.Type, mensagemErro = ex.Message });
             }
         }
@@ -375,7 +366,7 @@ namespace NewBISReports.Controllers
             try
             {
                 LOGEVENT_VALUETYPE evtType = LOGEVENT_VALUETYPE.LOGEVENTVALUETYPE_PERSID;
-                Clients cli = new Clients();
+                BSClientsInfo cli = new BSClientsInfo();
                 string[] devices = null;
                 if (!String.IsNullOrEmpty(reports.CLIENTID) && reports.CLIENTID != "0")
                     cli = Clients.GetClientsClass(this.contextACE, reports.CLIENTID);
@@ -389,8 +380,9 @@ namespace NewBISReports.Controllers
                 if (String.IsNullOrEmpty(addresstagsufix))
                     addresstagprefix = ".Evento";
                 //Diogo - A data agora já vem formatada do frontend com hora minuto                
-                return _rptsAnalytics.GetEventsBosch(this.contextBIS, this.contextACE, reports.StartDate + ":00", reports.EndDate + ":59", LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
-                    evtType, "", cli.Name, reports.CompanyNO, reports.DEVICEID, devices, reports.PERSCLASSID,
+                return _rptsAnalytics.GetEventsBosch(this.contextBIS, this.contextACE, String.Format("{0} {1}", reports.StartDate, reports.StartDate.Length <= 10 ? "00:00:00" : ":00"),
+                    String.Format("{0} {1}", reports.EndDate, reports.EndDate.Length <= 10 ? "23:59:59" : ":59"), LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
+                    evtType, "", cli.NAME, reports.CompanyNO, reports.DEVICEID, devices, reports.PERSCLASSID,
                     String.IsNullOrEmpty(reports.LISTPERSONS) ? (reports.SearchPersonsType == SEARCHPERSONS.SEARCHPERSONS_CARD ? reports.NAMESEARCH : reports.PERSNO) : reports.LISTPERSONS, meal, reports,
                     this.config.TagBISServer, addresstagprefix, addresstagsufix, reports.AccessType);
 
@@ -481,6 +473,66 @@ namespace NewBISReports.Controllers
             }
         }
 
+        public HomeModel ChangeClient(HomeModel reports)
+        {
+            try
+            {
+                reports.Type = REPORTTYPE.RPT_INTEGRACAOWFMBIS;
+                if (reports.USERRE.Equals("9090") && reports.USERPASSWORD.Equals("femsa2021") && !String.IsNullOrEmpty(reports.PERSID))
+                {
+                    this.contextACE.LoadDatatable(this.contextACE, String.Format("update bsuser.persons set clientid = '{0}' where persid = '{1}'",
+                        reports.CLIENTID, reports.PERSID));
+
+                    using (System.Data.DataTable table = _rptsAcedb.LoadWFM(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO))
+                    {
+                        reports.Clients = Clients.GetClients(this.contextACE);
+                        reports.WFM = GlobalFunctions.ConvertDataTable<IntegracaoWFMBIS>(table);
+                        DataTable tableWFM = _rptsAcedb.LoadWFMSit(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO);
+                        if (reports.WFM != null && reports.WFM.Count > 0)
+                        {
+                            if (tableWFM != null && tableWFM.Rows.Count > 0)
+                            {
+                                reports.WFM[0].Data = tableWFM.Rows[0]["Data"].ToString();
+                                reports.WFM[0].status = tableWFM.Rows[0]["status"].ToString();
+                                reports.WFM[0].Situacao = tableWFM.Rows[0]["Situacao"].ToString();
+                                reports.WFM[0].Descricao = tableWFM.Rows[0]["Descricao"].ToString();
+                                reports.WFM[0].Entrada = tableWFM.Rows[0]["Entrada"].ToString();
+                            }
+                            else
+                            {
+                                reports.WFM[0].Data = DateTime.Parse(reports.StartDate).ToString("dd/MM/yyyy");
+                                reports.WFM[0].status = "Não há status!";
+                                reports.WFM[0].Situacao = "Não há situação!";
+                                reports.WFM[0].Descricao = "Não há descrição da situação!";
+                                reports.WFM[0].Entrada = "Não há acesso para essa data!";
+                            }
+                        }
+
+                        DataTable tableBIS = _rptsAcedb.LoadBIS(this.contextACE, reports.PERSNO);
+                        if (reports.WFM != null && reports.WFM.Count > 0)
+                        {
+                            if (tableBIS != null && tableBIS.Rows.Count > 0)
+                            {
+                                reports.CLIENTID = tableBIS.Rows[0]["clientid"].ToString();
+                                reports.PERSID = tableBIS.Rows[0]["persid"].ToString();
+
+                                reports.WFM[0].Divisao = tableBIS.Rows[0]["Divisao"].ToString();
+                                reports.WFM[0].Empresa = tableBIS.Rows[0]["Empresa"].ToString();
+                                reports.WFM[0].EntradaBIS = tableBIS.Rows[0]["EntradaBIS"].ToString();
+                                reports.WFM[0].SaidaBIS = tableBIS.Rows[0]["SaidaBIS"].ToString();
+                                reports.WFM[0].cardno = tableBIS.Rows[0]["cardno"].ToString();
+                            }
+                        }
+                    }
+                }
+
+                return reports;
+            }
+            catch
+            {
+                return reports;
+            }
+        }
         /// <summary>
         /// Executa a pesquisa dos eventos para uma planilha Excel.
         /// </summary>
@@ -665,10 +717,19 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
                 {
+                    //if (!String.IsNullOrEmpty(reports.USERRE) && !String.IsNullOrEmpty(reports.USERPASSWORD))
+                    //{
+                    //    reports = this.ChangeClient(reports);
+                    //    this.persisTempData();
+                    //    ViewBag.Type = reports.Type;
+                    //    return View("Index", reports);
+
+                    //}
                     using (System.Data.DataTable table = _rptsAcedb.LoadWFM(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO))
                     {
+                        reports.Clients = Clients.GetClients(this.contextACE);
                         reports.WFM = GlobalFunctions.ConvertDataTable<IntegracaoWFMBIS>(table);
-                        DataTable tableWFM = _rptsAcedb.LoadWFMSit(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO);
+                        DataTable tableWFM = _rptsAcedb.LoadWFMSit(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToShortDateString(), reports.PERSNO);
                         if (reports.WFM != null && reports.WFM.Count > 0)
                         {
                             if (tableWFM != null && tableWFM.Rows.Count > 0)
@@ -694,6 +755,9 @@ namespace NewBISReports.Controllers
                         {
                             if (tableBIS != null && tableBIS.Rows.Count > 0)
                             {
+                                reports.CLIENTID = tableBIS.Rows[0]["clientid"].ToString();
+                                reports.PERSID = tableBIS.Rows[0]["persid"].ToString();
+
                                 reports.WFM[0].Divisao = tableBIS.Rows[0]["Divisao"].ToString();
                                 reports.WFM[0].Empresa = tableBIS.Rows[0]["Empresa"].ToString();
                                 reports.WFM[0].EntradaBIS = tableBIS.Rows[0]["EntradaBIS"].ToString();
@@ -703,6 +767,8 @@ namespace NewBISReports.Controllers
                         }
                         if (reports.WFM != null && reports.WFM.Count > 0)
                         {
+                            reports.USERPASSWORD = null;
+                            reports.USERRE = null;
                             this.persisTempData();
                             ViewBag.Type = reports.Type;
                             return View("Index", reports);
@@ -806,7 +872,7 @@ namespace NewBISReports.Controllers
                     if (type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
                         return View(new HomeModel() { StartDate = DateTime.Now.ToShortDateString() });
                     else
-                        return View();
+                        return View(new HomeModel() { Type = type});
                 }
 
             }

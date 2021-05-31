@@ -56,7 +56,9 @@ namespace NewBISReports.Services
         }
         private HttpContent CreateHttpContent<T>(T content)
         {
-            var json = JsonConvert.SerializeObject(content, MicrosoftDateFormatSettings);
+            //Diogo - Provavelmente InfraSpeak
+            //var json = JsonConvert.SerializeObject(content, MicrosoftDateFormatSettings);
+            var json = JsonConvert.SerializeObject(content);
             return new StringContent(json, Encoding.UTF8, "application/json");
         }
         private static JsonSerializerSettings MicrosoftDateFormatSettings

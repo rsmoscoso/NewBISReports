@@ -13,22 +13,7 @@ namespace NewBISReports.Models.Classes
     public class Clients : BSClientsInfo
     {
         #region Variables
-        /// <summary>
-        /// ID do cliente.
-        /// </summary>
-        public string CLIENTID { get; set; }
-        /// <summary>
-        /// Nome do cliente.
-        /// </summary>
-        public string Description { get; set; }
-        /// <summary>
-        /// ID extero do cliente.
-        /// </summary>
         public string ExternID { get; set; }
-        /// <summary>
-        /// Nome do cliente.
-        /// </summary>
-        public string Name { get; set; }
         #endregion
 
 
@@ -93,18 +78,18 @@ namespace NewBISReports.Models.Classes
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="description">Nome do cliente para pesquisa.</param>
         /// <returns></returns>
-        public static List<Clients> GetClients(DatabaseContext dbcontext, string description)
+        public static List<BSClientsInfo> GetClients(DatabaseContext dbcontext, string description)
         {
-            List<Clients> persons = new List<Clients>();
+            List<BSClientsInfo> retval = new List<BSClientsInfo>();
             try
             {
-                string sql = String.Format("select CLIENTID, Description from bsuser.clients where description like '%{0}%' order by description", description);
+                string sql = String.Format("select CLIENTID, DESCRIPTION from bsuser.clients where description like '%{0}%' order by description", description);
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
                     if (table != null)
-                        persons = GlobalFunctions.ConvertDataTable<Clients>(table);
+                        retval = GlobalFunctions.ConvertDataTable<BSClientsInfo>(table);
                 }
-                return persons;
+                return retval;
             }
             catch
             {
@@ -117,18 +102,18 @@ namespace NewBISReports.Models.Classes
         /// </summary>
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <returns></returns>
-        public static List<Clients> GetClients(DatabaseContext dbcontext)
+        public static List<BSClientsInfo> BSClientsInfo(DatabaseContext dbcontext)
         {
-            List<Clients> persons = new List<Clients>();
+            List<BSClientsInfo> retval = new List<BSClientsInfo>();
             try
             {
                 string sql = String.Format("select CLIENTID, Description from bsuser.clients order by description");
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
                     if (table != null)
-                        persons = GlobalFunctions.ConvertDataTable<Clients>(table);
+                        retval = GlobalFunctions.ConvertDataTable<BSClientsInfo>(table);
                 }
-                return persons;
+                return retval;
             }
             catch
             {
@@ -141,7 +126,7 @@ namespace NewBISReports.Models.Classes
         /// </summary>
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <returns></returns>
-        public static List<BSClientsInfo> GetAllClients(DatabaseContext dbcontext)
+        public static List<BSClientsInfo> GetClients(DatabaseContext dbcontext)
         {
             List<BSClientsInfo> retval = new List<BSClientsInfo>();
             try
@@ -167,7 +152,7 @@ namespace NewBISReports.Models.Classes
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="clientid">ID do cliente.</param>
         /// <returns></returns>
-        public static Clients GetClientsClass(DatabaseContext dbcontext, string clientid)
+        public static BSClientsInfo GetClientsClass(DatabaseContext dbcontext, string clientid)
         {
             Clients retval = new Clients();
             try
@@ -178,9 +163,9 @@ namespace NewBISReports.Models.Classes
                     if (table != null)
                     {
                         retval.CLIENTID = table.Rows[0]["clientid"].ToString();
-                        retval.Description = table.Rows[0]["description"].ToString();
+                        retval.DESCRIPTION = table.Rows[0]["description"].ToString();
                         retval.ExternID = table.Rows[0]["externid"].ToString();
-                        retval.Name = table.Rows[0]["Name"].ToString();
+                        retval.NAME = table.Rows[0]["Name"].ToString();
                     }
                 }
                 return retval;

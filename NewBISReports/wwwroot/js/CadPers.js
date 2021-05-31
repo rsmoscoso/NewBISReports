@@ -32,7 +32,10 @@ $(document).ready(function () {
         allowClear: true,
         placeholder: "Selecione Um Perfil",
     })
-
+    $('#selectPersClasses').select2({
+        allowClear: true,
+        placeholder: "Selecione um Tipo de Pessoa",
+    })
 
     $.fn.datepicker.dates['pt-br'] = {
         days: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],

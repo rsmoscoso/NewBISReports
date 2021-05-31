@@ -4,6 +4,7 @@
     var color = @Model.WFM[0].Situacao == "1" ? "black" : "red";
 }
 
+<input type="hidden" asp-for="PERSID" value="@Model.PERSID" />
 <div class="widget widget-table">
     <div class="widget-header">
         <h3 style="color: black"><i class="fa fa-table"></i>Relatório</h3>
@@ -49,3 +50,48 @@
         </table>
     </div>
 </div>
+
+<!--<div class="widget widget-table">
+    <div class="widget-header">
+        <h3 style="color: black"><i class="fa fa-table"></i>Alteração da Unidade</h3>
+    </div>
+    <div class="widget-content">
+        <div class="row">
+            <!--INICIO-CAMPO-UNIDADE-->
+            <!--<div class="col-sm-6">
+                <label class="control-label"> Unidade</label>
+                <select id="selectUnity" class="select2" asp-for="CLIENTID">
+                    @if (Model.Clients != null)
+                    {
+                        @foreach (var Unidade in Model.Clients)
+                        {
+                            var selected = Unidade.CLIENTID.Equals(Model.CLIENTID) ? "selected" : "";
+                            @Html.Raw(String.Format("<option value=\"{0}\" {1}>{2}</option>", Unidade.CLIENTID, selected, Unidade.NAME))
+                        }
+                    }
+                </select>
+            </div>-->
+            <!--FIM-CAMPO-UNIDADE-->
+        <!--</div>
+        <br />
+        <div class="row">-->
+            <!--INICIO-CAMPO-MATRICULA-->
+            <!--<div class="col-sm-3">
+                <input asp-for="USERRE" type="text" id="RE" class="form-control" placeholder="Matricula/RE" maxlength="16" required="required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Digite a Matricula/RE Válida')">
+            </div>-->
+            <!--FIM-CAMPO-MATRICULA-->
+            <!--INICIO CAMPO SENHA-->
+            <!--<div class="col-sm-3">
+                <input asp-for="USERPASSWORD" type="password" placeholder="senha" id="NAME" class="form-control" required="required" oninput="setCustomValidity('')" oninvalid="this.setCustomValidity('Preencher o Nome/Sobrenome')">
+            </div>-->
+            <!-- FIM CAMPO SENHA -->
+            <!--<div class="col-sm-3">
+                <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
+                        style="background-color: red; color: White;">
+                    Alterar
+                </button>
+            </div>
+        </div>
+
+    </div>-->
+@*</div>*@-->

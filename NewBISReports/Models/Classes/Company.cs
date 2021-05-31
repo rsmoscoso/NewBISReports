@@ -56,17 +56,17 @@ namespace NewBISReports.Models.Classes
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="Name">Nome da empresa.</param>
         /// <returns></returns>
-        public static List<Company> GetCompanies(DatabaseContext dbcontext, string Name)
+        public static List<BSCompaniesInfo> GetCompanies(DatabaseContext dbcontext, string Name)
         {
-            List<Company> companies = new List<Company>();
+            List<BSCompaniesInfo> companies = new List<BSCompaniesInfo>();
             try
             {
-                string sql = string.Format("select CompanyID, CompanyNO, Name from bsuser.Companies where Name like '%{0}%' order by Name",
+                string sql = string.Format("select COMPANYID, COMPANYNO, NAME from bsuser.Companies where Name like '%{0}%' order by Name",
                     Name);
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
                     if (table != null)
-                        companies = GlobalFunctions.ConvertDataTable<Company>(table);
+                        companies = GlobalFunctions.ConvertDataTable<BSCompaniesInfo>(table);
                 }
                 return companies;
             }

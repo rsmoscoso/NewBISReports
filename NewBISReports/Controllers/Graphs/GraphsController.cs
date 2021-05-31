@@ -12,7 +12,7 @@ using NewBISReports.Models.Classes;
 using NewBISReports.Models.Reports;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
-
+using HzBISCommands;
 
 namespace NewBISReports.Controllers.Graphs
 {
@@ -33,7 +33,7 @@ namespace NewBISReports.Controllers.Graphs
         /// <summary>
         /// Coleção das unidades.
         /// </summary>
-        private List<Clients> clients { get; set; }
+        private List<BSClientsInfo> clients { get; set; }
 
         /// <summary>
         /// Chave com características do cliente.
@@ -122,7 +122,7 @@ namespace NewBISReports.Controllers.Graphs
         public IActionResult Index(REPORTTYPE type)
         {
             this.clients = Clients.GetClients(this.contextACE);
-            this.clients.Insert(0, new Clients { CLIENTID = "", Description = "TODOS" });
+            this.clients.Insert(0, new Clients { CLIENTID = "", DESCRIPTION = "TODOS" });
             TempData["Clients"] = JsonConvert.SerializeObject(this.clients);
             TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
             TempData["Type"] = type;

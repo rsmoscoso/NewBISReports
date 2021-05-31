@@ -1,4 +1,5 @@
-﻿using NewBISReports.Models.Classes;
+﻿using HzBISCommands;
+using NewBISReports.Models.Classes;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -52,7 +53,8 @@ namespace NewBISReports.Models
         RPT_PERSONSAREA = 22,
         RPT_PERSONSINSIDEAREA = 23,
         RPT_CREDITS = 24,
-        RPT_INTEGRACAOWFMBIS = 25
+        RPT_INTEGRACAOWFMBIS = 25,
+        RPT_CHANGECLIENTID = 26
 
     }
 
@@ -186,6 +188,11 @@ namespace NewBISReports.Models
         /// Flag para o relatórios de todos dentro da área.
         /// </summary>
         public bool ALLINSIDE { get; set; }
+        public List<BSCompaniesInfo> Companies { get; set; }
+        public List<BSClientsInfo> Clients { get; set; }
+        public string USERRE { get; set; } 
+        public string USERPASSWORD { get; set; }
+        public string PERSID { get; set; }
         #region Functions
         /// <summary>
         /// Retorna o tipo do relatório.

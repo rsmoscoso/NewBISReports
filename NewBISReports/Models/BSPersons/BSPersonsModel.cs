@@ -18,6 +18,7 @@ namespace NewBISReports.Models.BSPersons
         public List<BSAuthorizationInfo> AutorizacoesPessoa { get; set; }
         public List<BSCompaniesInfo> Empresas { get; set; }
         public List<BSProfilesInfo> Perfis { get; set; }
+        public List<BSPersClassessInfo> PersClasses { get; set; }
         public BSProfilesInfo Perfil { get; set; }
         public string[] SelectedAutorizacao { set; get; }
         public BSAuthorizationInfo AutorizacaoNova { get; set; }

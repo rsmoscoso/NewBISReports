@@ -287,7 +287,7 @@ namespace NewBISReports.Models.Reports
             try
             {
                 string sql = String.Format("select EntradaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHFROM), 'dd/MM/yyyy HH:mm'),  " +
-                    "SaidaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHUNTIL), 'dd/MM/yyyy HH:mm'),  Divisao = cli.NAME, Empresa = cmp.COMPANYNO, cardno " +
+                    "SaidaBIS = format(DATEADD(mi, DATEDIFF(mi, GETUTCDATE(), GETDATE()), acpe.AUTHUNTIL), 'dd/MM/yyyy HH:mm'),  Divisao = cli.NAME, Empresa = cmp.COMPANYNO, cardno, per.PERSID, per.clientid " +
                     "from bsuser.persons per inner join bsuser.clients cli on cli.clientid = per.clientid " +
                     "inner join bsuser.acpersons acpe on acpe.persid = per.persid left outer join bsuser.COMPANIES cmp on cmp.COMPANYID = per.COMPANYID " +
                     "left outer join bsuser.cards cd on cd.persid = per.persid " +
@@ -316,11 +316,11 @@ namespace NewBISReports.Models.Reports
                 string sql = "select Data = format(data, 'dd/MM/yyyy'), RE = convert(varchar, dSit.RE), dSit.Nome, Situacao = convert(varchar, dSit.cod_situacao), dSit.status, " +
                      "Entrada = format(convert(datetime, horario_ent), 'dd/MM/yyyy HH:mm'), Descricao = descricao_situacao ";
 
-                sql += String.Format((DateTime.Parse(data).Subtract(DateTime.Now).TotalSeconds > 0) ? " from [{0}].sisqualwfm.[dbo].[BOSCH_EmpregadosSituacao] dSit " :
+                sql += String.Format(DateTime.Parse(data).Day < DateTime.Now.Day ? " from [{0}].sisqualwfm.[dbo].[BOSCH_EmpregadosSituacao] dSit " :
                 " from [{0}].sisqualwfm.[dbo].[BOSCH_EmpregadosSituacao_D+30] dSit ", wfmserver);
 
                 sql += String.Format("inner join [{0}].sisqualwfm.dbo.BOSCH_TIPOS_SITUACAO bs on dSit.COD_SITUACAO = bs.cod_situacao " +
-                "where dSit.re = '{1}' and data = '{2}'", wfmserver, persno, data);
+                "where dSit.re = '{1}' and data = '{2}'", wfmserver, persno, DateTime.Parse(data).ToString("MM/dd/yyyy"));
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -417,7 +417,7 @@ namespace NewBISReports.Models.Reports
                 if (bBio)
                     sql += "left outer join bsuser.biodata bio on bio.persid = per.persid ";
 
-                sql += " where per.status = 1 and cd.status = 1 and persclass = 'E' ";
+                sql += " where per.status = 1 and cd.status != 0 and persclass = 'E' ";
 
                 if (!string.IsNullOrEmpty(persno))
                     sql += " and per.persid = '" + persno + "'";

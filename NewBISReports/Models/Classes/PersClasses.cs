@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HzBISCommands;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -9,18 +10,9 @@ namespace NewBISReports.Models.Classes
     /// <summary>
     /// Classe que gerencia a tabela Persclasses.
     /// </summary>
-    public class PersClasses
+    public class PersClasses : BSPersClassessInfo
     {
         #region Variables
-        /// <summary>
-        /// ID do tipo da pessoa.
-        /// </summary>
-        public string PERSCLASSID { get; set; }
-
-        /// <summary>
-        /// Descrição do tipo da pessoa.
-        /// </summary>
-        public string DisplayTextCustomer { get; set; }
         #endregion
 
         #region Functions
@@ -29,16 +21,16 @@ namespace NewBISReports.Models.Classes
         /// </summary>
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <returns></returns>
-        public static List<PersClasses> GetPersClasses(DatabaseContext dbcontext)
+        public static List<BSPersClassessInfo> GetPersClasses(DatabaseContext dbcontext)
         {
-            List<PersClasses> persons = new List<PersClasses>();
+            List<BSPersClassessInfo> persons = new List<BSPersClassessInfo>();
             try
             {
-                string sql = "select PERSCLASSID, DisplayTextCustomer from bsuser.persclasses order by displaytextcustomer";
+                string sql = "select PERSCLASSID, DISPLAYTEXTCUSTOMER from bsuser.persclasses order by displaytextcustomer";
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
                     if (table != null)
-                        persons = GlobalFunctions.ConvertDataTable<PersClasses>(table);
+                        persons = GlobalFunctions.ConvertDataTable<BSPersClassessInfo>(table);
                 }
                 return persons;
             }
@@ -54,17 +46,17 @@ namespace NewBISReports.Models.Classes
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="displaytextcustomer">Descrição do tipo de pessoa.</param>
         /// <returns></returns>
-        public static List<PersClasses> GetPersClasses(DatabaseContext dbcontext, string displaytextcustomer)
+        public static List<BSPersClassessInfo> GetPersClasses(DatabaseContext dbcontext, string displaytextcustomer)
         {
-            List<PersClasses> persons = new List<PersClasses>();
+            List<BSPersClassessInfo> persons = new List<BSPersClassessInfo>();
             try
             {
-                string sql = string.Format("select PERSCLASSID, DisplayTextCustomer from bsuser.persclasses where displaytextcustomer like '%{0}%' order by displaytextcustomer",
+                string sql = string.Format("select PERSCLASSID, DISPLAYTEXTCUSTOMER from bsuser.persclasses where displaytextcustomer like '%{0}%' order by displaytextcustomer",
                     displaytextcustomer);
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
                     if (table != null)
-                        persons = GlobalFunctions.ConvertDataTable<PersClasses>(table);
+                        persons = GlobalFunctions.ConvertDataTable<BSPersClassessInfo>(table);
                 }
                 return persons;
             }
@@ -85,7 +77,7 @@ namespace NewBISReports.Models.Classes
             string retval = "";
             try
             {
-                string sql = string.Format("select DisplayTextCustomer from bsuser.persclasses where persclassid = '{0}'", persclassid);
+                string sql = string.Format("select DISPLAYTEXTCUSTOMER from bsuser.persclasses where persclassid = '{0}'", persclassid);
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
                     if (table != null && table.Rows.Count > 0)

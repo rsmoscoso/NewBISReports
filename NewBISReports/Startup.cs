@@ -226,7 +226,7 @@ namespace NewBISReports
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=BSPersons}/{action=Index}/{id?}");
+                    template: "{controller=Excecao}/{action=Index}/{id?}");
             });
         }
     }

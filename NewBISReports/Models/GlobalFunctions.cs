@@ -180,6 +180,10 @@ namespace NewBISReports.Models
                     {
                         if (pro.Name.ToLower() == column.ColumnName.ToLower())
                         {
+                            if (pro.Name.Equals("ZIPCODE"))
+                            {
+                                string s = pro.Name;
+                            }
                             if (row[column.ColumnName] is System.DBNull)
                             {
                                 if (pro.PropertyType == Type.GetType("System.String"))
@@ -195,6 +199,15 @@ namespace NewBISReports.Models
                                     string v = objvalue.ToString();
                                     if (column.ColumnName == "DATEOFBIRTH")
                                         objvalue = DateTime.Parse(String.Format("{0}/{1}/{2}", v.Substring(6, 2), v.Substring(4, 2), v.Substring(0, 4)));
+                                }
+                                else if (column.DataType == Type.GetType("System.Decimal"))
+                                {
+                                    if (column.ColumnName.Equals("IDENTIFICATIONMODE"))
+                                        objvalue = Enum.Parse(typeof(BSPersonsInfo.BS_IDENTIFICATIONMODE), objvalue.ToString(), true);
+                                    else if (column.ColumnName.Equals("SEX"))
+                                        objvalue = Enum.Parse(typeof(BSPersonsInfo.BS_SEX), objvalue.ToString(), true);
+                                    else if (column.ColumnName.Equals("MARITALSTATUS"))
+                                        objvalue = Enum.Parse(typeof(BSPersonsInfo.BS_MARITALSTATUS), objvalue.ToString(), true);
                                 }
                             }
                             pro.SetValue(obj, objvalue, null);

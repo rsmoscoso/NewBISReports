@@ -23,6 +23,31 @@
             </ul>
         </div>
     </div>
+    <div class="row justify-content-start">
+        <div class="col-sm-12">
+            <div class="widget">
+                <div class="widget-header">
+                    <h3><i class="fa fa-book"></i>@title</h3> <em>- @titlecomment + - Modulo Importação'</em>
+                </div>
+                <div class="widget-content">
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-6">
+                                <label for="file-input">Selecione arquivo CSV</label>
+                                @*<div class="file-loading">
+                <input id="file-input" type="file" asp-for="Photo">
+            </div>*@
+                                <input id="file-input" type="file" asp-for="FileName" />
+                            </div>
+                            <div class="col-6">
+                                <button type="submit" name="btnnew" class="btn-danger" asp-controller="Excecao" asp-action="Import">Importar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-sm-12">

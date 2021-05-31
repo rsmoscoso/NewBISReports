@@ -74,6 +74,17 @@ namespace NewBISReports.Models.Classes
                         persons.NOME = String.Format("{0} {1}", persons.FIRSTNAME.Trim(), persons.LASTNAME.Trim());
                         persons.CARDS = Cards.GetCards(dbcontext, persid);
                         persons.AUTHORIZATIONS = Authorizations.GetAuthorizationsPERSID(dbcontext, persid);
+                        persons.CUSTOMFIELDS = CustomFields.GetCustomFields(dbcontext, persid);
+                        if (persons.CUSTOMFIELDS != null && persons.CUSTOMFIELDS.Count > 0)
+                        {
+                            foreach(BSAdditionalFieldInfo addfield in persons.CUSTOMFIELDS)
+                            {
+                                if (addfield.LABEL.ToLower().Equals("cpf"))
+                                    persons.CPF = addfield.VALUE.ToString();
+                                else if (addfield.LABEL.ToLower().Equals("uf"))
+                                    persons.UF = addfield.VALUE.ToString();
+                            }
+                        }
                     }
                 }
                 return persons;
@@ -106,7 +117,7 @@ namespace NewBISReports.Models.Classes
                 if (searchtype == SEARCHPERSONS.SEARCHPERSONS_PERSNO || searchtype == SEARCHPERSONS.SEARCHPERSONS_NAME)
                 //fix de bug de filtro de funcionarios externos e vigilantes                
                     //sql = "select distinct Persid = per.persid, Documento = persno, Nome = firstname + ' ' + lastname from bsuser.persons per left outer join bsuser.cards cd on cd.persid = per.persid where per.status = 1 and persclass = 'E' and cd.datedeleted is null ";
-                    sql = "select distinct Persid = per.persid, Documento = persno, Nome = firstname + ' ' + lastname from bsuser.persons per left outer join bsuser.cards cd on cd.persid = per.persid where per.status = 1 "+ (persclassid == null?"and persclass = 'E' ":null)+"and cd.datedeleted is null ";
+                    sql = "select distinct Persid = per.persid, Documento = persno, Nome = firstname + ' ' + lastname from bsuser.persons per left outer join bsuser.cards cd on cd.persid = per.persid where per.status = 1 "+ (persclassid == null || persclassid.Length < 1 ? " and persclass = 'E' " : null ) + "and cd.datedeleted is null ";
                 else if (searchtype == SEARCHPERSONS.SEARCHPERSONS_PASSPORTNO || searchtype == SEARCHPERSONS.SEARCHPERSONS_NAMEVISITOR)
                     sql = "select Persid = per.persid, Documento = passportno, Nome = firstname + ' ' + lastname from bsuser.persons per" +
                         " inner join bsuser.visitors vis on vis.persid = per.persid where per.status = 1 and persclass = 'V'";

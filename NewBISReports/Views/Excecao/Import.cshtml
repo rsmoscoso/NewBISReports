@@ -1,0 +1,19 @@
+﻿<form method="post" enctype="multipart/form-data" method="post" role="form" asp-controller="Home" asp-action="Save">
+    <div class="card card-pricing mb-4">
+        <div class="row justify-content-start">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col-12">
+                            <label for="file-input">Selecione uma ou mais fotos</label>
+                            @*<div class="file-loading">
+                                    <input id="file-input" type="file" asp-for="Photo">
+                                </div>*@
+                            <input id="file-input" type="file"  multiple />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

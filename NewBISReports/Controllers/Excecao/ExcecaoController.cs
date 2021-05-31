@@ -11,6 +11,9 @@ using NewBISReports.Models.Classes;
 using NewBISReports.Models.Excecao;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Hosting;
 
 namespace NewBISReports.Controllers.Excecao
 {
@@ -38,6 +41,7 @@ namespace NewBISReports.Controllers.Excecao
         /// Chave com características do cliente.
         /// </summary>
         private BSConfig config { get; set; }
+        private readonly IHostingEnvironment _hostingEnvironment;
         #endregion
 
         private void persist()
@@ -56,6 +60,28 @@ namespace NewBISReports.Controllers.Excecao
             ViewBag.PersonsExcep = JsonConvert.DeserializeObject(TempData["PersonsExcep"].ToString());
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Import(ExcecaoModel excecaoModel)
+        {
+            foreach (IFormFile file in excecaoModel.FileName)
+            {
+                var filepath = String.Format("{0}/ImportCSV/{1}.csv", this._hostingEnvironment.WebRootPath, "foto", file.FileName);
+
+                using (FileStream fs = System.IO.File.Create(filepath))
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await file.CopyToAsync(memoryStream);
+                        byte[] bt = memoryStream.ToArray();
+
+                        await file.CopyToAsync(fs);
+                        fs.Flush();
+                    }
+                }
+            }
+
+            return View();
+        }
         /// <summary>
         /// Pesquisa as pessoas.
         /// </summary>
@@ -129,7 +155,7 @@ namespace NewBISReports.Controllers.Excecao
         {
             try
             {
-                this.personsexcep = tblBlockExcecao.LoadExceptions(this.contextSolar, this.contextACE.GetHost().IndexOf("forsrp") > -1 ? "hzSolar" : "hzRH");
+                this.personsexcep = tblBlockExcecao.LoadExceptions(this.contextACE, this.contextACE.GetHost().IndexOf("forsrp") > -1 ? "hzSolar" : "hzRH");
                 ViewBag.PersonsExcep = this.personsexcep;
                 TempData["PersonsExcep"] = JsonConvert.SerializeObject(ViewBag.PersonsExcep);
                 ViewBag.Persons = new List<Persons>();
@@ -153,7 +179,7 @@ namespace NewBISReports.Controllers.Excecao
         {
             try
             {
-                using (DataTable table = tblBlockExcecao.LoadExceptionsDt(this.contextSolar, reports.PERSID, this.contextACE.GetHost().IndexOf("forsrp") > -1 ? "hzSolar" : "hzRH"))
+                using (DataTable table = tblBlockExcecao.LoadExceptionsDt(this.contextACE, reports.PERSID, this.contextACE.GetHost().IndexOf("forsrp") > -1 ? "hzSolar" : "hzRH"))
                 {
 
                     reports.StartDate = table.Rows[0]["cmpDtInicio"].ToString();
@@ -173,8 +199,9 @@ namespace NewBISReports.Controllers.Excecao
         /// Construtor da classe.
         /// </summary>
         /// <param name="configuration">Referência às configurações em appsettings.json.</param>
-        public ExcecaoController(IConfiguration configuration)
+        public ExcecaoController(IConfiguration configuration, IHostingEnvironment env)
         {
+            this._hostingEnvironment = env;
             this.contextACE = new DatabaseContext(configuration.GetConnectionString("BIS_ACE"));
             this.contextSolar = new DatabaseContext(configuration.GetConnectionString("SOLAR"));
             string defaultsettings = configuration.GetSection("Default")["Name"];
