@@ -1,5 +1,4 @@
-﻿using HzBISACELib.SQL;
-using HzBISCommands;
+﻿using HzBISCommands;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using NewBISReports.Controllers.Config;

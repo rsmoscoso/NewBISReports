@@ -63,22 +63,22 @@ namespace NewBISReports.Controllers.Excecao
         [HttpPost]
         public async Task<IActionResult> Import(ExcecaoModel excecaoModel)
         {
-            foreach (IFormFile file in excecaoModel.FileName)
-            {
-                var filepath = String.Format("{0}/ImportCSV/{1}.csv", this._hostingEnvironment.WebRootPath, "foto", file.FileName);
+            //foreach (IFormFile file in excecaoModel.FileName)
+            //{
+            //    var filepath = String.Format("{0}/ImportCSV/{1}.csv", this._hostingEnvironment.WebRootPath, "foto", file.FileName);
 
-                using (FileStream fs = System.IO.File.Create(filepath))
-                {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await file.CopyToAsync(memoryStream);
-                        byte[] bt = memoryStream.ToArray();
+            //    using (FileStream fs = System.IO.File.Create(filepath))
+            //    {
+            //        using (var memoryStream = new MemoryStream())
+            //        {
+            //            await file.CopyToAsync(memoryStream);
+            //            byte[] bt = memoryStream.ToArray();
 
-                        await file.CopyToAsync(fs);
-                        fs.Flush();
-                    }
-                }
-            }
+            //            await file.CopyToAsync(fs);
+            //            fs.Flush();
+            //        }
+            //    }
+            //}
 
             return View();
         }

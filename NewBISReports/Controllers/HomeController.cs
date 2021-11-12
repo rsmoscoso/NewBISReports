@@ -480,8 +480,8 @@ namespace NewBISReports.Controllers
                 reports.Type = REPORTTYPE.RPT_INTEGRACAOWFMBIS;
                 if (reports.USERRE.Equals("9090") && reports.USERPASSWORD.Equals("femsa2021") && !String.IsNullOrEmpty(reports.PERSID))
                 {
-                    this.contextACE.LoadDatatable(this.contextACE, String.Format("update bsuser.persons set clientid = '{0}' where persid = '{1}'",
-                        reports.CLIENTID, reports.PERSID));
+                    //this.contextACE.LoadDatatable(this.contextACE, String.Format("update bsuser.persons set clientid = '{0}' where persid = '{1}'",
+                    //    reports.CLIENTID, reports.PERSID));
 
                     using (System.Data.DataTable table = _rptsAcedb.LoadWFM(this.contextACE, this.config.WFMServer, DateTime.Parse(reports.StartDate).ToString("MM/dd/yyyy"), reports.PERSNO))
                     {

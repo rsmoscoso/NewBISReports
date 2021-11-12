@@ -223,6 +223,7 @@ namespace NewBISReports.Models.Reports
             {
                 string sql = "select Documento = passportno, Nome = firstname + ' ' + lastname from bsuser.persons per  " +
                     "inner join bsuser.visitors vis on vis.persid = per.persid " +
+                    "inner join bsuser.clients cli on cli.clientid = per.clientid " +
                     "where per.status = 1 ";
 
                 if (!String.IsNullOrEmpty(clientid))

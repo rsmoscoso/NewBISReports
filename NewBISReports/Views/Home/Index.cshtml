@@ -115,10 +115,10 @@
                     <div class="widget-content">
                         <div class="form-inline">
                             @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type !=
-                                REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
-                            type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type !=
-                            REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type !=
-                            REPORTTYPE.RPT_PERSONSAREA)
+                              REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
+                          type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type !=
+                          REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type !=
+                          REPORTTYPE.RPT_PERSONSAREA)
                             {
                                 if (showHourMinute)
                                 {
@@ -126,16 +126,17 @@
                                         <div class="input-group date form_datetime">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             <input class="form-control" size="16" type="text" name="StartDate"
-                                                asp-for="StartDate" class="form-control" placeholder="@startDateText" required>
+                                                   asp-for="StartDate" class="form-control" placeholder="@startDateText" required>
                                         </div>
                                     </div>
                                     @*Alguns relatórios só possuem data de início*@
-                                    if(type != REPORTTYPE.RPT_CREDITS ){
+                                    if (type != REPORTTYPE.RPT_CREDITS)
+                                    {
                                         <div class="form-group">
                                             <div class="input-group date form_datetime">
                                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                                 <input class="form-control" size="16" type="text" name="EndDate" asp-for="EndDate"
-                                                    class="form-control" placeholder="Data Final" required>
+                                                       class="form-control" placeholder="Data Final" required>
                                             </div>
                                         </div>
                                     }
@@ -145,14 +146,15 @@
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                         <input type="text" id="StartDate" name="StartDate" asp-for="StartDate"
-                                            class="form-control" placeholder="@startDateText" required>
+                                               class="form-control" placeholder="@startDateText" required>
                                     </div>
                                     @*Alguns relatórios só possuem data de início*@
-                                    if(type != REPORTTYPE.RPT_CREDITS && type != REPORTTYPE.RPT_INTEGRACAOWFMBIS){
+                                    if (type != REPORTTYPE.RPT_CREDITS && type != REPORTTYPE.RPT_INTEGRACAOWFMBIS)
+                                    {
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" class="form-control"
-                                                placeholder="Data Final" required>
+                                                   placeholder="Data Final" required>
                                         </div>
                                     }
                                 }
@@ -162,86 +164,105 @@
                                     <div class="input-group">
                                         <div class="custom-control custom-checkbox mb-3">
                                             <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
-                                                value="4101" checked="checked">
+                                                   value="4101" checked="checked">
                                             <label class="custom-control-label" for="grant">Acesso Permitido</label>
                                         </div>
                                     </div>
                                     <div class="input-group">
                                         <div class="custom-control custom-checkbox mb-3">
                                             <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
-                                                value="4112">
+                                                   value="4112">
                                             <label class="custom-control-label" for="grant">Não Permitido</label>
                                         </div>
                                     </div>
                                     <div class="input-group">
                                         <div class="custom-control custom-checkbox mb-3">
                                             <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
-                                                value="4119">
+                                                   value="4119">
                                             <label class="custom-control-label" for="grant">Não Válido</label>
                                         </div>
                                     </div>
-                                }
+                                    <div class="input-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+                                                   value="4120">
+                                            <label class="custom-control-label" for="grant">Expirado</label>
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+                                                   value="4109">
+                                            <label class="custom-control-label" for="grant">Desconhecido</label>
+                                        </div>
+                                    </div> }
                             }
 
                             @*Mudança no layout das áreas
-                            @if (type == REPORTTYPE.RPT_PERSONSAREA )
-                            {
-                                <!-- INICIO AREAS-->
-                                <fieldset>
-                                    <div class="col-sm-12">
+        @if (type == REPORTTYPE.RPT_PERSONSAREA )
+        {
+            <!-- INICIO AREAS-->
+            <fieldset>
+                <div class="col-sm-12">
 
-                                        <label>Áreas</label>
-                                        <select multiple="multiple" asp-for="AREAID" class="select2 select2-multiple"
-                                            name="AREAID"
-                                            asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))"></select>
-                                        <div class="custom-control custom-checkbox mb-3">
-                                            <input class="custom-control-input" id="grant" type="checkbox"
-                                                asp-for="ALLINSIDE" value="true">
-                                            <label class="custom-control-label" for="grant">Todos dentro da unidade</label>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            }*@
-                             <!-- FIM AREAS-->
+                    <label>Áreas</label>
+                    <select multiple="multiple" asp-for="AREAID" class="select2 select2-multiple"
+                        name="AREAID"
+                        asp-items="@(new SelectList(ViewBag.Areas, "AREAID", "NAME"))"></select>
+                    <div class="custom-control custom-checkbox mb-3">
+                        <input class="custom-control-input" id="grant" type="checkbox"
+                            asp-for="ALLINSIDE" value="true">
+                        <label class="custom-control-label" for="grant">Todos dentro da unidade</label>
+                    </div>
+                </div>
+            </fieldset>
+        }*@
+                            <!-- FIM AREAS-->
 
                             @if (type == REPORTTYPE.RPT_BADGENOUSE)
                             {
                                 <input type="text" id="NDays" name="NDays" asp-for="NDays" class="form-control"
-                                    placeholder="N. de Dias sem Uso do Crachá" value="30" required>
+                                       placeholder="N. de Dias sem Uso do Crachá" value="30" required>
                             }
 
                             @if (type == REPORTTYPE.RPT_INTEGRACAOWFMBIS)
                             {
                                 <input type="text" id="PERSNO" name="PERSNO" asp-for="PERSNO" class="form-control"
-                                    placeholder="RE do colaborador" required>
+                                       placeholder="RE do colaborador" required>
                             }
 
                             @if (type == REPORTTYPE.RPT_TOTALMEAL || type == REPORTTYPE.RPT_EXPORTMEAL || type ==
-                                REPORTTYPE.RPT_COUNTBATH)
+                              REPORTTYPE.RPT_COUNTBATH)
                             {
                                 @*Diogo - Conferir o ExecPage e o excel page abaixo*@
                                 <button type="submit" name="exec" id="exec" asp-action="ExecPage"
-                                    class="btn">Executar</button>
+                                        class="btn">
+                                    Executar
+                                </button>
                             }
-                                @if (type != REPORTTYPE.RPT_EXPORTMEAL && type != REPORTTYPE.RPT_COUNTBATH)
+                            @if (type != REPORTTYPE.RPT_EXPORTMEAL && type != REPORTTYPE.RPT_COUNTBATH)
+                            {
+                                if (type == REPORTTYPE.RPT_PHOTOS)
                                 {
-                                    if (type == REPORTTYPE.RPT_PHOTOS)
-                                    {
-                                        buttonname = "Gerar";
-                                    }
+                                    buttonname = "Gerar";
+                                }
 
-                                    if (type != REPORTTYPE.RPT_INTEGRACAOWFMBIS)
-                                    {
-                                        <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
-                                            style="background-color: Green; color: White;">@buttonname</button>
-                                    }
-                                    else
-                                    {
-                                        <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
-                                            style="background-color: Green; color: White;">Pesquisar</button>
-                                    }
+                                if (type != REPORTTYPE.RPT_INTEGRACAOWFMBIS)
+                                {
+                                    <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
+                                            style="background-color: Green; color: White;">
+                                        @buttonname
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit" name="excel" id="excel" asp-action="ExcelPage" class="btn"
+                                            style="background-color: Green; color: White;">
+                                        Pesquisar
+                                    </button>
+                                }
                             }
-                            </div>
+                        </div>
 
                         </div>
                     </div>

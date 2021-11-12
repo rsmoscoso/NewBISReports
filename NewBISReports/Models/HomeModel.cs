@@ -13,6 +13,7 @@ namespace NewBISReports.Models
     public enum ACCESSTYPE
     {
         GRANTED = 4101,
+        UNKNOWN = 4109,
         NOTGRANTED = 4112,
         CARDBLOCKED = 4111,
         CARDNOTYETVALID = 4119,
