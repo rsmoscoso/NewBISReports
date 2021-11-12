@@ -594,7 +594,7 @@ namespace NewBISReports.Controllers
                 {
                     string divisao = Clients.GetClientDescription(this.contextACE, reports.CLIENTID);
                     //Diogo - único relatório em que se passa apenas data                  
-                    using (DataTable table = _rptsAnalytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, divisao))
+                    using (DataTable table = _rptsAnalytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, reports.CLIENTID))
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal", _dateTimeConverter)) != null)
                         {

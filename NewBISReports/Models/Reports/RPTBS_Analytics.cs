@@ -221,7 +221,7 @@ namespace NewBISReports.Models.Reports
                 string sql = String.Format("set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, Divisao from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'", startdate, enddate);
 
                 if (!String.IsNullOrEmpty(clientid) && clientid != "0")
-                    sql += " and divisao = '" + tagbisserver + "." + clientid + "'";
+                    sql += " and clientid = '" + clientid + "'";
 
                 if (type != MEALTYPE.MEALTYPE_TODOS)
                 {

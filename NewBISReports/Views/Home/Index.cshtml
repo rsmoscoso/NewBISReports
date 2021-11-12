@@ -37,16 +37,20 @@
     REPORTTYPE type = REPORTTYPE.RPT_ANALYTICGRANTEDBIS;
     if (ViewBag.Type != null)
     {
+        dateFormatStringRazor = dateFormatStringRazor.Substring(0, 10);
+        dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
+        showHourMinute = false;
+
         type = (REPORTTYPE)ViewBag.Type;
         //Diogo - retirar minutos do relatório de meal e outros que não faz sentido ter hora e minuto
-        if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS || type == REPORTTYPE.RPT_CREDITS || type == REPORTTYPE.RPT_INTEGRACAOWFMBIS ||
-            type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS) 
-        {
-            dateFormatStringRazor = dateFormatStringRazor.Substring(0, 10);
-            dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
-            showHourMinute = false;
+        //if (type == REPORTTYPE.RPT_ANALYTICSMEALBIS || type == REPORTTYPE.RPT_CREDITS || type == REPORTTYPE.RPT_INTEGRACAOWFMBIS ||
+        //    type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS || type == REPORTTYPE.RPT_ANALYTICSGENERAL || type == REPORTTYPE.RPT_TOTALMEAL) 
+        //{
+        //    dateFormatStringRazor = dateFormatStringRazor.Substring(0, 10);
+        //    dateFormatStringJs = dateFormatStringJs.Substring(0, 10);
+        //    showHourMinute = false;
 
-        }
+        //}
     }
     //mostrar os radiobuttons de acessos garantidos/não permitidos apenas no analitico geral
     if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
