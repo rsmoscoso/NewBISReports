@@ -274,8 +274,13 @@ namespace NewBISReports.Models
                     retval = System.IO.File.ReadAllBytes(filename);
                 return retval;
             }
-            catch
+            catch (Exception ex)
             {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(String.Format("{0} --> SaveExcel", ex.Message));
+                w.Close();
+                w = null;
+
                 return null;
             }
         }

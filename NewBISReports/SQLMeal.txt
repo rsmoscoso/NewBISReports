@@ -1,0 +1,1 @@
+set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, Divisao from HzBIS..tblAcessos where data >= '01/11/2021 00:00:00' and data <= '12/11/2021 23:59:59'

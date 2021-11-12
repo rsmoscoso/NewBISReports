@@ -242,12 +242,19 @@ namespace NewBISReports.Models.Reports
                     }
                 }
 
-                StreamWriter w = new StreamWriter("erro.txt", true);
+                StreamWriter w = new StreamWriter("SQLMeal.txt", true);
                 w.WriteLine(sql);
                 w.Close();
                 w = null;
 
-                return dbcontext.LoadDatatable(dbcontext, sql);
+                DataTable table = dbcontext.LoadDatatable(dbcontext, sql);
+
+                w = new StreamWriter("SQLMealTable.txt", true);
+                w.WriteLine(table == null || table.Rows.Count < 1 ? "SEM REGISTRO" : table.Rows.Count.ToString());
+                w.Close();
+                w = null;
+
+                return table;
             }
             catch (Exception ex)
             {

@@ -596,6 +596,11 @@ namespace NewBISReports.Controllers
                     //Diogo - único relatório em que se passa apenas data                  
                     using (DataTable table = _rptsAnalytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, reports.CLIENTID))
                     {
+                        StreamWriter w = new StreamWriter("SQLMealAfter.txt", true);
+                        w.WriteLine(table == null || table.Rows.Count < 1 ? "SEM REGISTRO" : table.Rows.Count.ToString());
+                        w.Close();
+                        w = null;
+
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bismeals.xlsx", "Orion", "Meal", _dateTimeConverter)) != null)
                         {
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\bismeals.xlsx");
