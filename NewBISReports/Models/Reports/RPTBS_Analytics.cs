@@ -214,11 +214,15 @@ namespace NewBISReports.Models.Reports
         /// <param name="enddate">Fim da pesquisa.</param>
         /// <param name="clientid">ID do cliente para pesquisa.</param>
         /// <returns>Retorna a tabela com as refeições.</returns>
-        public DataTable GetMealBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, MEALTYPE type, string startdate, string enddate, string tagbisserver, string clientid)
+        public DataTable GetMealBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, string defaultconfig, MEALTYPE type, string startdate, string enddate, string tagbisserver, string clientid)
         {
             try
             {
-                string sql = String.Format("set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, Divisao, re from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'", startdate, enddate);
+                string sql = String.Format("set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, " +
+                    "Divisao, re {0} from HzBIS..tblAcessos where data >= '{1}' and data <= '{2}'", 
+                    defaultconfig.ToLower().Trim().Equals("solar") ? ", Telefone = phoneoffice, Cargo = job, CCusto = costcentre, Departamento = department, Endereco = streethouseno, CEP = zipcode, Cidade = city, Estado = country, Unidade = centraloffice, Local = nationality" : "",
+                    startdate, enddate);
+
 
                 if (!String.IsNullOrEmpty(clientid) && clientid != "0")
                     sql += " and clientid = '" + clientid + "'";
@@ -242,6 +246,7 @@ namespace NewBISReports.Models.Reports
                     }
                 }
 
+                sql += " order by data";
                 StreamWriter w = new StreamWriter("SQLMeal.txt", true);
                 w.WriteLine(sql);
                 w.Close();

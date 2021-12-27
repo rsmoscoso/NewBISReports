@@ -594,7 +594,7 @@ namespace NewBISReports.Controllers
                 {
                     string divisao = Clients.GetClientDescription(this.contextACE, reports.CLIENTID);
                     //Diogo - único relatório em que se passa apenas data                  
-                    using (DataTable table = _rptsAnalytics.GetMealBosch(this.contextBIS, this.contextACE, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, reports.CLIENTID))
+                    using (DataTable table = _rptsAnalytics.GetMealBosch(this.contextBIS, this.contextACE, this.config.DefaultName, reports.MealType, reports.StartDate + " 00:00:00", reports.EndDate + " 23:59:59", config.TagBISServer, reports.CLIENTID))
                     {
                         StreamWriter w = new StreamWriter("SQLMealAfter.txt", true);
                         w.WriteLine(table == null || table.Rows.Count < 1 ? "SEM REGISTRO" : table.Rows.Count.ToString());
