@@ -114,14 +114,47 @@ namespace NewBISReports.Controllers.Excecao
         /// </summary>
         /// <param name="reports">Classe com os dados da pesquisa.</param>
         [HttpPost]
-        public IActionResult New(ExcecaoModel reports)
+        public async Task<IActionResult>  New(ExcecaoModel reports)
         {
+            StreamReader reader = null;
             try
             {
-                tblBlockExcecao.New(this.contextSolar, reports);
-                this.persist();
+                string filepath = null;
+                foreach (IFormFile file in reports.CSVFile)
+                {
+                    filepath = file.FileName;
+                    using (FileStream fs = System.IO.File.Create(filepath))
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
+                            await file.CopyToAsync(memoryStream);
+                            byte[] bt = memoryStream.ToArray();
 
-                return RedirectToAction("Index", reports);
+                            await file.CopyToAsync(fs);
+                            fs.Flush();
+                        }
+                    }
+                }
+
+                if (System.IO.File.Exists(filepath))
+                {
+                    reader = new StreamReader(filepath);
+                    string line = null;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        string[] arr = line.Split(';');
+                        string persid = tblBlockExcecao.GetPersid(this.contextACE, arr[0]);
+                        string sql = String.Format("set dateformat 'dmy' insert into HzRH..tblBlockExcecao values ('{0}', '{1} {2}', '{3} {4}', '{5}')", persid,
+                            arr[1], arr[2], arr[3], arr[4], DateTime.Now);
+                        tblBlockExcecao.Save(this.contextACE, arr[0], String.Format("{0} {1}", arr[1], arr[2]), String.Format("{0} {1}", arr[3], arr[4]));
+                    }
+
+                    reports.personsExce = tblBlockExcecao.LoadExceptions(this.contextACE, "hzrh", "");
+                }
+
+                //this.persist();
+
+                return View("Index", reports);
             }
             catch
             {

@@ -218,9 +218,9 @@ namespace NewBISReports.Models.Reports
         {
             try
             {
-                string sql = String.Format("set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, " +
-                    "Divisao, re {0} from HzBIS..tblAcessos where data >= '{1}' and data <= '{2}'", 
-                    defaultconfig.ToLower().Trim().Equals("solar") ? ", Telefone = phoneoffice, Cargo = job, CCusto = costcentre, Departamento = department, Endereco = streethouseno, CEP = zipcode, Cidade = city, Estado = country, Unidade = centraloffice, Local = nationality" : "",
+                string sql = String.Format("set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103), Hora = convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, " +
+                    "Divisao {0} from HzBIS..tblAcessos where data >= '{1}' and data <= '{2}'", 
+                    defaultconfig.ToLower().Trim().Equals("solar") ? ", re , Telefone = phoneoffice, Cargo = job, CCusto = costcentre, Departamento = department, Endereco = streethouseno, CEP = zipcode, Cidade = city, Estado = country, Unidade = centraloffice, Local = nationality" : "",
                     startdate, enddate);
 
 

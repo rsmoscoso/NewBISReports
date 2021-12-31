@@ -1,0 +1,164 @@
+﻿@model NewBISReports.Models.Excecao.ExcecaoModel;
+
+@{
+    ViewData["title"] = "Horizon - Módulo de Relatórios";
+
+    var startdate = Model != null && !String.IsNullOrEmpty(Model.StartDate) ? Model.StartDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
+    var enddate = Model != null && !String.IsNullOrEmpty(Model.EndDate) ? Model.EndDate.ToString() : DateTime.Now.ToString("dd/MM/yyyy");
+    REPORTTYPE type = REPORTTYPE.RPT_EXCEPTION;
+    if (ViewBag.Type != null)
+    {
+        type = (REPORTTYPE)ViewBag.Type;
+    }
+    var title = NewBISReports.Models.HomeModel.GetTypeDescription(type);
+    var titlecomment = NewBISReports.Models.HomeModel.GetTypeComments(type);
+}
+
+<form class="container" asp-action="Index" method="post" enctype="multipart/form-data" data-parsley-validate novalidate>
+    <div class="row">
+        <div class="col-md-4 ">
+            <ul class="breadcrumb">
+                <li><i class="fa fa-home"></i><a href="#">Home</a></li>
+                <li class="active">@title</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row justify-content-start">
+        <div class="col-sm-12">
+            <div class="row justify-content-start">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col-12">
+                                <label for="file-input">Selecione o arquivo (.CSV)</label>
+                                <div class="file-loading">
+                                <input id="file-input" type="file" asp-for="CSVFile">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--<div class="widget">
+        <div class="widget-header">
+            <h3><i class="fa fa-book"></i>@title</h3> <em>- @titlecomment + - Modulo Importação'</em>
+        </div>
+        <div class="widget-content">
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="col-6">
+                        <label for="file-input">Selecione arquivo CSV</label>-->
+            @*<div class="file-loading">
+            <input id="file-input" type="file" asp-for="Photo">
+        </div>*@
+            <!--<input id="file-input" type="file" asp-for="FileName" />
+                    </div>
+                    <div class="col-6">
+                        <button type="submit" name="btnnew" class="btn-danger" asp-controller="Excecao" asp-action="Import">Importar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="widget">
+                <div class="widget-header">
+                    <h3><i class="fa fa-book"></i>@title</h3> <em>- @titlecomment</em>
+                </div>
+                <div class="widget-content">
+                    <fieldset>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="input-group input-group-sm">
+                                    <h4>Pessoas com Exceções Cadastradas</h4>
+                                </div>
+                                <div class="input-group input-group-sm">
+                                    <select asp-for="PERSID" class="select2" name="PERSID" id="PERSID" onclick="form.submit();"
+                                            asp-items="@(new SelectList(ViewBag.PersonsExcep, "Persid", "Nome", 0))"></select>
+                                    <span class="input-group-btn">
+                                        <button class="btn" name="deletebutton" asp-controller="Excecao" asp-action="Delete" type="submit"><i class="fa fa-close"></i></button>
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="col-sm-12">
+                            <div class="form-group">
+                                <div class="input-group input-group-sm">
+                                    <input type="search" asp-for="NAMESEARCH" name="NAMESEARCH" placeholder="pessoas" class="form-control">
+                                    <span class="input-group-btn">
+                                        <button class="btn" name="srcname" asp-controller="Excecao" asp-action="searchPersons" type="submit"><i class="fa fa-search"></i></button>
+                                        <!--<button class="btn" style="" name="srcname1" asp-controller="Reports" asp-action="addPersons" type="submit">+</button>-->
+                                    </span>
+                                </div>
+                                <select asp-for="Persno" class="select2" name="PERSIDBLOCK" asp-items="@(new SelectList(ViewBag.Persons, "Persid", "Nome", 0))"></select>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset>
+                        <div class="col-sm-12">
+                            <!-- INÍDIO DATAS -->
+                            <div class="form-inline">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" id="StartDate" name="StartDate" asp-for="StartDate" value="@startdate" class="form-control" placeholder="__/__/____ __:__" required>
+                                </div>
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" id="EndDate" name="EndDate" asp-for="EndDate" value="@enddate" class="form-control" placeholder="__/__/____ __:__" required>
+                                </div>
+                                <button type="submit" name="btnnew" class="btn" asp-controller="Excecao" asp-action="New">Gravar</button>
+                            </div>
+                            <!-- FIM DATAS -->
+                        </div>
+                    </fieldset>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<!-- Javascript Mínimo -->
+<script src="~/KingAdmin/assets/js/jquery/jquery-2.1.0.min.js"></script>
+<script src="~/KingAdmin/assets/js/bootstrap/bootstrap.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/modernizr/modernizr.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-tour/bootstrap-tour.custom.js"></script>
+
+<!-- Javascript Datepicker -->
+<script src="~/KingAdmin/assets/js/plugins/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="~/KingAdmin/assets/js/king-common.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/bootstrap-datepicker/bootstrap-datepicker.js"></script>
+<script src="~/KingAdmin/assets/js/plugins/select2/select2.min.js"></script>
+
+
+<!-- JQUERY -->
+<script>
+    $(function () {
+        window.prettyPrint && prettyPrint();
+        $('#StartDate').datepicker({
+            format: 'dd/mm/yyyy'
+        }).datepicker("setDate", document.getElementById('hidData_Start').defaultValue);;
+        $('#StartDate').datepicker()
+            .on('changeDate', function (ev) {
+                $('#StartDate').datepicker('hide');
+            });
+    });
+
+    $(function () {
+        window.prettyPrint && prettyPrint();
+        $('#EndDate').datepicker({
+            format: 'dd/mm/yyyy'
+        }).datepicker("setDate", document.getElementById('hidData_End').defaultValue);;
+        $('#EndDate').datepicker()
+            .on('changeDate', function (ev) {
+                $('#EndDate').datepicker('hide');
+            });
+    });
+</script>

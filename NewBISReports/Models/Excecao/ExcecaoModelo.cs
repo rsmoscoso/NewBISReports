@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using NewBISReports.Models.Classes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,11 @@ namespace NewBISReports.Models.Excecao
         /// Nome do arquivo com a formatação para importação.
         /// </summary>
         public string FileName { get; set; }
+        /// <summary>
+        /// Coleção das fotos selecionadas.
+        /// </summary>
+        public IFormFile[] CSVFile { get; set; }
+        public List<Persons> personsExce { get; set; }
         #endregion
     }
 }

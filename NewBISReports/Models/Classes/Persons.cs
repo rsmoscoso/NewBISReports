@@ -50,6 +50,8 @@ namespace NewBISReports.Models.Classes
         /// Data de aniversário.
         /// </summary>
         public string DataofBirth { get; set; }
+        public string cmpDtInicio { get; set; }
+        public string cmpDtTermino { get; set; }
         #endregion
 
         #region Functions

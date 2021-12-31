@@ -55,6 +55,51 @@ namespace NewBISReports.Models.Classes
             }
         }
 
+        public static string GetPersid(DatabaseContext dbcontext, string persno)
+        {
+            string persid = null;
+            try
+            {
+                using (DataTable table = dbcontext.LoadDatatable(dbcontext, String.Format("select persid from bsuser.persons where persno = '{0}'", persno)))
+                {
+                    if (table != null && table.Rows.Count > 0)
+                    {
+                        persid = table.Rows[0]["persid"].ToString();
+                    }
+                }
+
+                return persid;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public static bool Save(DatabaseContext dbcontext, string persid, string cmpdtinicio, string cmpdttermino)
+        {
+            try
+            {
+                DbCommand cmd = dbcontext.Database.GetDbConnection().CreateCommand();
+                cmd.CommandText = String.Format("set dateformat 'dmy' exec HzRH..spIncluirBlockExcecao '{0}', '{1}', '{2}'", persid, 
+                    cmpdtinicio, cmpdttermino);
+                cmd.CommandType = System.Data.CommandType.Text;
+
+                if (cmd.Connection.State != ConnectionState.Open)
+                    cmd.Connection.Open();
+
+                cmd.ExecuteNonQuery();
+                cmd.Connection.Close();
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+
         /// <summary>
         /// Retorna a tabela com todos as exceções.
         /// </summary>
@@ -66,7 +111,8 @@ namespace NewBISReports.Models.Classes
             List<Persons> retval = new List<Persons>();
             try
             {
-                using (DataTable table = dbcontext.LoadDatatable(dbcontext, "select Persid = bl.persid, Nome = firstname + ' ' + lastname, cmpDtInicio, cmpDtTermino from " + databasename + "..tblblockexcecao bl " +
+                using (DataTable table = dbcontext.LoadDatatable(dbcontext, "select Persid = bl.persid, Nome = firstname + ' ' + lastname, cmpDtInicio = convert(varchar, cmpDtInicio, 103) + ' ' " +
+                    "convert(varchar, cmpDtInicio, 108), cmpDtTermino = convert(varchar, cmpDtTermino, 103) + ' ' + convert(varchar, cmpDtTermino, 108) from " + databasename + "..tblblockexcecao bl " +
                     "inner join acedb.bsuser.persons p on bl.persid = p.persid order by Nome"))
                 {
                     if (table != null)
@@ -80,6 +126,28 @@ namespace NewBISReports.Models.Classes
                 return null;
             }
         }
+
+        public static List<Persons> LoadExceptions(DatabaseContext dbcontext, string databasename, string data)
+        {
+            List<Persons> retval = new List<Persons>();
+            try
+            {
+                using (DataTable table = dbcontext.LoadDatatable(dbcontext, String.Format("select Persid = bl.persid, Nome = isnull(firstname, '') + ' ' + isnull(lastname, ''), cmpDtInicio = convert(varchar, cmpDtInicio, 103) + ' ' + " +
+                    "convert(varchar, cmpDtInicio, 108), cmpDtTermino = convert(varchar, cmpDtTermino, 103) + ' ' + convert(varchar, cmpDtTermino, 108) from {0}..tblblockexcecao bl " +
+                    "inner join acedb.bsuser.persons p on bl.persid = p.persid where convert(varchar, cmpDtInclusao, 103) = convert(varchar, getdate(), 103) order by Nome", databasename)))
+                { 
+                    if (table != null)
+                        retval = GlobalFunctions.ConvertDataTable<Persons>(table);
+                }
+
+                return retval;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
 
         /// <summary>
         /// Exclui uma exceção existente.

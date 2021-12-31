@@ -1,4 +1,5 @@
 ﻿using HzBISCommands;
+using Microsoft.AspNetCore.Http;
 using NewBISReports.Models.Classes;
 using System;
 using System.Collections.Generic;
@@ -194,6 +195,7 @@ namespace NewBISReports.Models
         public string USERRE { get; set; } 
         public string USERPASSWORD { get; set; }
         public string PERSID { get; set; }
+
         #region Functions
         /// <summary>
         /// Retorna o tipo do relatório.
