@@ -221,13 +221,18 @@ namespace NewBISReports.Models.Reports
         {
             try
             {
-                string sql = "select Documento = passportno, Nome = firstname + ' ' + lastname from bsuser.persons per  " +
+                string sql = "select Documento = passportno, Nome = firstname + ' ' + lastname, Local = cli.Name, " +
+                    "UltimoAcesso = convert(varchar, cur.ACCESSTIME, 103) + ' ' + convert(varchar, cur.accesstime, 108)," +
+                    "Situacao = case when per.status = 1 then 'Ativo' else 'Inativo' end, " +
+                    "Cartao = case when not cd.persid is null then cd.cardno else 'Nao ha cartao' end from bsuser.persons per  " +
                     "inner join bsuser.visitors vis on vis.persid = per.persid " +
                     "inner join bsuser.clients cli on cli.clientid = per.clientid " +
-                    "where per.status = 1 ";
+                    "left outer join bsuser.cards cd on cd.persid = per.persid " +
+                    "left outer join bsuser.CURRENTACCESSSTATE cur on cur.persid = per.persid ";
+                    //"where cd.status in (0, 1) ";
 
                 if (!String.IsNullOrEmpty(clientid))
-                    sql += String.Format(" and cli.clientid = '{0}'", clientid);
+                    sql += String.Format(" where cli.clientid = '{0}'", clientid);
 
                 sql += " order by Nome, cli.Name";
 
@@ -366,10 +371,12 @@ namespace NewBISReports.Models.Reports
             {
                 bool bBio = false;
                 string cmpno = "";
-                string sql = "select Nome = isnull(firstname, '') + ' ' + isnull(lastname, ''), TipoPessoa = case when persclass = 'E' then 'FUNCIONARIO' else 'VISITANTE' end, " +
+                string sql = "select distinct Nome = isnull(firstname, '') + ' ' + isnull(lastname, ''), TipoPessoa = classes.DISPLAYTEXTCUSTOMER, " +
+                    " Documento = case when persclass = 'E' then per.persno else vis.passportno end, " +
                     " UltimoAcesso = convert(varchar, accesstime, 103) + ' ' + convert(varchar, accesstime, 108), " +
-                    " Bloqueado = case when lock.persid is null then 'Não Bloqueado' else lock.causeoflock end, " +
-                    " LimiteBloqueio = case when lock.persid is null then 'Não Bloqueado' else convert(varchar, lockeduntil, 103) end, ";
+                    " Situacao = case when per.status = 1 then 'Ativo' else 'Inativo' end, ";
+                    //" Bloqueado = case when lock.persid is null then 'Não Bloqueado' else lock.causeoflock end, " +
+                    //" LimiteBloqueio = case when lock.persid is null then 'Não Bloqueado' else convert(varchar, lockeduntil, 103) end, ";
 
                 string sqlfields = "";
                 foreach (PropertyInfo p in reportfields.GetType().GetProperties())
@@ -398,27 +405,29 @@ namespace NewBISReports.Models.Reports
                 }
                 sqlfields = sqlfields.Substring(0, sqlfields.Length - 1);
 
-                if (customfields != null)
-                {
-                    foreach (BSRPTCustomFields custom in customfields)
-                        sqlfields += "," + custom.LABEL + " =  max(case when label = '" + custom.LABEL + "' then value else '' end)";
-                }
+                //if (customfields != null)
+                //{
+                //    foreach (BSRPTCustomFields custom in customfields)
+                //        sqlfields += "," + custom.LABEL + " =  max(case when label = '" + custom.LABEL + "' then value else '' end)";
+                //}
 
                 sql += sqlfields + " from bsuser.persons per left outer join bsuser.companies cmp on per.companyid = cmp.companyid " +
+                    " inner join bsuser.PERSCLASSES classes on classes.PERSCLASSID = per.PERSCLASSID " +
+                    " left outer join bsuser.visitors vis on vis.persid = per.persid " +
                     " left outer join bsuser.cards cd on per.persid = cd.persid inner join bsuser.clients cli on cli.clientid = per.clientid " +
-                    " left outer join bsuser.currentaccessstate cursta on cursta.persid = per.persid " +
-                    " left outer join bsuser.lockouts lock on lock.persid = per.persid ";
+                    " left outer join bsuser.currentaccessstate cursta on cursta.persid = per.persid ";
+                    //" left outer join bsuser.lockouts lock on lock.persid = per.persid ";
 
-                if (customfields != null)
-                {
-                    if (customfields != null && customfields.Count > 0)
-                        sql += "left outer join bsuser.ADDITIONALFIELDS ad on per.persid = ad.persid left outer join bsuser.additionalfielddescriptors ac on ac.id = ad.fielddescid ";
-                }
+                //if (customfields != null)
+                //{
+                //    if (customfields != null && customfields.Count > 0)
+                //        sql += "left outer join bsuser.ADDITIONALFIELDS ad on per.persid = ad.persid left outer join bsuser.additionalfielddescriptors ac on ac.id = ad.fielddescid ";
+                //}
 
                 if (bBio)
                     sql += "left outer join bsuser.biodata bio on bio.persid = per.persid ";
 
-                sql += " where per.status = 1 and cd.status != 0 and persclass = 'E' ";
+                sql += " where per.status in (0, 1) ";
 
                 if (!string.IsNullOrEmpty(persno))
                     sql += " and per.persid = '" + persno + "'";
@@ -435,7 +444,7 @@ namespace NewBISReports.Models.Reports
                             where += "'" + no + "', ";
                         cmpno += where.Substring(0, where.Length - 2);
 
-                        sql += " and persclassid in (" + cmpno + ")";
+                        sql += " and per.persclassid in (" + cmpno + ")";
                     }
 
                     if (company != null && company.Length > 0)
@@ -450,22 +459,22 @@ namespace NewBISReports.Models.Reports
                     }
                 }
 
-                if (customfields != null && customfields.Count > 0)
-                {
-                    sql += " group by ";
-                    foreach (PropertyInfo p in reportfields.GetType().GetProperties())
-                    {
-                        if (p.Name.Equals("STREETHOUSENO") || p.Name.Equals("CITY"))
-                            sql += p.GetValue(reportfields) != null ? "per." + p.Name + "," : "";
-                        else if (p.Name.Equals("NAME"))
-                            sql += p.GetValue(reportfields) != null ? "cli." + p.Name + "," : "";
-                        else
-                            sql += p.GetValue(reportfields) != null ? p.Name + "," : "";
-                    }
-                    sql += "FIRSTNAME, LASTNAME, PERSCLASS, ACCESSTIME, lock.PERSID, CAUSEOFLOCK, LOCKEDUNTIL";
-                    if (bBio)
-                        sql += ",bio.persid";
-                }
+                //if (customfields != null && customfields.Count > 0)
+                //{
+                //    sql += " group by ";
+                //    foreach (PropertyInfo p in reportfields.GetType().GetProperties())
+                //    {
+                //        if (p.Name.Equals("STREETHOUSENO") || p.Name.Equals("CITY"))
+                //            sql += p.GetValue(reportfields) != null ? "per." + p.Name + "," : "";
+                //        else if (p.Name.Equals("NAME"))
+                //            sql += p.GetValue(reportfields) != null ? "cli." + p.Name + "," : "";
+                //        else
+                //            sql += p.GetValue(reportfields) != null ? p.Name + "," : "";
+                //    }
+                //    sql += "FIRSTNAME, LASTNAME, PERSCLASS, ACCESSTIME, lock.PERSID, CAUSEOFLOCK, LOCKEDUNTIL";
+                //    if (bBio)
+                //        sql += ",bio.persid";
+                //}
 
                 sql += " order by Nome";
 
