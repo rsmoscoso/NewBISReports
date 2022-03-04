@@ -38,6 +38,7 @@ namespace NewBISReports.Models.Classes
             try
             {
                 string sql = "select * from bsuser.devices where clientid = '" + clientid + "' and description like '%" + description + "%' and type = 'wie1' order by description";
+
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
                     if (table != null)

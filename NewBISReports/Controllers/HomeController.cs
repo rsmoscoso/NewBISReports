@@ -77,6 +77,7 @@ namespace NewBISReports.Controllers
         /// Nome da área externa para o relatório de áreas.
         /// </summary>
         private string AreaExterna { get; set; }
+        private string Client { get; set; }
         #endregion
 
         #region Injecao de dependencia
@@ -353,6 +354,53 @@ namespace NewBISReports.Controllers
                 return null;
             }
         }
+
+        /// <summary>
+        /// Retorna os eventos dos BIS.
+        /// </summary>
+        /// <param name="reports">Parâmetros da pesquisa.</param>
+        /// <param name="addresstagprefix">Prefixo da AddressTag. Se for nulo, o padrão é "ControleAcesso.".</param>
+        /// <param name="addresstagsufix">Sufixo da AddressTag. Se for nulo, o padrão é ".Evento".</param>
+        /// <param name="meal">Se true, retorna os eventos das catracas de refeitório.</param>
+        /// <returns></returns>
+        private DataTable getAMSEvents(HomeModel reports, string addresstagprefix, string addresstagsufix, bool meal)
+        {
+            try
+            {
+                LOGEVENT_VALUETYPE evtType = LOGEVENT_VALUETYPE.LOGEVENTVALUETYPE_PERSID;
+                BSClientsInfo cli = new BSClientsInfo();
+                string[] devices = null;
+                if (!String.IsNullOrEmpty(reports.CLIENTID) && reports.CLIENTID != "0")
+                    cli = Clients.GetClientsClass(this.contextACE, reports.CLIENTID);
+                if (reports.DEVICEID != null && reports.DEVICEID.Length > 0)
+                    devices = Devices.GetDevices(this.contextACE, reports.DEVICEID);
+                if (reports.SearchPersonsType == SEARCHPERSONS.SEARCHPERSONS_CARD)
+                    evtType = LOGEVENT_VALUETYPE.LOGEVENTVALUETYPE_CARDNO;
+
+                //if (String.IsNullOrEmpty(addresstagprefix))
+                //    addresstagprefix = "ControleAcesso.Devices.";
+                //if (String.IsNullOrEmpty(addresstagsufix))
+                //    addresstagprefix = ".Evento";
+                //Diogo - A data agora já vem formatada do frontend com hora minuto                
+                return _rptsAnalytics.GetEventsBoschAMS(this.contextBIS, this.contextACE, String.Format("{0} {1}", reports.StartDate, reports.StartDate.Length <= 10 ? "00:00:00" : ":00"),
+                    String.Format("{0} {1}", reports.EndDate, reports.EndDate.Length <= 10 ? "23:59:59" : ":59"), LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
+                    evtType, "", cli.NAME, reports.CompanyNO, reports.DEVICEID, devices, reports.PERSCLASSID,
+                    String.IsNullOrEmpty(reports.LISTPERSONS) ? (reports.SearchPersonsType == SEARCHPERSONS.SEARCHPERSONS_CARD ? reports.NAMESEARCH : reports.PERSNO) : reports.LISTPERSONS, meal, reports,
+                    this.config.TagBISServer, addresstagprefix, addresstagsufix, reports.AccessType);
+
+            }
+            catch (Exception ex)
+            {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(ex.Message + " --> getBiSEVents");
+                w.Close();
+                w = null;
+
+
+                return null;
+            }
+        }
+
         /// <summary>
         /// Retorna os eventos dos BIS.
         /// </summary>
@@ -579,6 +627,28 @@ namespace NewBISReports.Controllers
                         }
                     }
                 }
+                else if (reports.Type == REPORTTYPE.RPT_ANALYTICGRANTEDAMS)
+                {
+                    using (DataTable table = this.getAMSEvents(reports, config.AddressTagPrefix, config.AddressTagSufix, false))
+                    {
+
+                        //Remover colunas não desejadas
+                        //basta configurar na propriedade "RemoverColunasAlanyticsGranted" do appssettings.json
+                        //if (_arvoreopcoes.RemoverColunasAlanyticsGranted.Count > 0)
+                        //{
+                        //    //
+                        //    foreach (string ColName in _arvoreopcoes.RemoverColunasAlanyticsGranted)
+                        //    {
+                        //        if (table.Columns.Contains(ColName))
+                        //            table.Columns.Remove(ColName);
+                        //    }
+                        //}
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\amsevents.xlsx", "Orion", "Analytics", _dateTimeConverter)) != null)
+                        {
+                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\amsevents.xlsx");
+                        }
+                    }
+                }
                 else if (reports.Type == REPORTTYPE.RPT_ANALYTICSGENERAL)
                 {
                     using (DataTable table = this.getAnalytics(reports))
@@ -704,8 +774,13 @@ namespace NewBISReports.Controllers
                 }
                 else if (reports.Type == REPORTTYPE.RPT_PERSONGENERAL)
                 {
-                    using (System.Data.DataTable table = _rptsAcedb.LoadAllPerson(this.contextACE, this.ReportFields, this.CustomFields, reports.PERSNO, reports.PERSCLASSID, reports.CLIENTID, reports.CompanyNO))
+                    using (System.Data.DataTable table = _rptsAcedb.LoadAllPerson(this.contextACE, this.ReportFields, this.CustomFields, reports.PERSNO, reports.PERSCLASSID, reports.CLIENTID, reports.CompanyNO, Client))
                     {
+                        StreamWriter w = new StreamWriter("degub.txt", true);
+                        w.WriteLine("ok");
+                        w.Close();
+                        w = null;
+
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\people.xlsx", "Orion", "PEOPLE", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\people.xlsx");
                     }
@@ -812,6 +887,11 @@ namespace NewBISReports.Controllers
         {
             try
             {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine("Iniciando...");
+                w.Close();
+                w = null;
+
                 if (Request.Form["CLIENTID"].Count == 1)
                 {
                     this.searchDevices(reports);
@@ -942,6 +1022,7 @@ namespace NewBISReports.Controllers
                 }
 
                 string defaultsettings = configuration.GetSection("Default")["Name"];
+                Client = configuration.GetSection("Default")["Name"];
                 this.config = new BSConfig(defaultsettings, configuration.GetSection(defaultsettings)["BackColor"], configuration.GetSection(defaultsettings)["ForeColor"],
                     configuration.GetSection(defaultsettings)["FontWeight"], configuration.GetSection(defaultsettings)["ImagePath"],
                     configuration.GetSection(defaultsettings)["Meal"], configuration.GetSection(defaultsettings)["BisPath"], configuration.GetSection(defaultsettings)["SystemType"],

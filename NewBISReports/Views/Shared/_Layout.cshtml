@@ -151,6 +151,10 @@
                                     {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICGRANTEDBIS"><span class="text">Eventos de Acesso</span></a></li>
                                     }
+                                    @if (_arvoreOpcoes.EventosDeAcessoAMS)
+                                    {
+                                        <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICGRANTEDAMS"><span class="text">Eventos de Acesso (AMS)</span></a></li>
+                                    }
                                     @if (_arvoreOpcoes.AcessosAnaliticosGeral)
                                     {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICSGENERAL"><span class="text">Acessos Analíticos - Geral</span></a></li>

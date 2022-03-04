@@ -130,12 +130,125 @@ namespace NewBISReports.Models.Reports
                    ((int)accesstype).ToString());                 
                 }
 
+                StreamWriter w = new StreamWriter("sp.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;
+
+                return GlobalFunctions.RemoveTrash(dbcontext.LoadDatatable(dbcontext, sql), null);
+            }
+            catch (Exception ex)
+            {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(ex.Message + " --> GetEventsBosch");
+                w.Close();
+                w = null;
+
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public DataTable GetEventsBoschAMS(DatabaseContext dbcontext, DatabaseContext dbcontextACE, string start, string end, LOGEVENT_STATE state, LOGEVENT_VALUETYPE type, string clientexternalid,
+    string description, string[] company, string[] deviceid, string[] addresstag, string[] persclassid, string stringvalue, bool meal, HomeModel reports, string tagbisserver,
+    string addresstagprefix, string addresstagsufix, ACCESSTYPE accesstype)
+        {
+            try
+            {
+                //string server = this.contextACE.GetHost();
+                string devid = "";
+                string cmpno = "";
+                string persclass = "";
+
+                //variável da nomenclatura da divisão no LogDivision.
+                //Mantida para futura análise.
+                //tagbisserver += "." 
+                tagbisserver = "";
+
+                //if (reports.DEVICEID != null && reports.DEVICEID.Length > 0)
+                //{
+                //    if (deviceid != null && deviceid.Length > 0)
+                //    {
+                //        string where = "";
+                //        devid = "";
+                //        foreach (string id in deviceid)
+                //            where += "''" + id + "'', ";
+                //        devid += where.Substring(0, where.Length - 2);
+                //    }
+                //}
+
+                //if (addresstag != null && addresstag.Length > 0)
+                //{
+                //    string where = "";
+                //    devid = "";
+                //    foreach (string name in addresstag)
+                //        where += "''" + addresstagprefix + name + addresstagsufix + "'', ";
+                //    devid += where.Substring(0, where.Length - 2);
+                //}
+
+                //if (!String.IsNullOrEmpty(reports.CLIENTID))
+                //{
+                //    Clients cli = new Clients();
+                //    if (!String.IsNullOrEmpty(reports.CLIENTID) && reports.CLIENTID != "0")
+                //    {
+                //        cli = (Clients)Clients.GetClientsClass(dbcontextACE, reports.CLIENTID);
+                //        clientexternalid = cli.ExternID;
+                //    }
+                //}
+
+                //if (company != null && company.Length > 0)
+                //{
+                //    string where = "";
+                //    cmpno = "";
+                //    foreach (string no in company)
+                //        where += "''" + no + "'', ";
+                //    cmpno += where.Substring(0, where.Length - 2);
+                //}
+
+                //if (persclassid != null && persclassid.Length > 0)
+                //{
+                //    string where = "";
+                //    persclass = "";
+                //    foreach (string no in persclassid)
+                //        where += "''" + no + "'',";
+                //    persclass += where.Substring(0, where.Length - 2) + "'";
+                //}
+
+                string sql = String.Format("set dateformat 'dmy' select * from [Bosch.EventDb].dbo.vwAcessosGeral where data >= '{0}' and data <= '{1}' order by data",
+                    start, end);
+
+                StreamWriter w = new StreamWriter("AMS.txt", true);
+                w.WriteLine(sql);
+                w.Close();
+                w = null;
+
+                //if (String.IsNullOrEmpty(persclass))
+                //{
+                //    sql = String.Format("set dateformat 'dmy' exec BISEventLog.." + _arvoreOpcoes.SpAccessGranted + " {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
+                //        String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", start, end,
+                //        String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
+                //        String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
+                //        String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'",
+                //        ((int)accesstype).ToString());
+                //}
+                //else
+                //{
+                //    sql = String.Format("set dateformat 'dmy' exec BISEventLog.." + _arvoreOpcoes.SpPersClassAccessGranted + "  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
+                //    String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'",
+                //    start,
+                //    end,
+                //    String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
+                //    String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
+                //    String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'",
+                //    String.IsNullOrEmpty(persclass) ? "null" : persclass,
+                //   ((int)accesstype).ToString());
+                //}
+
                 //StreamWriter w = new StreamWriter("erro.txt", true);
                 //w.WriteLine(sql);
                 //w.Close();
                 //w = null;
 
-                return GlobalFunctions.RemoveTrash(dbcontext.LoadDatatable(dbcontext, sql), null);
+                return dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
             {

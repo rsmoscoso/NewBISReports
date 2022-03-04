@@ -23,6 +23,7 @@ namespace NewBISReports.Models
         //menu raiz
         public bool EventosDeAcessoRaiz { get; set; }
         public bool EventosDeAcesso { get; set; }
+        public bool EventosDeAcessoAMS { get; set; }
         public bool AcessosAnaliticosGeral { get; set; }
         public bool TabelaRefeicoes { get; set; }
         public bool DashboardTotalRefeicoes { get; set; }
@@ -154,6 +155,7 @@ namespace NewBISReports.Models
 
             //menu Eventos de acesso
             EventosDeAcesso = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:eventosDeAcesso"]);
+            EventosDeAcessoAMS = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:eventosDeAcessoAMS"]);
 
             //o restante só é levado em consideração se a oopção "Meal" for true
             if (Meal)
@@ -174,7 +176,7 @@ namespace NewBISReports.Models
             }
             //avalia se adiciona a raiz
             //Se pelo menos um dos sub-menus for habilitado, a raiz também será habilitada
-            EventosDeAcessoRaiz = (EventosDeAcesso || AcessosAnaliticosGeral || TabelaRefeicoes || DashboardTotalRefeicoes || TotalDeRefeicoes || ExportarRefeicoes);
+            EventosDeAcessoRaiz = (EventosDeAcesso || EventosDeAcessoAMS || AcessosAnaliticosGeral || TabelaRefeicoes || DashboardTotalRefeicoes || TotalDeRefeicoes || ExportarRefeicoes);
 
             //menu Operacionais
             Excessao = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:operacionaisRaiz:excessao"]);

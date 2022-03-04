@@ -56,7 +56,8 @@ namespace NewBISReports.Models
         RPT_PERSONSINSIDEAREA = 23,
         RPT_CREDITS = 24,
         RPT_INTEGRACAOWFMBIS = 25,
-        RPT_CHANGECLIENTID = 26
+        RPT_CHANGECLIENTID = 26,
+        RPT_ANALYTICGRANTEDAMS = 27
 
     }
 
@@ -287,6 +288,9 @@ namespace NewBISReports.Models
                 case "25":
                     retval = REPORTTYPE.RPT_INTEGRACAOWFMBIS;
                     break;
+                case "27":
+                    retval = REPORTTYPE.RPT_ANALYTICGRANTEDAMS;
+                    break;
                 //Diogo - adicionando uma landing page
                 case "99":
                     retval = REPORTTYPE.RPT_LANDINGPAGE;
@@ -385,6 +389,9 @@ namespace NewBISReports.Models
                 case REPORTTYPE.RPT_INTEGRACAOWFMBIS:
                     retval = "Integração WFM x BIS";
                     break;
+                case REPORTTYPE.RPT_ANALYTICGRANTEDAMS:
+                    retval = "Relatório de Eventos do AMS";
+                    break;
 
             }
             return retval;
@@ -478,6 +485,9 @@ namespace NewBISReports.Models
                     break;
                 case REPORTTYPE.RPT_INTEGRACAOWFMBIS:
                     retval = "Relatório da integração WFM x BIS";
+                    break;
+                case REPORTTYPE.RPT_ANALYTICGRANTEDAMS:
+                    retval = "Relatório de Eventos do AMS";
                     break;
             }
             return retval;

@@ -365,7 +365,7 @@ namespace NewBISReports.Models.Reports
         /// <param name="dbcontext">Conexão com o banco de dados.</param>
         /// <param name="company">Nome da empresa.</param>
         /// <returns></returns>
-        public DataTable LoadAllPerson(DatabaseContext dbcontext, BSRPTFields reportfields, List<BSRPTCustomFields> customfields, string persno, string[] persclassid, string clientid, string[] company)
+        public DataTable LoadAllPerson(DatabaseContext dbcontext, BSRPTFields reportfields, List<BSRPTCustomFields> customfields, string persno, string[] persclassid, string clientid, string[] company, string client)
         {
             try
             {
@@ -375,8 +375,11 @@ namespace NewBISReports.Models.Reports
                     " Documento = case when persclass = 'E' then per.persno else vis.passportno end, " +
                     " UltimoAcesso = convert(varchar, accesstime, 103) + ' ' + convert(varchar, accesstime, 108), " +
                     " Situacao = case when per.status = 1 then 'Ativo' else 'Inativo' end, ";
-                    //" Bloqueado = case when lock.persid is null then 'Não Bloqueado' else lock.causeoflock end, " +
-                    //" LimiteBloqueio = case when lock.persid is null then 'Não Bloqueado' else convert(varchar, lockeduntil, 103) end, ";
+                //" Bloqueado = case when lock.persid is null then 'Não Bloqueado' else lock.causeoflock end, " +
+                //" LimiteBloqueio = case when lock.persid is null then 'Não Bloqueado' else convert(varchar, lockeduntil, 103) end, ";
+
+                if (client.ToLower().Equals("solar"))
+                    sql += "Matricula = idnumber, ";
 
                 string sqlfields = "";
                 foreach (PropertyInfo p in reportfields.GetType().GetProperties())
@@ -399,7 +402,7 @@ namespace NewBISReports.Models.Reports
                             sqlfields += "BIOMETRIA = case when not bio.persid is null then 'SIM' else 'NAO' end,";
                             bBio = true;
                         }
-                        else
+                        else if (!p.Name.Equals("PERSNO"))
                             sqlfields += p.Name + " as " + value.ToString() + ",";
                     }
                 }
@@ -478,15 +481,28 @@ namespace NewBISReports.Models.Reports
 
                 sql += " order by Nome";
 
-                StreamWriter w = new StreamWriter("erro.txt", true);
+                StreamWriter w = new StreamWriter("SQL.txt", true);
                 w.WriteLine(sql);
+                w.WriteLine(dbcontext.connectionstring);
                 w.Close();
                 w = null;                
 
-                return dbcontext.LoadDatatable(dbcontext, sql);
+                DataTable table = dbcontext.LoadDatatable(dbcontext, sql);
+
+                w = new StreamWriter("Registro.txt", true);
+                w.WriteLine(table.Rows.Count.ToString());
+                w.Close();
+                w = null;
+
+                return table;
             }
             catch (Exception ex)
             {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(ex.Message);
+                w.Close();
+                w = null;
+
                 throw new Exception(ex.Message);
             }
         }

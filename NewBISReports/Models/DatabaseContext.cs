@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -46,6 +47,10 @@ namespace NewBISReports.Models
                 }
                 catch (Exception ex)
                 {
+                    StreamWriter w = new StreamWriter("erro.txt", true);
+                    w.WriteLine(ex.Message);
+                    w.Close();
+                    w = null;
                     // error handling
                     throw new Exception(ex.Message);
                 }
@@ -57,6 +62,10 @@ namespace NewBISReports.Models
             }
             catch (Exception ex)
             {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(ex.Message);
+                w.Close();
+                w = null;
                 throw new Exception(ex.Message);
             }
         }

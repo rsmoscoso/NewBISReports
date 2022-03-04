@@ -339,8 +339,13 @@ namespace NewBISReports.Models
                 }
                 return table;
             }
-            catch
+            catch (Exception ex)
             {
+                StreamWriter w = new StreamWriter("sp.txt", true);
+                w.WriteLine(ex.Message);
+                w.Close();
+                w = null;
+                
                 return table;
             }
         }
