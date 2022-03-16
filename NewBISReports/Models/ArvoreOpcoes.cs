@@ -51,7 +51,7 @@ namespace NewBISReports.Models
         public bool VisitantesRaiz { get; set; }
         public bool QrCodeDosVisitantes { get; set; }
         public bool ImportarVisitantes { get; set; }
-
+        public bool licencascartao { get; set; }
 
 
         #endregion
@@ -197,8 +197,9 @@ namespace NewBISReports.Models
             PessoasBloqueadas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:pessoasBloqueadas"]);
             TodosOsVisitantes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:todosOsVisitantes"]);
             PessoasPorArea = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:pessoasporArea"]);
-            CreditosPessoas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:creditosPessoas"]); 
-            AdministrativosRaiz = (Pessoas || PerfilDasPessoas || AutorizacoesDasPessoas || LeitoresPorAutorizacoes || PessoasBloqueadas || TodosOsVisitantes || CreditosPessoas);
+            CreditosPessoas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:creditosPessoas"]);
+            licencascartao = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:licencascartao"]);
+            AdministrativosRaiz = (Pessoas || PerfilDasPessoas || AutorizacoesDasPessoas || LeitoresPorAutorizacoes || PessoasBloqueadas || TodosOsVisitantes || CreditosPessoas || licencascartao);
 
 
             //menu visitantes

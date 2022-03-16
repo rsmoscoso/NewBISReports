@@ -57,8 +57,8 @@ namespace NewBISReports.Models
         RPT_CREDITS = 24,
         RPT_INTEGRACAOWFMBIS = 25,
         RPT_CHANGECLIENTID = 26,
-        RPT_ANALYTICGRANTEDAMS = 27
-
+        RPT_ANALYTICGRANTEDAMS = 27,
+        RPT_LICENCASCARTAO = 28
     }
 
     /// <summary>
@@ -196,7 +196,7 @@ namespace NewBISReports.Models
         public string USERRE { get; set; } 
         public string USERPASSWORD { get; set; }
         public string PERSID { get; set; }
-
+        public string TotalCards { get; set; }
         #region Functions
         /// <summary>
         /// Retorna o tipo do relatório.
@@ -290,6 +290,9 @@ namespace NewBISReports.Models
                     break;
                 case "27":
                     retval = REPORTTYPE.RPT_ANALYTICGRANTEDAMS;
+                    break;
+                case "28":
+                    retval = REPORTTYPE.RPT_LICENCASCARTAO;
                     break;
                 //Diogo - adicionando uma landing page
                 case "99":
@@ -392,6 +395,9 @@ namespace NewBISReports.Models
                 case REPORTTYPE.RPT_ANALYTICGRANTEDAMS:
                     retval = "Relatório de Eventos do AMS";
                     break;
+                case REPORTTYPE.RPT_LICENCASCARTAO:
+                    retval = "Relatório de Uso das Licenças de Cartão";
+                    break;
 
             }
             return retval;
@@ -488,6 +494,9 @@ namespace NewBISReports.Models
                     break;
                 case REPORTTYPE.RPT_ANALYTICGRANTEDAMS:
                     retval = "Relatório de Eventos do AMS";
+                    break;
+                case REPORTTYPE.RPT_LICENCASCARTAO:
+                    retval = "Relatório de uso de licenças de cartão";
                     break;
             }
             return retval;

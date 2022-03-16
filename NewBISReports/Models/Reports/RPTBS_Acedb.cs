@@ -336,6 +336,30 @@ namespace NewBISReports.Models.Reports
             }
         }
 
+        /// <summary>
+        /// Retorna a quantidade de cartões em uso.
+        /// </summary>
+        /// <param name="dbcontext"></param>
+        /// <returns></returns>
+        public string GetTotalCards(DatabaseContext dbcontext)
+        {
+            try
+            {
+                string total = null;
+                string sql = "select total = count(*) from bsuser.cards where status = 1 and not persid is null";
+
+                using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
+                {
+                    total = (table != null && table.Rows.Count > 0 ? table.Rows[0]["total"].ToString() : "0");
+                }
+
+                return total;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
         /// <summary>
         /// Retorna as informações da integração WFMxBIS.

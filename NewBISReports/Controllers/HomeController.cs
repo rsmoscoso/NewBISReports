@@ -929,6 +929,18 @@ namespace NewBISReports.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetTotalCards(HomeModel homeModel)
+        {
+            TempData["ConfigSection"] = JsonConvert.SerializeObject(this.config);
+            TempData["Type"] = REPORTTYPE.RPT_LANDINGPAGE;
+            TempData.Keep();
+            this.persisTempData();
+            //HomeModel model = new HomeModel();
+            homeModel.TotalCards = _rptsAcedb.GetTotalCards(this.contextACE);
+            return View(homeModel);
+        }
+
+        [HttpGet]
         public IActionResult Index(REPORTTYPE type, string mensagemErro)
         {
 
