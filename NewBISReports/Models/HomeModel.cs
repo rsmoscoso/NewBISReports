@@ -18,8 +18,8 @@ namespace NewBISReports.Models
         NOTGRANTED = 4112,
         CARDBLOCKED = 4111,
         CARDNOTYETVALID = 4119,
-        CARDEXPIRED = 4120
-
+        CARDEXPIRED = 4120,
+        TIMEOUT = 16777991
     }
 
     /// <summary>
@@ -58,7 +58,8 @@ namespace NewBISReports.Models
         RPT_INTEGRACAOWFMBIS = 25,
         RPT_CHANGECLIENTID = 26,
         RPT_ANALYTICGRANTEDAMS = 27,
-        RPT_LICENCASCARTAO = 28
+        RPT_LICENCASCARTAO = 28,
+        RPT_ANALYTICGRANTEDDELTA = 29
     }
 
     /// <summary>
@@ -294,6 +295,9 @@ namespace NewBISReports.Models
                 case "28":
                     retval = REPORTTYPE.RPT_LICENCASCARTAO;
                     break;
+                case "29":
+                    retval = REPORTTYPE.RPT_ANALYTICGRANTEDDELTA;
+                    break;
                 //Diogo - adicionando uma landing page
                 case "99":
                     retval = REPORTTYPE.RPT_LANDINGPAGE;
@@ -398,6 +402,9 @@ namespace NewBISReports.Models
                 case REPORTTYPE.RPT_LICENCASCARTAO:
                     retval = "Relatório de Uso das Licenças de Cartão";
                     break;
+                case REPORTTYPE.RPT_ANALYTICGRANTEDDELTA:
+                    retval = "Relatório de Eventos do Delta";
+                    break;
 
             }
             return retval;
@@ -497,6 +504,9 @@ namespace NewBISReports.Models
                     break;
                 case REPORTTYPE.RPT_LICENCASCARTAO:
                     retval = "Relatório de uso de licenças de cartão";
+                    break;
+                case REPORTTYPE.RPT_ANALYTICGRANTEDDELTA:
+                    retval = "Relatório de Eventos do Delta";
                     break;
             }
             return retval;

@@ -297,7 +297,7 @@ namespace NewBISReports.Models.Reports
                     "from bsuser.persons per inner join bsuser.clients cli on cli.clientid = per.clientid " +
                     "inner join bsuser.acpersons acpe on acpe.persid = per.persid left outer join bsuser.COMPANIES cmp on cmp.COMPANYID = per.COMPANYID " +
                     "left outer join bsuser.cards cd on cd.persid = per.persid " +
-                    "where persno = '{0}'", persno);
+                    "where per.status = 1 and persno = '{0}'", persno);
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }
@@ -454,7 +454,7 @@ namespace NewBISReports.Models.Reports
                 if (bBio)
                     sql += "left outer join bsuser.biodata bio on bio.persid = per.persid ";
 
-                sql += " where per.status in (0, 1) ";
+                sql += " where per.status in (0, 1) and cd.status = 1 ";
 
                 if (!string.IsNullOrEmpty(persno))
                     sql += " and per.persid = '" + persno + "'";

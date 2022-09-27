@@ -119,10 +119,10 @@
                     <div class="widget-content">
                         <div class="form-inline">
                             @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type !=
-                              REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
-                          type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type !=
-                          REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type !=
-                          REPORTTYPE.RPT_PERSONSAREA)
+                             REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
+                         type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type !=
+                         REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type !=
+                         REPORTTYPE.RPT_PERSONSAREA)
                             {
                                 if (showHourMinute)
                                 {
@@ -199,7 +199,19 @@
                                                    value="4109">
                                             <label class="custom-control-label" for="grant">Desconhecido</label>
                                         </div>
-                                    </div> }
+                                    </div>
+                                }
+
+                                if (type == REPORTTYPE.RPT_ANALYTICGRANTEDAMS)
+                                {
+                                    <div class="input-group">
+                                        <div class="custom-control custom-checkbox mb-3">
+                                            <input class="custom-control-input" id="grant" type="radio" asp-for="AccessType"
+                                                   value="16777991">
+                                            <label class="custom-control-label" for="grant">Time Out</label>
+                                        </div>
+                                    </div>
+                                }
                             }
 
                             @*Mudança no layout das áreas
@@ -236,7 +248,7 @@
                             }
 
                             @if (type == REPORTTYPE.RPT_TOTALMEAL || type == REPORTTYPE.RPT_EXPORTMEAL || type ==
-                              REPORTTYPE.RPT_COUNTBATH)
+                             REPORTTYPE.RPT_COUNTBATH)
                             {
                                 @*Diogo - Conferir o ExecPage e o excel page abaixo*@
                                 <button type="submit" name="exec" id="exec" asp-action="ExecPage"

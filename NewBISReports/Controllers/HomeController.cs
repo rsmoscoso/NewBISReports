@@ -91,7 +91,7 @@ namespace NewBISReports.Controllers
         /// classe _rptsAcedb
         /// </summary>
         private readonly RPTBS_Acedb _rptsAcedb;
-
+        private readonly RPTCECNC _rptCECNC;
         #endregion
 
         #region Functions
@@ -409,6 +409,48 @@ namespace NewBISReports.Controllers
         /// <param name="addresstagsufix">Sufixo da AddressTag. Se for nulo, o padrão é ".Evento".</param>
         /// <param name="meal">Se true, retorna os eventos das catracas de refeitório.</param>
         /// <returns></returns>
+        private DataTable getDeltaEvents(HomeModel reports, string addresstagprefix, string addresstagsufix, bool meal)
+        {
+            try
+            {
+                LOGEVENT_VALUETYPE evtType = LOGEVENT_VALUETYPE.LOGEVENTVALUETYPE_PERSID;
+                BSClientsInfo cli = new BSClientsInfo();
+                string[] devices = null;
+                if (!String.IsNullOrEmpty(reports.CLIENTID) && reports.CLIENTID != "0")
+                    cli = Clients.GetClientsClass(this.contextACE, reports.CLIENTID);
+                if (reports.DEVICEID != null && reports.DEVICEID.Length > 0)
+                    devices = Devices.GetDevices(this.contextACE, reports.DEVICEID);
+                if (reports.SearchPersonsType == SEARCHPERSONS.SEARCHPERSONS_CARD)
+                    evtType = LOGEVENT_VALUETYPE.LOGEVENTVALUETYPE_CARDNO;
+
+                //if (String.IsNullOrEmpty(addresstagprefix))
+                //    addresstagprefix = "ControleAcesso.Devices.";
+                //if (String.IsNullOrEmpty(addresstagsufix))
+                //    addresstagprefix = ".Evento";
+                //Diogo - A data agora já vem formatada do frontend com hora minuto                
+                return _rptCECNC.LoadAcessos(this.contextACE, String.Format("{0} {1}", reports.StartDate, reports.StartDate.Length <= 10 ? "00:00:00" : ":00"),
+                    String.Format("{0} {1}", reports.EndDate, reports.EndDate.Length <= 10 ? "23:59:59" : ":59"));
+
+            }
+            catch (Exception ex)
+            {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(ex.Message + " --> getBiSEVents");
+                w.Close();
+                w = null;
+
+
+                return null;
+            }
+        }
+        /// <summary>
+        /// Retorna os eventos dos BIS.
+        /// </summary>
+        /// <param name="reports">Parâmetros da pesquisa.</param>
+        /// <param name="addresstagprefix">Prefixo da AddressTag. Se for nulo, o padrão é "ControleAcesso.".</param>
+        /// <param name="addresstagsufix">Sufixo da AddressTag. Se for nulo, o padrão é ".Evento".</param>
+        /// <param name="meal">Se true, retorna os eventos das catracas de refeitório.</param>
+        /// <returns></returns>
         private DataTable getBISEvents(HomeModel reports, string addresstagprefix, string addresstagsufix, bool meal)
         {
             try
@@ -646,6 +688,16 @@ namespace NewBISReports.Controllers
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\amsevents.xlsx", "Orion", "Analytics", _dateTimeConverter)) != null)
                         {
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\amsevents.xlsx");
+                        }
+                    }
+                }
+                else if (reports.Type == REPORTTYPE.RPT_ANALYTICGRANTEDDELTA)
+                {
+                    using (DataTable table = this.getDeltaEvents(reports, config.AddressTagPrefix, config.AddressTagSufix, false))
+                    {
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\deltaevents.xlsx", "Orion", "Analytics", _dateTimeConverter)) != null)
+                        {
+                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\deltaevents.xlsx");
                         }
                     }
                 }
@@ -1008,7 +1060,8 @@ namespace NewBISReports.Controllers
                                 ArvoreOpcoes arvoreOpcoes,
                                 DateTimeConverter dateTimeConverter,
                                 RPTBS_Analytics rptsAnalytics,
-                                RPTBS_Acedb rptsAcedb)
+                                RPTBS_Acedb rptsAcedb,
+                                RPTCECNC rptCecnc)
         {
             //Classe que contempla opções do appssetings
             //TODO: mover as configurações dentro do Try abaixo para dentro del
@@ -1016,6 +1069,7 @@ namespace NewBISReports.Controllers
             _dateTimeConverter = dateTimeConverter;
             _rptsAnalytics = rptsAnalytics;
             _rptsAcedb = rptsAcedb;
+            _rptCECNC = rptCecnc;
             try
             {
                 this.contextBIS = new DatabaseContext(configuration.GetConnectionString("BIS"));

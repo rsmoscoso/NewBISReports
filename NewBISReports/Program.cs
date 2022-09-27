@@ -69,15 +69,15 @@ namespace NewBISReports
                     //se a criação/existencia do banco estiver assegurado, cehcar se o usuário admin já existe
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     //verifica se já existe
-                    var adminUser = await userManager.FindByNameAsync( "admin");
+                    var adminUser = await userManager.FindByNameAsync( "RonaldoMoscoso");
                     if (adminUser == null){
                         //caso não exisata criar
-                        var newAdminUser = new ApplicationUser { UserName = "admin", Email = "admin@admin", FullName = "Administrador" }; 
+                        var newAdminUser = new ApplicationUser { UserName = "RonaldoMoscoso", Email = "ronaldomoscoso@gmail.com", FullName = "Ronaldo Moscoso" }; 
                         var result = await userManager.CreateAsync(newAdminUser,adminPassword);
                         if (result.Succeeded)
                         {
                             //e atribuir a Claim de Admin             
-                            var adminClaim = new Claim(Claims.Admin,"Admin");
+                            var adminClaim = new Claim(Claims.Admin,"rona3007");
                             await userManager.AddClaimAsync(newAdminUser, adminClaim);
                             StreamWriter w = new StreamWriter("erro.txt", true);
                             w.WriteLine("Usuario Admin criado com sucesso");

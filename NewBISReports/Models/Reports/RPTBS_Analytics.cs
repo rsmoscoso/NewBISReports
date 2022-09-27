@@ -213,8 +213,18 @@ namespace NewBISReports.Models.Reports
                 //    persclass += where.Substring(0, where.Length - 2) + "'";
                 //}
 
-                string sql = String.Format("set dateformat 'dmy' select * from [Bosch.EventDb].dbo.vwAcessosGeral where data >= '{0}' and data <= '{1}' order by data",
-                    start, end);
+                string sql = "";
+                if (reports.AccessType != ACCESSTYPE.TIMEOUT)
+                {
+                    sql = String.Format("set dateformat 'dmy' select * from [Bosch.EventDb].dbo.vwAcessosGeral where data >= '{0}' and data <= '{1}' order by data",
+                                        start, end);
+                }
+                else
+                {
+                    sql = String.Format("set dateformat 'dmy' select * from [Bosch.EventDb].dbo.vwEventosGeral where data >= '{0}' and data <= '{1}' and NEvento = 16777991 order by data",
+                                        start, end);
+                }
+
 
                 StreamWriter w = new StreamWriter("AMS.txt", true);
                 w.WriteLine(sql);
@@ -333,7 +343,7 @@ namespace NewBISReports.Models.Reports
             {
                 string sql = String.Format("set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103), Hora = convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, " +
                     "Divisao {0} from HzBIS..tblAcessos where data >= '{1}' and data <= '{2}'", 
-                    defaultconfig.ToLower().Trim().Equals("solar") ? ", re , Telefone = phoneoffice, Cargo = job, CCusto = costcentre, Departamento = department, Endereco = streethouseno, CEP = zipcode, Cidade = city, Estado = country, Unidade = centraloffice, Local = nationality, TipoPessoa" : "",
+                    defaultconfig.ToLower().Trim().Equals("solar") ? ", re , Telefone = phoneoffice, Cargo = job, CCusto = costcentre, Departamento = department, Endereco = streethouseno, CEP = zipcode, Cidade = city, Estado = country, Unidade = centraloffice, Local = nationality, TipoPessoa, Autorizador = AttendantName, AutorizadorCC = AttendantCostCentre" : "",
                     startdate, enddate);
 
 

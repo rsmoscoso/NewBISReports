@@ -196,6 +196,7 @@ namespace NewBISReports
                 //classes de greção de relatórios
                 services.AddTransient<RPTBS_Analytics>();
                 services.AddTransient<RPTBS_Acedb>();
+                services.AddTransient<RPTCECNC>();
                 services.AddTransient<PersonUtils>();
 
                 services.AddLogging();

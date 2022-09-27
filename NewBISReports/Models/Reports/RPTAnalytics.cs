@@ -155,10 +155,18 @@ namespace NewBISReports.Models.Reports
         {
             try
             {
+                //string sql = String.Format("set dateformat 'dmy' select Divisao, Nome, CPF, Matricula = RE, " +
+                //    "DataAcesso = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108),  " +
+                //    "LocalAcesso = EnderecoAcesso, TipoRefeicao, Empresa, Telefone = phoneoffice, Cargo = job, CC = costcentre, Depto = department, " +
+                //    "Endereco = streethouseno, CEP = zipcode, Cidade = city, UF = country, Unidade = centraloffice, TipoPessoa from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'",
+                //    //Diogo - alteração no formato da data, já vem com hora e minuto do frontend
+                //    //start + " 00:00:00", end + " 23:59:59");
+                //    start + " 00:00:00", end + " 23:59:59");
+
                 string sql = String.Format("set dateformat 'dmy' select Divisao, Nome, CPF, Matricula = RE, " +
                     "DataAcesso = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108),  " +
-                    "LocalAcesso = EnderecoAcesso, TipoRefeicao, Empresa, Telefone = phoneoffice, Cargo = job, CC = costcentre, Depto = department, " +
-                    "Endereco = streethouseno, CEP = zipcode, Cidade = city, UF = country, Unidade = centraloffice, TipoPessoa from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'",
+                    "LocalAcesso = EnderecoAcesso, TipoRefeicao, Empresa, Cargo = job, CC = costcentre, Depto = department, " +
+                    "Unidade = centraloffice, TipoPessoa, Autorizador = AttendantName, AutorizadorCC = AttendantCostCentre from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'",
                     //Diogo - alteração no formato da data, já vem com hora e minuto do frontend
                     //start + " 00:00:00", end + " 23:59:59");
                     start + " 00:00:00", end + " 23:59:59");

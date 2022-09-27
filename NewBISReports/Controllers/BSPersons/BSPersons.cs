@@ -83,7 +83,7 @@ namespace NewBISReports.Controllers.BSPersons
                 model.Pessoa = Persons.GetPersonsPERSID(this.contextACE, persid);
                 model.CPF = model.Pessoa.CUSTOMFIELDS.Find(d => d.LABEL.ToLower().Equals("cpf")).VALUE.ToString();
                 model.UF = model.Pessoa.CUSTOMFIELDS.Find(d => d.LABEL.ToLower().Equals("uf")).VALUE.ToString();
-                model.Aniversario = (model.Pessoa == null || model.Pessoa.DATEOFBIRTH.Equals(DateTime.MinValue)) ? "" : model.Pessoa.DATEOFBIRTH.ToShortDateString();
+                //model.Aniversario = (model.Pessoa == null || model.Pessoa.DATEOFBIRTH.Equals(DateTime.MinValue)) ? "" : model.Pessoa.DATEOFBIRTH.ToShortDateString();
                 return View(model);
             }
             catch (Exception ex)
