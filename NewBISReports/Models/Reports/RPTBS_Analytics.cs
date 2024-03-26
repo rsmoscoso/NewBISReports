@@ -8,6 +8,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using static NewBISReports.Models.Classes.LogEvent;
 using HzBISCommands;
+using HzBISCommands.Events;
+using NPOI.XSSF.Streaming.Values;
+using System.Reflection;
+using Microsoft.EntityFrameworkCore;
+using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace NewBISReports.Models.Reports
 {
@@ -22,7 +27,93 @@ namespace NewBISReports.Models.Reports
         {
             _arvoreOpcoes = arvoreOpcoes;
         }
+
+        private BSEvents setEventValue(BSEvents evt, string name, string value)
+        {
+            switch (name.ToLower())
+            {
+                case "persid":
+                    evt.Persid = value;
+                    break;
+                case "persno":
+                    evt.Persno = value;
+                    break;
+                case "name":
+                    evt.Name = value;
+                    break;
+                case "firstname":
+                    evt.FirstName = value;
+                    break;
+                case "company":
+                    evt.Company = value;
+                    break;
+                case "customcode":
+                    evt.CustomCode = value;
+                    break;
+                case "areaname":
+                    evt.AreaName = value;
+                    break;
+                case "kurztext":
+                    evt.Kurztext = value;
+                    break;
+                case "cardid":
+                    evt.CardID = value;
+                    break;
+                case "cardno":
+                    evt.CardNO = value;
+                    break;
+            }
+
+            return evt;
+        }
+
+        public DataTable ToDataTable<T>(List<T> items)
+        {
+            DataTable dataTable = new DataTable(typeof(T).Name);
+            //Get all the properties by using reflection   
+            PropertyInfo[] Props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            foreach (PropertyInfo prop in Props)
+            {
+                //Setting column names as Property names  
+                dataTable.Columns.Add(prop.Name);
+            }
+            foreach (T item in items)
+            {
+                var values = new object[Props.Length];
+                for (int i = 0; i < Props.Length; i++)
+                {
+
+                    values[i] = Props[i].GetValue(item, null);
+                }
+                dataTable.Rows.Add(values);
+            }
+
+            return dataTable;
+        }
+
         #region Analytics
+        public DataTable GetDataAcesso(DatabaseContext dbcontext, string start, string end)
+        {
+            try
+            {
+                string sql = String.Format("set dateformat 'dmy' select dtper.persid, re = persno, nome, primeiraData = convert(varchar, cmpDtFirst, 103), primeiraHora = convert(varchar, cmpDtFirst, 108), LocalPrimeira = LocalFirst, " +
+                    "UltimaData = convert(varchar, cmpDtLast, 103), UltimaHora = convert(varchar, cmpDtLast, 108), LocalUltima = LocalLast from tblDataAcessoPERSID dtper " +
+                    "inner join HzBIS..tblDataAcesso dt on dt.cmpCoDataAcesso = dtper.cmpCoDataAcesso inner join [kofbrclubis02\\bis_ace_2021].acedb.bsuser.persons per on per.persid = dtper.persid " +
+                    "where cmpDtFirst >= '{0}' and cmpDtFirst <= '{1}'", start, end);
+
+                return dbcontext.LoadDatatable(dbcontext, sql);
+            }
+            catch (Exception ex)
+            {
+                StreamWriter w = new StreamWriter("erroDataAcesso.txt", true);
+                w.WriteLine(ex.Message + " --> GetDataAcesso");
+                w.Close();
+                w = null;
+
+                throw new Exception(ex.Message);
+            }
+        }
+
         /// <summary>
         /// Retorna os eventos, de acordo com o estado, da tabela LogEvent.
         /// O parâmetro deve ser o ID da pessoa no BIS (PERSID).
@@ -43,7 +134,7 @@ namespace NewBISReports.Models.Reports
         /// <returns></returns>
         public DataTable GetEventsBosch(DatabaseContext dbcontext, DatabaseContext dbcontextACE, string start, string end, LOGEVENT_STATE state, LOGEVENT_VALUETYPE type, string clientexternalid,
             string description, string[] company, string[] deviceid, string[] addresstag, string[] persclassid, string stringvalue, bool meal, HomeModel reports, string tagbisserver,
-            string addresstagprefix, string addresstagsufix, ACCESSTYPE accesstype)
+            string addresstagprefix, string addresstagsufix, ACCESSTYPE accesstype, string defaultconfig)
         {
             try
             {
@@ -86,6 +177,11 @@ namespace NewBISReports.Models.Reports
                         cli = (Clients)Clients.GetClientsClass(dbcontextACE, reports.CLIENTID);
                         clientexternalid = cli.ExternID;
                     }
+
+                    //if (reports.CLIENTID.Equals("001301AE6C269AC1"))
+                    //    reports.CLIENTID = "0013A26FC15BC5B6";
+                    //else if (reports.CLIENTID.Equals("0013A26FC15BC5B6"))
+                    //    reports.CLIENTID = "001301AE6C269AC1";
                 }
 
                 if (company != null && company.Length > 0)
@@ -106,28 +202,69 @@ namespace NewBISReports.Models.Reports
                     persclass += where.Substring(0, where.Length - 2) + "'";
                 }
 
-                string sql = "";
-
-                if (String.IsNullOrEmpty(persclass))
+                List<BSEvents> events = new List<BSEvents>();
+                string sql = null;
+                if (defaultconfig.ToLower().Trim().Equals("solar"))
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog.."+ _arvoreOpcoes.SpAccessGranted + " {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
-                        String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", start, end,
-                        String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
-                        String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
-                        String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'",
-                        ((int)accesstype).ToString());
+                    sql = String.Format("set dateformat 'dmy' select LogEvent.ID, stringValue, eventValueName, AddressTag, eventCreationTime from BISEventLog..LogEventValue inner join BISEventLog..LogEvent2Value on BISEventLog..LogEvent2Value.valueId = BISEventLog..LogEventValue.Id " +
+                        "inner join BISEventLog..LogEvent on BISEventLog..LogEvent.Id = BISEventLog..LogEvent2Value.eventId inner join BISEventLog..LogState on BISEventLog..LogState.Id = BISEventLog..LogEvent.stateId " +
+                        "inner join BISEventLog..LogEventValueType on BISEventLog..LogEventValueType.Id = BISEventLog..LogEventValue.eventTypeId " +
+                        "inner join BISEventLog..LogEventType on BISEventLog..LogEventType.ID = BISEventLog..LogEvent.eventTypeId inner join BISEventLog..LogAddress on BISEventLog..LogAddress.ID = BISEventLog..LogEvent.AddressID " +
+                        "where stateNumber = 4101 and LogEventType.ID = 1 and eventCreationTime >= '{0}' and eventCreationTime <= '{1}' " +
+                        "and eventValueName in ('PERSID', 'PERSNO', 'NAME', 'FIRSTNAME', 'COMPANY', 'CUSTOMCODE', 'AREANAME', 'Kurztext', 'CARDID', 'CARDNO', 'Badge ID') order by BISEventLog..LogEvent.ID", start, end);
+
+                    using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
+                    {
+                        if (table != null && table.Rows.Count > 0)
+                        {
+                            int id = 0;
+                            BSEvents evt = null;
+                            string stringValue = null;
+                            string eventValueName = null;
+                            foreach (DataRow row in table.Rows)
+                            {
+                                eventValueName = row["eventValueName"].ToString();
+                                stringValue = row["stringValue"].ToString();
+                                if (id != int.Parse(row["id"].ToString()))
+                                {
+                                    if (evt != null)
+                                        events.Add(evt);
+                                    evt = new BSEvents();
+                                    evt.ID = int.Parse(row["id"].ToString());
+                                    evt.EventCreationTime = DateTime.Parse(row["EventCreationTime"].ToString());
+                                    evt.AddressTag = row["addresstag"].ToString();
+                                    id = int.Parse(row["id"].ToString());
+                                }
+
+                                evt = setEventValue(evt, eventValueName, stringValue);
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    sql = String.Format("set dateformat 'dmy' exec BISEventLog.."+ _arvoreOpcoes.SpPersClassAccessGranted + "  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
-                    String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", 
-                    start,
-                    end,
-                    String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
-                    String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
-                    String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'",
-                    String.IsNullOrEmpty(persclass) ? "null" : persclass,
-                   ((int)accesstype).ToString());                 
+                    sql = null;
+                    if (String.IsNullOrEmpty(persclass))
+                    {
+                        sql = String.Format("set dateformat 'dmy' exec BISEventLog.." + _arvoreOpcoes.SpAccessGranted + " {0}, '{1}', '{2}', {3}, {4}, {5}, {6}",
+                            String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'", start, end,
+                            String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + reports.CLIENTID + "'",
+                            String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
+                            String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'",
+                            ((int)accesstype).ToString());
+                    }
+                    else
+                    {
+                        sql = String.Format("set dateformat 'dmy' exec BISEventLog.." + _arvoreOpcoes.SpPersClassAccessGranted + "  {0}, '{1}', '{2}', {3}, {4}, {5}, '{6}', {7}",
+                        String.IsNullOrEmpty(stringvalue) ? "null" : "'" + stringvalue + "'",
+                        start,
+                        end,
+                        String.IsNullOrEmpty(reports.CLIENTID) ? "null" : "'" + tagbisserver + description + "'",
+                        String.IsNullOrEmpty(devid) ? "null" : "'" + devid + "'",
+                        String.IsNullOrEmpty(cmpno) ? "null" : "'" + cmpno + "'",
+                        String.IsNullOrEmpty(persclass) ? "null" : persclass,
+                       ((int)accesstype).ToString());
+                    }
                 }
 
                 StreamWriter w = new StreamWriter("sp.txt", true);
@@ -135,7 +272,8 @@ namespace NewBISReports.Models.Reports
                 w.Close();
                 w = null;
 
-                return GlobalFunctions.RemoveTrash(dbcontext.LoadDatatable(dbcontext, sql), null);
+                return defaultconfig.ToLower().Trim().Equals("solar") ? ToDataTable<BSEvents>(events) :
+                dbcontext.LoadDatatable(dbcontext, sql);
             }
             catch (Exception ex)
             {
@@ -341,11 +479,15 @@ namespace NewBISReports.Models.Reports
         {
             try
             {
-                string sql = String.Format("set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103), Hora = convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, " +
-                    "Divisao {0} from HzBIS..tblAcessos where data >= '{1}' and data <= '{2}'", 
-                    defaultconfig.ToLower().Trim().Equals("solar") ? ", re , Telefone = phoneoffice, Cargo = job, CCusto = costcentre, Departamento = department, Endereco = streethouseno, CEP = zipcode, Cidade = city, Estado = country, Unidade = centraloffice, Local = nationality, TipoPessoa, Autorizador = AttendantName, AutorizadorCC = AttendantCostCentre" : "",
-                    startdate, enddate);
+                string sql = "set dateformat 'dmy' select CPF, Nome, Empresa, Data = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108), TipoRefeicao, EnderecoAcesso, Divisao ";
 
+                if (defaultconfig.ToLower().Trim().Equals("solar"))
+                    sql += ", re , Cargo = job, CCusto = costcentre, Departamento = department, Unidade = centraloffice, Local = nationality, TipoPessoa, Autorizador = AttendantName, " +
+                    "AutorizadorCC = AttendantCostCentre, ValorRefeicao, Ticket, SiteCode, Cardno, TipoRefeicaoExtra, DtRefeicaoExtra = convert(varchar, DataRefeicaoExtra, 103), AutorizadorRefeicaoExtra, CCRefeicaoExtra ";
+                else if (defaultconfig.ToLower().Trim().Equals("femsa"))
+                    sql += ", CodigoCC, DescricaoCC, AreaRH ";
+
+                sql += String.Format(" from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'", startdate, enddate);
 
                 if (!String.IsNullOrEmpty(clientid) && clientid != "0")
                     sql += " and clientid = '" + clientid + "'";
@@ -369,7 +511,7 @@ namespace NewBISReports.Models.Reports
                     }
                 }
 
-                sql += " order by data";
+                sql += " order by data, nome";
                 StreamWriter w = new StreamWriter("SQLMeal.txt", true);
                 w.WriteLine(sql);
                 w.Close();

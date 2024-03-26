@@ -1,0 +1,1 @@
+The process cannot access the file 'D:\Ronaldo Moscoso\Dropbox (Ronaldo)\Dropbox\Projetos C#\DevOps\BISReports\NewBISReports\Liberação por exceção 15.09.csv' because it is being used by another process.

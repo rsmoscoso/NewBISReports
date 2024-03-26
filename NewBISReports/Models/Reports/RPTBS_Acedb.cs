@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HzBISCommands;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -144,6 +145,28 @@ namespace NewBISReports.Models.Reports
                 }
                 sql += " order by cli.Name, Nome";
                 StreamWriter w = new StreamWriter("erro.txt", true);
+
+                return dbcontext.LoadDatatable(dbcontext, sql);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Retorna os perfis das pessoas.
+        /// </summary>
+        /// <param name="dbcontext">Conexão com o banco de dados.</param>
+        /// <param name="clientid">ID do cliente.</param>
+        /// <returns></returns>
+        public DataTable LoadAdditional(DatabaseContext dbcontext)
+        {
+            try
+            {
+                string sql = "select CPF = persno, Nome = isnull(firstname, '') + ' ' + isnull(lastname, ''), NR10, NR12, NR33, NR35, ASO, PPRA, PPR, PCMSO, INTEGRACAO, TREINAMENTOSOLDA, LIBERADODOCUMENTACAO, LIBERADOTREINAMENTO, " +
+                    " GRUPO, EPI, OS, APR, EMPRESA, CNPJ, GESTOR, SETOR, Unidade = cli.NAME, NCartao = cardno  from tblAdditional tbl inner join bsuser.persons per on per.persid = tbl.persid inner join bsuser.clients cli on cli.CLIENTID = tbl.CLIENTID " + 
+                    " left outer join bsuser.cards cd on cd.persid = per.persid";
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }

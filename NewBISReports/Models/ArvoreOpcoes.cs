@@ -23,6 +23,7 @@ namespace NewBISReports.Models
         //menu raiz
         public bool EventosDeAcessoRaiz { get; set; }
         public bool EventosDeAcesso { get; set; }
+        public bool EventosDadosDeAcesso { get; set; }
         public bool EventosDeAcessoAMS { get; set; }
         public bool EventosDeAcessoDelta { get; set; }
         public bool AcessosAnaliticosGeral { get; set; }
@@ -53,6 +54,7 @@ namespace NewBISReports.Models
         public bool QrCodeDosVisitantes { get; set; }
         public bool ImportarVisitantes { get; set; }
         public bool licencascartao { get; set; }
+        public bool terceiros { get; set; }
 
 
         #endregion
@@ -156,6 +158,7 @@ namespace NewBISReports.Models
 
             //menu Eventos de acesso
             EventosDeAcesso = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:eventosDeAcesso"]);
+            EventosDadosDeAcesso = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:eventosDadosDeAcesso"]);
             EventosDeAcessoAMS = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:eventosDeAcessoAMS"]);
             EventosDeAcessoDelta = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:eventosDeAcessoRaiz:eventosDeAcessoDelta"]);
 
@@ -193,6 +196,8 @@ namespace NewBISReports.Models
 
             //menu Administrativos
             Pessoas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:Pessoas"]);
+            if (!string.IsNullOrEmpty(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:terceiros"]))
+                terceiros = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:terceiros"]);
             PerfilDasPessoas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:perfilDasPessoas"]);
             AutorizacoesDasPessoas = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:autorizacoesDasPessoas"]);
             LeitoresPorAutorizacoes = bool.Parse(_configuration.GetSection(nomeCliente)["arvoreOpcoes:administrativosRaiz:leitoresPorAutorizacoes"]);

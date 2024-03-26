@@ -84,6 +84,11 @@
         ViewBag.Devices = new List<Devices>();
     }
 
+    if (ViewBag.Company == null)
+    {
+        ViewBag.Company = new List<Company>();
+    }
+
 }
 
 <form method="post" asp-action="Index" data-parsley-validate novalidate>
@@ -122,7 +127,7 @@
                              REPORTTYPE.RPT_BADGENOUSE && type != REPORTTYPE.RPT_PERSONSAUTHORIZATIONS &&
                          type != REPORTTYPE.RPT_ALLLOCKOUT && type != REPORTTYPE.RPT_ALLVISITORS && type !=
                          REPORTTYPE.RPT_PERSONGENERAL && type != REPORTTYPE.RPT_COUNTBATH && type !=
-                         REPORTTYPE.RPT_PERSONSAREA)
+                         REPORTTYPE.RPT_PERSONSAREA && type != REPORTTYPE.RPT_TERCEIROS)
                             {
                                 if (showHourMinute)
                                 {
@@ -258,7 +263,7 @@
                             }
                             @if (type != REPORTTYPE.RPT_EXPORTMEAL && type != REPORTTYPE.RPT_COUNTBATH)
                             {
-                                if (type == REPORTTYPE.RPT_PHOTOS)
+                                if (type == REPORTTYPE.RPT_PHOTOS || type == REPORTTYPE.RPT_TERCEIROS)
                                 {
                                     buttonname = "Gerar";
                                 }
@@ -327,7 +332,7 @@
             <!-- INÍCIO DO CARD PESSOAS E UNIDADE -->
             <div class="row">
                 @if (type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS || type == REPORTTYPE.RPT_PERSONGENERAL || type ==
-                REPORTTYPE.RPT_LOGQRCODE || type == REPORTTYPE.RPT_CREDITS)
+                REPORTTYPE.RPT_LOGQRCODE || type == REPORTTYPE.RPT_CREDITS || type == REPORTTYPE.RPT_ANALYTICACCESSDATA)
             {
                 // @Html.Partial("IndexPessoas")
                 <div class="col-sm-6">
@@ -340,7 +345,7 @@
                         </div>
                         <div class="widget-content">
                             <div class="row">
-                                @if (type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_CREDITS )
+                                @if (type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_CREDITS && type != REPORTTYPE.RPT_ANALYTICACCESSDATA )
                                 {
                                     <!-- INICIO TIPO PESSOA -->
                                     <fieldset>
@@ -361,7 +366,7 @@
                                             {
                                                 <select multiple="multiple" asp-for="CompanyNO" class="select2 select2-multiple"
                                                     name="CompanyNO"
-                                                    asp-items="@(new SelectList(Model.Companies, "COMPANYNO", "NAME"))"></select>
+                                                    asp-items="@(new SelectList(ViewBag.Company, "COMPANYNO", "NAME"))"></select>
                                             }
                                             </div>
                                         </fieldset>
@@ -439,7 +444,7 @@
                 @if (type != REPORTTYPE.RPT_PHOTOS && type != REPORTTYPE.RPT_BADGES && type != REPORTTYPE.RPT_BADGENOUSE &&
                 @*type != REPORTTYPE.RPT_PERSONGENERAL && *@
                 type != REPORTTYPE.RPT_LOGQRCODE && type != REPORTTYPE.RPT_COUNTBATH && type != REPORTTYPE.RPT_PERSONSAREA && type != REPORTTYPE.RPT_CREDITS &&
-                type != REPORTTYPE.RPT_INTEGRACAOWFMBIS)
+                type != REPORTTYPE.RPT_INTEGRACAOWFMBIS && type != REPORTTYPE.RPT_TERCEIROS)
             {
                 <div class="col-sm-6">
                     <div class="widget widget-table">

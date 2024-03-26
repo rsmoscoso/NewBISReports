@@ -151,6 +151,10 @@
                                     {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICGRANTEDBIS"><span class="text">Eventos de Acesso</span></a></li>
                                     }
+                                    @if (_arvoreOpcoes.EventosDadosDeAcesso)
+                                    {
+                                                <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICACCESSDATA"><span class="text">Dados de Acesso</span></a></li>
+                                    }
                                     @if (_arvoreOpcoes.EventosDeAcessoAMS)
                                     {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_ANALYTICGRANTEDAMS"><span class="text">Eventos de Acesso (AMS)</span></a></li>
@@ -231,6 +235,10 @@
                                     @if (_arvoreOpcoes.Pessoas)
                                     {
                                         <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_PERSONGENERAL"><span class="text">Pessoas</span></a></li>
+                                    }
+                                    @if (_arvoreOpcoes.terceiros)
+                                    {
+                                            <li><a asp-controller="Home" asp-action="Index" asp-route-type="@NewBISReports.Models.REPORTTYPE.RPT_TERCEIROS"><span class="text">Terceirizados</span></a></li>
                                     }
                                     @if (_arvoreOpcoes.PerfilDasPessoas)
                                     {

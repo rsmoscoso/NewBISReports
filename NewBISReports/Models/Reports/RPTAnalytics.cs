@@ -11,7 +11,7 @@ namespace NewBISReports.Models.Reports
 {
     /// <summary>
     /// Classe com as funções de pesquisa analítica dos acesso.
-    /// </summary>
+    /// </summary>F
     public class RPTAnalytics
     {
         #region Functions SQL
@@ -163,10 +163,11 @@ namespace NewBISReports.Models.Reports
                 //    //start + " 00:00:00", end + " 23:59:59");
                 //    start + " 00:00:00", end + " 23:59:59");
 
-                string sql = String.Format("set dateformat 'dmy' select Divisao, Nome, CPF, Matricula = RE, " +
+                string sql = String.Format("set dateformat 'dmy' select idevent, Divisao, Nome, CPF, Matricula = RE, " +
                     "DataAcesso = convert(varchar, data, 103) + ' ' + convert(varchar, data, 108),  " +
                     "LocalAcesso = EnderecoAcesso, TipoRefeicao, Empresa, Cargo = job, CC = costcentre, Depto = department, " +
-                    "Unidade = centraloffice, TipoPessoa, Autorizador = AttendantName, AutorizadorCC = AttendantCostCentre from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'",
+                    "Unidade = centraloffice, TipoPessoa, Autorizador = AttendantName, AutorizadorCC = AttendantCostCentre, ValorRefeicao, Ticket, cardno, TipoRefeicaoExtra, DtRefeicaoExtra = convert(varchar, DataRefeicaoExtra, 103), " +
+                    " AutorizadorRefeicaoExtra, CCRefeicaoExtra, persid from HzBIS..tblAcessos where data >= '{0}' and data <= '{1}'",
                     //Diogo - alteração no formato da data, já vem com hora e minuto do frontend
                     //start + " 00:00:00", end + " 23:59:59");
                     start + " 00:00:00", end + " 23:59:59");
@@ -200,7 +201,7 @@ namespace NewBISReports.Models.Reports
                     sql += " and cpf = '" + persid + "'";
                 if (type == "R")
                     sql += " and EnderecoAcesso in (select devicenamelogevent from HzBIS..tblAMCRefeicao)";
-                sql += " order by data, nome";
+                //sql += " order by data";
 
                 return dbcontext.LoadDatatable(dbcontext, sql);
             }

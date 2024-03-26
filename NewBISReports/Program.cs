@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using NewBISReports.Models.Autorizacao;
+using Serilog;
 
 namespace NewBISReports
 {
@@ -26,7 +27,10 @@ namespace NewBISReports
                 .Build();
             //verifica para qual cliente está sendo configurado
             var nomeCliente  = config.GetSection("Default")["Name"];
-            
+
+            Serilog.Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+              .CreateLogger();
 
             //Verifica se o módulo de login estará habilitado
             var isLogin = config.GetSection(nomeCliente)["useLogin"]; 

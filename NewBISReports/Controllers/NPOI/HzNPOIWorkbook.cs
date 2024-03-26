@@ -266,8 +266,12 @@ namespace NewBISReports
 
                 return wb;
             }
-            catch 
+            catch (Exception ex) 
             {
+                StreamWriter writer = new StreamWriter("ErroExcel.txt");
+                writer.WriteLine(ex.Message);
+                writer.Close();
+                writer = null;
                 return null;
             }
         }

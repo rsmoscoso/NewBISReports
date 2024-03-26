@@ -128,16 +128,16 @@ namespace NewBISReports.Controllers
                 else
                     ViewBag.Authorizations = Authorizations.GetAuthorizations(this.contextACE, null);
 
-                //if (TempData["Company"] != null)
-                //    ViewBag.Company = JsonConvert.DeserializeObject(TempData["Company"].ToString());
-                //else
-                //    ViewBag.Company = Company.GetCompanies(this.contextACE);
+                if (TempData["Company"] != null)
+                    ViewBag.Company = JsonConvert.DeserializeObject(TempData["Company"].ToString());
+                else
+                    ViewBag.Company = Company.GetCompanies(this.contextACE);
 
                 if (TempData["Persons"] != null)
                     ViewBag.Persons = JsonConvert.DeserializeObject(TempData["Persons"].ToString());
 
-                //if (TempData["Company"] != null)
-                //    ViewBag.Company = JsonConvert.DeserializeObject(TempData["Company"].ToString());
+                if (TempData["Company"] != null)
+                    ViewBag.Company = JsonConvert.DeserializeObject(TempData["Company"].ToString());
 
                 if (TempData["Persclassid"] != null)
                     ViewBag.Persclassid = JsonConvert.DeserializeObject(TempData["Persclassid"].ToString());
@@ -451,7 +451,7 @@ namespace NewBISReports.Controllers
         /// <param name="addresstagsufix">Sufixo da AddressTag. Se for nulo, o padrão é ".Evento".</param>
         /// <param name="meal">Se true, retorna os eventos das catracas de refeitório.</param>
         /// <returns></returns>
-        private DataTable getBISEvents(HomeModel reports, string addresstagprefix, string addresstagsufix, bool meal)
+        private DataTable getBISEvents(HomeModel reports, string addresstagprefix, string addresstagsufix, bool meal, string defaultconfig)
         {
             try
             {
@@ -472,9 +472,9 @@ namespace NewBISReports.Controllers
                 //Diogo - A data agora já vem formatada do frontend com hora minuto                
                 return _rptsAnalytics.GetEventsBosch(this.contextBIS, this.contextACE, String.Format("{0} {1}", reports.StartDate, reports.StartDate.Length <= 10 ? "00:00:00" : ":00"),
                     String.Format("{0} {1}", reports.EndDate, reports.EndDate.Length <= 10 ? "23:59:59" : ":59"), LogEvent.LOGEVENT_STATE.LOGEVENTSTATE_ACCESSGRANTED,
-                    evtType, "", cli.NAME, reports.CompanyNO, reports.DEVICEID, devices, reports.PERSCLASSID,
+                    evtType, "", "BIS." + cli.NAME, reports.CompanyNO, reports.DEVICEID, devices, reports.PERSCLASSID,
                     String.IsNullOrEmpty(reports.LISTPERSONS) ? (reports.SearchPersonsType == SEARCHPERSONS.SEARCHPERSONS_CARD ? reports.NAMESEARCH : reports.PERSNO) : reports.LISTPERSONS, meal, reports,
-                    this.config.TagBISServer, addresstagprefix, addresstagsufix, reports.AccessType);
+                    this.config.TagBISServer, addresstagprefix, addresstagsufix, reports.AccessType, defaultconfig);
 
             }
             catch (Exception ex)
@@ -488,6 +488,27 @@ namespace NewBISReports.Controllers
                 return null;
             }
         }
+
+        private DataTable getDataAccess(HomeModel reports, string addresstagprefix, string addresstagsufix, bool meal)
+        {
+            try
+            {
+                return _rptsAnalytics.GetDataAcesso(this.contextBIS, String.Format("{0} {1}", reports.StartDate, reports.StartDate.Length <= 10 ? "00:00:00" : ":00"),
+                    String.Format("{0} {1}", reports.EndDate, reports.EndDate.Length <= 10 ? "23:59:59" : ":59"));
+
+            }
+            catch (Exception ex)
+            {
+                StreamWriter w = new StreamWriter("erro.txt", true);
+                w.WriteLine(ex.Message + " --> getBiSEVents");
+                w.Close();
+                w = null;
+
+
+                return null;
+            }
+        }
+
         #endregion
         [HttpPost, ValidateAntiForgeryToken]
         public IActionResult ExecPage(HomeModel reports)
@@ -649,23 +670,37 @@ namespace NewBISReports.Controllers
 
                 if (reports.Type == REPORTTYPE.RPT_ANALYTICGRANTEDBIS)
                 {
-                    using (DataTable table = this.getBISEvents(reports, config.AddressTagPrefix, config.AddressTagSufix, false))
+                    using (DataTable table = this.getBISEvents(reports, config.AddressTagPrefix, config.AddressTagSufix, false, this.config.DefaultName))
                     {
-
+                        StreamWriter writer = new StreamWriter("Result.txt");
+                        writer.WriteLine(table != null && table.Rows.Count > 0 ? table.Rows.Count.ToString() : "0");
+                        writer.Close();
+                        writer = null;
                         //Remover colunas não desejadas
                         //basta configurar na propriedade "RemoverColunasAlanyticsGranted" do appssettings.json
-                        if (_arvoreopcoes.RemoverColunasAlanyticsGranted.Count > 0)
+                        //if (_arvoreopcoes.RemoverColunasAlanyticsGranted.Count > 0)
+                        //{
+                        //    //
+                        //    foreach (string ColName in _arvoreopcoes.RemoverColunasAlanyticsGranted)
+                        //    {
+                        //        if (table.Columns.Contains(ColName))
+                        //            table.Columns.Remove(ColName);
+                        //    }
+                        //}
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\biseventsall.xlsx", "Orion", "Analytics", _dateTimeConverter)) != null)
                         {
-                            //
-                            foreach (string ColName in _arvoreopcoes.RemoverColunasAlanyticsGranted)
-                            {
-                                if (table.Columns.Contains(ColName))
-                                    table.Columns.Remove(ColName);
-                            }
+                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\biseventsall.xlsx");
                         }
-                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\bisevents.xlsx", "Orion", "Analytics", _dateTimeConverter)) != null)
+                    }
+                }
+                if (reports.Type == REPORTTYPE.RPT_ANALYTICACCESSDATA)
+                {
+                    using (DataTable table = this.getDataAccess(reports, config.AddressTagPrefix, config.AddressTagSufix, false))
+                    {
+
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\dataaccess.xlsx", "Orion", "Analytics", _dateTimeConverter)) != null)
                         {
-                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\bisevents.xlsx");
+                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\dataaccess.xlsx");
                         }
                     }
                 }
@@ -782,6 +817,14 @@ namespace NewBISReports.Controllers
                     {
                         if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\reportbadgesnouse.xlsx", "Orion", "Crachas", _dateTimeConverter)) != null)
                             return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\reportbadges.xlsx");
+                    }
+                }
+                else if (reports.Type == REPORTTYPE.RPT_TERCEIROS)
+                {
+                    using (System.Data.DataTable table = _rptsAcedb.LoadAdditional(this.contextACE))
+                    {
+                        if ((filebytes = GlobalFunctions.SaveExcel(table, @"c:\\horizon\\additional.xlsx", "Orion", "Additional", _dateTimeConverter)) != null)
+                            return File(filebytes, System.Net.Mime.MediaTypeNames.Application.Octet, "c:\\horizon\\additional.xlsx");
                     }
                 }
                 else if (reports.Type == REPORTTYPE.RPT_PERSONSPROFILES)

@@ -36,7 +36,7 @@ namespace NewBISReports.Models.Classes
             List<BSCompaniesInfo> retval = new List<BSCompaniesInfo>();
             try
             {
-                string sql = "select CompanyID, CompanyNO, Name from bsuser.companies order by Name";
+                string sql = "select CompanyID, COMPANYNO, NAME from bsuser.companies order by Name";
                 using (DataTable table = dbcontext.LoadDatatable(dbcontext, sql))
                 {
                     if (table != null)

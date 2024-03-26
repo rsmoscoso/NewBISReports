@@ -31,6 +31,8 @@ namespace NewBISReports.Models
         RPT_LANDINGPAGE = 0,
         //Diogo - Precisei trocar o valor desta enum, pois a número "0" é exclusiva do Id default
         RPT_ANALYTICGRANTEDBIS = 99,
+        RPT_ANALYTICACCESSDATA = 100,
+        RPT_TERCEIROS = 101,
         RPT_ANALYTICMEAL = 1,
         RPT_EXPORTMEAL = 2,
         RPT_PHOTOS = 3,
@@ -298,6 +300,12 @@ namespace NewBISReports.Models
                 case "29":
                     retval = REPORTTYPE.RPT_ANALYTICGRANTEDDELTA;
                     break;
+                case "100":
+                    retval = REPORTTYPE.RPT_ANALYTICACCESSDATA;
+                    break;
+                case "101":
+                    retval = REPORTTYPE.RPT_TERCEIROS;
+                    break;
                 //Diogo - adicionando uma landing page
                 case "99":
                     retval = REPORTTYPE.RPT_LANDINGPAGE;
@@ -320,6 +328,9 @@ namespace NewBISReports.Models
             {
                 case REPORTTYPE.RPT_ANALYTICMEAL:
                     retval = "Analítico Refeição";
+                    break;
+                case REPORTTYPE.RPT_ANALYTICACCESSDATA:
+                    retval = "Dados de acesso";
                     break;
                 case REPORTTYPE.RPT_ANALYTICSGENERAL:
                     retval = "Analítico Geral - Solar";
@@ -405,6 +416,9 @@ namespace NewBISReports.Models
                 case REPORTTYPE.RPT_ANALYTICGRANTEDDELTA:
                     retval = "Relatório de Eventos do Delta";
                     break;
+                case REPORTTYPE.RPT_TERCEIROS:
+                    retval = "Relatório de Terceirizados";
+                    break;
 
             }
             return retval;
@@ -423,6 +437,9 @@ namespace NewBISReports.Models
             {
                 case REPORTTYPE.RPT_ANALYTICMEAL:
                     retval = "Analítico Refeição";
+                    break;
+                case REPORTTYPE.RPT_ANALYTICACCESSDATA:
+                    retval = "Dados de acesso";
                     break;
                 case REPORTTYPE.RPT_ANALYTICSGENERAL:
                     retval = "acessos permitidos geral - Solar";
@@ -507,6 +524,9 @@ namespace NewBISReports.Models
                     break;
                 case REPORTTYPE.RPT_ANALYTICGRANTEDDELTA:
                     retval = "Relatório de Eventos do Delta";
+                    break;
+                case REPORTTYPE.RPT_TERCEIROS:
+                    retval = "Relatório de Terceirizados";
                     break;
             }
             return retval;

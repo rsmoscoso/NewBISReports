@@ -116,7 +116,6 @@ namespace NewBISReports.Controllers.Excecao
         [HttpPost]
         public async Task<IActionResult>  New(ExcecaoModel reports)
         {
-            StreamReader reader = null;
             try
             {
                 string filepath = null;
@@ -138,26 +137,46 @@ namespace NewBISReports.Controllers.Excecao
 
                 if (System.IO.File.Exists(filepath))
                 {
-                    reader = new StreamReader(filepath);
-                    string line = null;
-                    while ((line = reader.ReadLine()) != null)
+                    using (FileStream fileStream = new FileStream(filepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                     {
-                        string[] arr = line.Split(';');
-                        string persid = tblBlockExcecao.GetPersid(this.contextACE, arr[0]);
-                        string sql = String.Format("set dateformat 'dmy' insert into HzRH..tblBlockExcecao values ('{0}', '{1} {2}', '{3} {4}', '{5}')", persid,
-                            arr[1], arr[2], arr[3], arr[4], DateTime.Now);
-                        tblBlockExcecao.Save(this.contextACE, arr[0], String.Format("{0} {1}", arr[1], arr[2]), String.Format("{0} {1}", arr[3], arr[4]));
-                    }
+                        using (StreamReader reader = new StreamReader(fileStream))
+                        {
+                            string line = null;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                try
+                                {
+                                    string[] arr = line.Split(';');
+                                    string persid = tblBlockExcecao.GetPersid(this.contextACE, arr[0]);
+                                    string sql = String.Format("set dateformat 'dmy' insert into HzRH..tblBlockExcecao values ('{0}', '{1} {2}', '{3} {4}', '{5}')", persid,
+                                        arr[1], arr[2], arr[3], arr[4], DateTime.Now);
+                                    this.contextACE.LoadDatatable(this.contextACE, sql);
+                                }
+                                catch(Exception ex)
+                                {
+                                    StreamWriter w = new StreamWriter("excecaosql.txt");
+                                    w.WriteLine(ex.Message);
+                                    w.Close();
+                                }
+                                //string sql = String.Format("set dateformat 'dmy' exec spIncluirBlockExcecao '{0}', '{1} {2}', '{3} {4}', '{5}'", persid,
+                                //    arr[1], arr[2], arr[3], arr[4], DateTime.Now);
+                                //tblBlockExcecao.Save(this.contextACE, arr[0], String.Format("{0} {1}", arr[1], arr[2]), String.Format("{0} {1}", arr[3], arr[4]));
+                            }
 
-                    reports.personsExce = tblBlockExcecao.LoadExceptions(this.contextACE, "hzrh", "");
+                            reports.personsExce = tblBlockExcecao.LoadExceptions(this.contextACE, "hzrh", "");
+                        }
+                    }
                 }
 
                 //this.persist();
 
                 return View("Index", reports);
             }
-            catch
+            catch (Exception ex)
             {
+                StreamWriter w = new StreamWriter("excecao.txt");
+                w.WriteLine(ex.Message);
+                w.Close();
                 return View("Index", reports);
             }
         }

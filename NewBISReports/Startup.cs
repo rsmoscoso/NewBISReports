@@ -44,7 +44,7 @@ namespace NewBISReports
                 cultureInfo.NumberFormat.CurrencySymbol = "R$";
                 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
                 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
-
+                
                 services.Configure<CookiePolicyOptions>(options =>
                 {
                     // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -220,6 +220,7 @@ namespace NewBISReports
         {
             try
             {
+
                 if (env.IsDevelopment())
                 {
                     app.UseDeveloperExceptionPage();
